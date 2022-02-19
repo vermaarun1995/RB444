@@ -1,24 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "E:\\RB444\\RB444\\RB444.Core\\RB444.Core.csproj": {}
+    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj": {}
   },
   "projects": {
-    "E:\\RB444\\RB444\\RB444.Core\\RB444.Core.csproj": {
+    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\RB444\\RB444\\RB444.Core\\RB444.Core.csproj",
+        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj",
         "projectName": "RB444.Core",
-        "projectPath": "E:\\RB444\\RB444\\RB444.Core\\RB444.Core.csproj",
-        "packagesPath": "C:\\Users\\arun.verma\\.nuget\\packages\\",
-        "outputPath": "E:\\RB444\\RB444\\RB444.Core\\obj\\",
+        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj",
+        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
+        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\arun.verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -31,8 +32,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "E:\\RB444\\RB444\\RB444.Model\\RB444.Model.csproj": {
-                "projectPath": "E:\\RB444\\RB444\\RB444.Model\\RB444.Model.csproj"
+              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj": {
+                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj"
               }
             }
           }
@@ -83,32 +84,30 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\RB444\\RB444\\RB444.Data\\RB444.Data.csproj": {
+    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\RB444\\RB444\\RB444.Data\\RB444.Data.csproj",
+        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj",
         "projectName": "RB444.Data",
-        "projectPath": "E:\\RB444\\RB444\\RB444.Data\\RB444.Data.csproj",
-        "packagesPath": "C:\\Users\\arun.verma\\.nuget\\packages\\",
-        "outputPath": "E:\\RB444\\RB444\\RB444.Data\\obj\\",
+        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj",
+        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
+        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\arun.verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -193,32 +192,30 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "E:\\RB444\\RB444\\RB444.Model\\RB444.Model.csproj": {
+    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\RB444\\RB444\\RB444.Model\\RB444.Model.csproj",
+        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj",
         "projectName": "RB444.Model",
-        "projectPath": "E:\\RB444\\RB444\\RB444.Model\\RB444.Model.csproj",
-        "packagesPath": "C:\\Users\\arun.verma\\.nuget\\packages\\",
-        "outputPath": "E:\\RB444\\RB444\\RB444.Model\\obj\\",
+        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj",
+        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
+        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\arun.verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -231,8 +228,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "E:\\RB444\\RB444\\RB444.Data\\RB444.Data.csproj": {
-                "projectPath": "E:\\RB444\\RB444\\RB444.Data\\RB444.Data.csproj"
+              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj": {
+                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj"
               }
             }
           }
@@ -267,14 +264,11 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -81,7 +81,7 @@
     <script src="~/Scripts/bootstrap.js"></script>
     @*@Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")*@
-
+    @RenderSection("PageJs", false)
     @RenderSection("scripts", required: false)
     <script src="~/js/toastr.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
