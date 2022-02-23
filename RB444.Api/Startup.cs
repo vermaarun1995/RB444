@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RB444.Core.IServices;
@@ -20,12 +17,9 @@ using RB444.Data.Infrastructure;
 using RB444.Data.JwtAuth;
 using RB444.Data.Repository;
 using RB444.Data.UOW;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RB444.Api
 {
@@ -85,6 +79,7 @@ namespace RB444.Api
             services.AddTransient<IDatabase, Database>();
 
             services.AddTransient<IBetfairApiServices, BetfairApiServices>();
+            services.AddTransient<ICommonService, CommonService>();
 
             services.AddTransient<IRequestServices, RequestServices>();
         }

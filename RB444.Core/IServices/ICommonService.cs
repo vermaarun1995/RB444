@@ -10,5 +10,23 @@ namespace RB444.Core.IServices
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetAllRolesAsync();
+
+        /// <summary>
+        /// Get All Slider.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAllSliderAsync();
+
+        /// <summary>
+        /// Get News.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetNewsAsync();
+
+        /// <summary>
+        /// Get Logo.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetLogoAsync();
     }
 }

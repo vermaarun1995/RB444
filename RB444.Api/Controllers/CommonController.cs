@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RB444.Core.IServices;
 using RB444.Models.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RB444.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Common")]
     [ApiController]
     public class CommonController : ControllerBase
     {
@@ -20,10 +16,22 @@ namespace RB444.Api.Controllers
             _commonService = commonService;
         }
 
-        //[HttpGet, Route("GetAllIcons")]
-        //public async Task<CommonReturnResponse> GetAllIcons(int? type)
-        //{
-        //    return await _commonService.GetAllIconsAsync(type);
-        //}
+        [HttpGet, Route("GetAllSliders")]
+        public async Task<CommonReturnResponse> GetAllSliders()
+        {
+            return await _commonService.GetAllSliderAsync();
+        }
+
+        [HttpGet, Route("GetNews")]
+        public async Task<CommonReturnResponse> GetNews()
+        {
+            return await _commonService.GetNewsAsync();
+        }
+
+        [HttpGet, Route("GetLogo")]
+        public async Task<CommonReturnResponse> GetLogo()
+        {
+            return await _commonService.GetLogoAsync();
+        }
     }
 }
