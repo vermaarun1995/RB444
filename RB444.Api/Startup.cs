@@ -73,6 +73,30 @@ namespace RB444.Api
                 });
             });
 
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll",
+            //        builder => builder.AllowAnyOrigin()
+            //                            .AllowAnyHeader()
+            //                            .AllowAnyMethod());
+            //});
+
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowMyOrigin",
+            //    builder => builder.WithOrigins(
+            //        "http://api.rb444.in/",
+            //        "https://localhost:44390/")
+            //        .WithMethods("POST", "GET", "PUT")
+            //        .WithHeaders("*")
+            //        );
+            //});
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
+
             services.AddHttpContextAccessor();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -93,12 +117,10 @@ namespace RB444.Api
             }
 
             app.UseDeveloperExceptionPage();
-            //app.UseCors("AllowAll");
+            app.UseCors(options => options.AllowAnyOrigin());
             app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            app.UseCors();
+            app.UseRouting();            
 
             app.UseAuthentication();
             app.UseAuthorization();
