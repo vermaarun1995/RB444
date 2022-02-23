@@ -12,9 +12,10 @@ namespace RB444.Admin.Controllers
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
 
-        public AccountController(UserManager<Users> userManager)
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
         public ActionResult Login(string returnUrl = null)
         {

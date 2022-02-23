@@ -70,7 +70,7 @@ namespace RB444.Data.Repository
             {
                 await connection.OpenAsync(cancellationToken);
                 return await connection.QuerySingleOrDefaultAsync<Users>($@"SELECT * FROM [Users]
-                    WHERE isactive = 1 and isdeleted = 0 and [NormalizedUserName] = @{nameof(normalizedUserName)}", new { normalizedUserName });
+                    WHERE [NormalizedUserName] = @{nameof(normalizedUserName)}", new { normalizedUserName });
             }
         }
 
@@ -154,7 +154,7 @@ namespace RB444.Data.Repository
             {
                 await connection.OpenAsync(cancellationToken);
                 return await connection.QuerySingleOrDefaultAsync<Users>($@"SELECT * FROM [Users]
-                    WHERE isactive = 1 and isdeleted = 0 and [NormalizedEmail] = @{nameof(normalizedEmail)}", new { normalizedEmail });
+                    WHERE [NormalizedEmail] = @{nameof(normalizedEmail)}", new { normalizedEmail });
             }
         }
 
