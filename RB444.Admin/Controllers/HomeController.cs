@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace RB444.Admin.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
       //  private readonly UserManager<Users> _userManager;
