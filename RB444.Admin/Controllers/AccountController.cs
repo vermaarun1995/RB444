@@ -36,7 +36,7 @@ namespace RB444.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        return Redirect("/");
+                        return Redirect("/Home/Index");
                     }
                 }
                 return View(model);

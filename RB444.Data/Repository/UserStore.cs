@@ -13,7 +13,7 @@ using RB444.Data.Entities;
 namespace RB444.Data.Repository
 {
     public class UserStore : IUserStore<Users>, IUserEmailStore<Users>, IUserPhoneNumberStore<Users>,
-        IUserTwoFactorStore<Users>, IUserPasswordStore<Users>, IUserRoleStore<Users>, IUserClaimStore<Users>
+        IUserTwoFactorStore<Users>, IUserPasswordStore<Users>, IUserRoleStore<Users>
     {
         private readonly string _connectionString;        
 
@@ -298,59 +298,59 @@ namespace RB444.Data.Repository
             // Nothing to dispose.
         }
 
-        public async Task<IList<Claim>> GetClaimsAsync(Users user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+        //public async Task<IList<Claim>> GetClaimsAsync(Users user, CancellationToken cancellationToken)
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync(cancellationToken);
-                var queryResults = await connection.QueryAsync<UserClaims>("SELECT top 1 * FROM [UserClaims] WHERE RoleId = @RoleId", new { RoleId = user.RoleId });
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        await connection.OpenAsync(cancellationToken);
+        //        var queryResults = await connection.QueryAsync<UserClaims>("SELECT top 1 * FROM [UserClaims] WHERE RoleId = @RoleId", new { RoleId = user.RoleId });
 
-                return queryResults?.Select(y => new Claim(y.ClaimType, y.ClaimValue)).ToList();
-            }
-        }
+        //        return queryResults?.Select(y => new Claim(y.ClaimType, y.ClaimValue)).ToList();
+        //    }
+        //}
 
-        public async Task AddClaimsAsync(Users user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+        //public async Task AddClaimsAsync(Users user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync(cancellationToken);
-                foreach (var item in claims)
-                {
-                    await connection.ExecuteAsync($"INSERT INTO [UserClaims]([RoleId], [ClaimType], [ClaimValue]) VALUES(@{nameof(user.RoleId)}, @{nameof(item.ValueType)}, @{nameof(item.Value)})",
-                      new { user.RoleId, item.ValueType, item.Value });
-                }                
-            }
-        }
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        await connection.OpenAsync(cancellationToken);
+        //        foreach (var item in claims)
+        //        {
+        //            await connection.ExecuteAsync($"INSERT INTO [UserClaims]([RoleId], [ClaimType], [ClaimValue]) VALUES(@{nameof(user.RoleId)}, @{nameof(item.ValueType)}, @{nameof(item.Value)})",
+        //              new { user.RoleId, item.ValueType, item.Value });
+        //        }                
+        //    }
+        //}
 
-        public Task ReplaceClaimAsync(Users user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task ReplaceClaimAsync(Users user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public async Task RemoveClaimsAsync(Users user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
+        //public async Task RemoveClaimsAsync(Users user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        //{
+        //    cancellationToken.ThrowIfCancellationRequested();
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync(cancellationToken);
-                //foreach (var item in claims)
-                //{
-                //    await connection.ExecuteAsync($"DELETE FROM [UserClaims] WHERE RoleId = @{nameof(user.RoleId)}",
-                //      new { user.RoleId });
-                //}
-                await connection.ExecuteAsync($"DELETE FROM [UserClaims] WHERE RoleId = @{nameof(user.RoleId)}",
-                     new { user.RoleId });
-            }
-        }
+        //    using (var connection = new SqlConnection(_connectionString))
+        //    {
+        //        await connection.OpenAsync(cancellationToken);
+        //        //foreach (var item in claims)
+        //        //{
+        //        //    await connection.ExecuteAsync($"DELETE FROM [UserClaims] WHERE RoleId = @{nameof(user.RoleId)}",
+        //        //      new { user.RoleId });
+        //        //}
+        //        await connection.ExecuteAsync($"DELETE FROM [UserClaims] WHERE RoleId = @{nameof(user.RoleId)}",
+        //             new { user.RoleId });
+        //    }
+        //}
 
-        public Task<IList<Users>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<IList<Users>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

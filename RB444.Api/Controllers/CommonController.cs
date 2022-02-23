@@ -20,10 +20,10 @@ namespace RB444.Api.Controllers
             _commonService = commonService;
         }
 
-        [HttpGet, Route("GetAllIcons")]
-        public async Task<CommonReturnResponse> GetAllIcons(int? type)
-        {
-            return await _commonService.GetAllIconsAsync(type);
-        }
+        //[HttpGet, Route("GetAllIcons")]
+        //public async Task<CommonReturnResponse> GetAllIcons(int? type)
+        //{
+        //    return await _commonService.GetAllIconsAsync(type);
+        //}
     }
 }
