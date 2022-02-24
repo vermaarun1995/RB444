@@ -39,14 +39,9 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> GetAllSliderAsync()
         {
-            IDictionary<string, object> _keyValues = null;
             try
             {
-                _keyValues = new Dictionary<string, object>
-                {
-                    { "Status", 1 }
-                };
-                var sliders = (await _baseRepository.SelectAsync<Slider>(_keyValues)).ToList();
+                var sliders = await _baseRepository.GetListAsync<Slider>();
                 return new CommonReturnResponse
                 {
                     Data = sliders,
@@ -63,20 +58,15 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> GetLogoAsync()
         {
-            IDictionary<string, object> _keyValues = null;
             try
             {
-                _keyValues = new Dictionary<string, object>
-                {
-                    { "Status", 1 }
-                };
-                var sliders = (await _baseRepository.SelectAsync<Logo>(_keyValues)).ToList();
+                var logos = await _baseRepository.GetListAsync<Logo>();
                 return new CommonReturnResponse
                 {
-                    Data = sliders,
-                    Message = sliders.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = sliders.Count > 0,
-                    Status = sliders.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Data = logos,
+                    Message = logos.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = logos.Count > 0,
+                    Status = logos.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
@@ -87,20 +77,15 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> GetNewsAsync()
         {
-            IDictionary<string, object> _keyValues = null;
             try
             {
-                _keyValues = new Dictionary<string, object>
-                {
-                    { "Status", 1 }
-                };
-                var sliders = (await _baseRepository.SelectAsync<News>(_keyValues)).ToList();
+                var news = await _baseRepository.GetListAsync<News>();
                 return new CommonReturnResponse
                 {
-                    Data = sliders,
-                    Message = sliders.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = sliders.Count > 0,
-                    Status = sliders.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Data = news,
+                    Message = news.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = news.Count > 0,
+                    Status = news.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)

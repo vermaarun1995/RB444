@@ -22,14 +22,14 @@ namespace RB444.Api.Controllers
             return await _commonService.GetAllSliderAsync();
         }
 
-        [HttpGet, Route("GetNews")]
-        public async Task<CommonReturnResponse> GetNews()
+        [HttpGet, Route("GetAllNews")]
+        public async Task<CommonReturnResponse> GetAllNews()
         {
             return await _commonService.GetNewsAsync();
         }
 
-        [HttpGet, Route("GetLogo")]
-        public async Task<CommonReturnResponse> GetLogo()
+        [HttpGet, Route("GetAllLogo")]
+        public async Task<CommonReturnResponse> GetAllLogo()
         {
             return await _commonService.GetLogoAsync();
         }
