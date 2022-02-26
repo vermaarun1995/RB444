@@ -43,7 +43,7 @@
                         <div class="card-toolbar">
                             @if (i == i && i < 7)
                             {
-                                <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75" data-toggle="modal" data-target="#exampleModalLong">
+                                <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegisterl">
                                     Create
                                 </button>
                             }
@@ -76,134 +76,178 @@
                 <!--end:List Widget 4-->
             </div>
         }
+    </div>
+</div>
+<form id="request-form" autocomplete="off" class="" method="post">
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Add Admin</h5>
 
-        <!-- Modal-->
-        <div class="modal fade" id="exampleModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add Admin</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <i aria-hidden="true" class="ki ki-close"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="login-signin">
-                            <div class="form-group">
-                                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    @Html.ValidationSummary("", new { @class = "text-danger" })
-                                    @Html.HiddenFor(x => x.LoginUserId)
-                                    @Html.HiddenFor(x => x.LoginUserRole)
-                                    <input type="hidden" value="true" name="IsCallFromPopUp" />
+                    <button type="button" class="close" onclick="closeModel();">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="error" style="display:none;" id="error"></div>
+                        <input type="hidden" class="form-control" id="idModel">
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Email">Email</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" asp-for="Email" placeholder="Email">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Username">User Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" asp-for="Username" placeholder="User Name">
+                            </div>
+                        </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Email</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "Email", autocomplete = "off" })
-                                        </div>
-                                    </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Name">Name</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" asp-for="Name" placeholder="Name">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Commission">Commission(%)</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="Commission" placeholder="Commission(%)">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="AssignCoin">Opening Balance</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="AssignCoin" placeholder="Opening Balance">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="MobileNumber">Mobile Number</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="MobileNumber" placeholder="Mobile Number">
+                            </div>
+                        </div>
 
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Username</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "UserName", autocomplete = "off" })
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Name</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "Name", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Commission(%)</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.Commission, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", @type = "number", placeholder = "Commission(%)", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Opening Balance</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.AssignCoin, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", @type = "number", placeholder = "Opening Balance", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Mobile Number</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.MobileNumber, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", @type = "number", placeholder = "Mobile Number", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Exposure Limit</label>
-                                        <div class="col-8">
-                                            @Html.TextBoxFor(m => m.ExposureLimit, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", @type = "number", placeholder = "Exposure Limit", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Password</label>
-                                        <div class="col-8">
-                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "Password", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Confirm Password</label>
-                                        <div class="col-8">
-                                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "Confirm Password", autocomplete = "off" })
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-4 col-form-label">Rolling Commissiom</label>
-                                        <div class="col-8">
-                                            @Html.CheckBoxFor(m => m.RollingCommission, new { @class = "form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8", placeholder = "Confirm Password" })
-                                        </div>
-                                    </div>
-                                }
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="ExposureLimit">Exposure Limit</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="ExposureLimit" placeholder="Exposure Limit">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Password">Password</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="RollingCommission">Rolling Commissiom</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" asp-for="RollingCommission" placeholder="Rolling Commissiom">
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary font-weight-bold">Register</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold" onclick="closeModel();">Close</button>
+                    <button type="button" class="btn btn-primary font-weight-bold" onclick="saveRequest();">Register</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+</form>
 @section PageJs{
-    <script>
-        $(function () {
-            $("#exampleModalLong button[type=submit]").click(function () {
-                var form = $("form");
-                var url = "/account/registernew";
-                var postData = form.serialize();
-                $("#exampleModalLong .validation-summary-valid").html("").hide();
-                $(".loader-1.loading-img").show();
-
-                $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
-                    if (data.toLowerCase() == "ok") {
-                        toastr.success("User register successfully!");
-                        $("#exampleModalLong").modal("hide");
-                        window.location.reload();
-                    }
-
-                    toastr.error(data);
-                });
+    <script src="~/js/custom.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document.body).on("click", ".editRegisterl", function () {
+                //_row = $(this).parents("tr");
+                //var cols = _row.children("td");
+                //$("#idModel").val($(this).attr('data-id'));
+                $('#registerModal').modal('show');
             });
-
-            // show more user
-            //$(".show-more-btn").click(function () {
-            //    var outerContainer = $(this).closest(".card-body");
-            //    outerContainer.find(".hidden:lt(5)").show();
-            //    if (outerContainer.find(".hidden").length > 5) {
-            //        $(this).hide();
-            //    }
-            //});
         });
+
+        function closeModel() {
+            $('#registerModal').modal('hide');
+        };
+        function saveRequest() {
+            const form = document.getElementById("request-form");
+            const formData = new FormData(form);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("Register", "Account")",
+                postData: formData
+            }
+
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
+        }
+        //$(function () {
+        //    $("#registerModal button[type=submit]").click(function () {
+
+
+        //        //debugger;
+        //        //var form = $("form");
+        //        //var url = "/account/register";
+        //        //var postData = form.serialize();
+        //        //$(".loader-1.loading-img").show();
+
+        //        //$.post(url, postData, function (data) {
+        //        //    $(".loader-1.loading-img").hide();
+        //        //    if (data.toLowerCase() == "ok") {
+        //        //        toastr.success("User register successfully!");
+        //        //        $("#exampleModalLong").modal("hide");
+        //        //        window.location.reload();
+        //        //    }
+
+        //        //    toastr.error(data);
+        //        //});
+        //    });
+        //});
     </script>
 }
