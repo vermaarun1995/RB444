@@ -1,0 +1,10 @@
+<app-header [pageMenu]="sidebarList" (pageChange)="appSidebar.updateSportTournamentsList($event)"></app-header>
+<div class="app-body p-rltv">
+    <app-sidebar class="sidebar" [pageMenu]="sidebarList" #appSidebar></app-sidebar>
+    <div class="main">
+    <router-outlet></router-outlet>    
+</div>
+    <app-aside class="aside-menu"></app-aside>
+</div>
+
+<app-footer></app-footer>
