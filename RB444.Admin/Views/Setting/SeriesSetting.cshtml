@@ -22,7 +22,7 @@
                 <option value="0">Please Select Sport</option>
                 @foreach (var item in ViewBag.SportsList)
                 {
-                    <option>@item</option>
+                    <option>@item.group</option>
                 }
             </select>
         </div>
@@ -31,7 +31,7 @@
             @Html.TextBox("SeriesName", null, new { placeholder = "Series Name", @class = "form-control" })
         </div>
         <div class="col-md-3 mt-auto">
-            <a href="~/home/CreateSeries" class="btn btn-primary"> Manual Series</a>
+            <a href="~/setting/CreateSeries" class="btn btn-primary"> Manual Series</a>
         </div>
     </div>
     <table class="sportesTbl table table-striped table-dark">
@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model != null)
+            @if (ViewBag.SeriesList != null)
             {
                 int i = 1;
                 foreach (var item in ViewBag.SeriesList)
@@ -77,59 +77,57 @@
         </tbody>
     </table>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
-</script>
-<script src="~/Scripts/bootstrap.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".btnEdit").click(function () {
-            var id = $(this).attr("data-value");
-            var checkedid = $(this).find("input");
-            console.log(checkedid);
-            if (checkedid.is(":checked")) {
-                console.log("true");
-            }
-            else {
-                console.log("false");
-            }
-
-        });
-        $('#ddlStatus').on('change', function () {
-            search();
-        });
-        $('#ddlSportName').on('change', function () {
-            search();
-        });
-
-    });
-    function search() {
-        const ddlStatus = $("#ddlStatus").val();
-        const ddlSportName = $("#ddlSportName").val();
-        const name = $("#SeriesName").text();
-        var data = {
-            status: ddlStatus,
-            SportName: ddlSportName,
-            Name: name
-        };
-        $.ajax({
-            type: "POST",
-            url: "/Home/SearchSeries",
-            data: JSON.stringify(data),
-            dataType: "json",
-            contentType: 'application/json; charset=utf-8',
-            success: function (response) {
-                if (response.Inserted) {
-                    window.location.href = response.Url;
+@section PageJs{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".btnEdit").click(function () {
+                var id = $(this).attr("data-value");
+                var checkedid = $(this).find("input");
+                console.log(checkedid);
+                if (checkedid.is(":checked")) {
+                    console.log("true");
                 }
                 else {
+                    console.log("false");
+                }
+
+            });
+            $('#ddlStatus').on('change', function () {
+                search();
+            });
+            $('#ddlSportName').on('change', function () {
+                search();
+            });
+
+        });
+        function search() {
+            const ddlStatus = $("#ddlStatus").val();
+            const ddlSportName = $("#ddlSportName").val();
+            const name = $("#SeriesName").text();
+            var data = {
+                status: ddlStatus,
+                SportName: ddlSportName,
+                Name: name
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Home/SearchSeries",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.Inserted) {
+                        window.location.href = response.Url;
+                    }
+                    else {
+                        alert("Error occured!!")
+                    }
+                },
+                error: function () {
                     alert("Error occured!!")
                 }
-            },
-            error: function () {
-                alert("Error occured!!")
-            }
-        });
-    }
-</script>
+            });
+        }
+    </script>
+}
 

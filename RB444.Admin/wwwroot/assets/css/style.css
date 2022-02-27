@@ -378,9 +378,9 @@ tr {
     text-align: start;
 }
 
-.sorting_disabled, .sorting, table > thead > tr > th {
+/*.sorting_disabled, .sorting, table > thead > tr > th {
     background-color: #FFF2F1 !important;
-}
+}*/
 
 #deviceTbl tbody tr {
     color: black;

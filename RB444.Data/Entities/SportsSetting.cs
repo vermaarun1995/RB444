@@ -1,6 +1,6 @@
 ﻿namespace RB444.Data.Entities
 {
-    public partial class SportsSetting
+    public class SportsSetting
     {
         public string SportName { get; set; }
         public long MinOddLimit { get; set; }

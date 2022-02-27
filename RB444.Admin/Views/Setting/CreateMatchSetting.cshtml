@@ -1,0 +1,78 @@
+﻿@model RB444.Data.Entities.MatchSetting;
+@{
+    ViewData["Title"] = "CreateMatchSetting";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2>Create Match Setting</h2>
+<form id="request-form" autocomplete="off" class="" method="post">
+    <div class="form-horizontal">
+        <hr />
+        <div class="errorTxt"><span id="errorMsg"></span></div>
+        <div class="form-group align-items-center d-flex">
+            <label class="control-label col-md-2" asp-for="Match_Name">Match Name</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" asp-for="Match_Name" placeholder="Match Name" />
+            </div>
+        </div>
+        <div class="form-group align-items-center d-flex">
+            <label class="control-label col-md-2" asp-for="Date">Date & Time</label>
+            <div class="col-md-10">
+                <input type="text" asp-for="Date" class="form-control datetime" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" id="submitDetalis" class="btn btn-primary font-weight-bold" />
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    @Html.ActionLink("Back to List", "MatchSettings")
+</div>
+
+
+@section PageJs{
+    <script type="text/javascript">
+        $(document).ready(function () {
+                $('.datetime').datepicker();
+                //$("#submitDetalis").click(function () {
+                //    const name = $("#MatchName").val();
+                //    const datetime = $("#datetime").val();
+                //    if (name.trim() == '') {
+                //        $("#errorMsg").text("Please fill Match name.");
+                //    }
+                //    else if (datetime.trim() == '') {
+                //        $("#errorMsg").text("Please fill sports name.");
+                //    }
+                //    else {
+                //        $("#errorMsg").text("");
+                //        var data = {
+                //            Match_Name: name.trim(),
+                //            Date: datetime,
+                //            Action: true
+                //        };
+                //        $.ajax({
+                //            type: "POST",
+                //            url: "/Home/CreateMatchSetting",
+                //            data: JSON.stringify(data),
+                //            dataType: "json",
+                //            contentType: 'application/json; charset=utf-8',
+                //            success: function (response) {
+                //                if (response.Inserted) {
+                //                    window.location.href = response.Url;
+                //                }
+                //                else {
+                //                    alert("Error occured!!")
+                //                }
+                //            },
+                //            error: function () {
+                //                alert("Error occured!!")
+                //            }
+                //        });
+                //    }
+                //});
+
+            });
+        </script>
+}

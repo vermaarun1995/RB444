@@ -17,7 +17,7 @@ namespace RB444.Admin.Controllers
         //    _userManager = userManager;
         //}
 
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }
