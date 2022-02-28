@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -271,5 +272,41 @@ namespace RB444.Core.ServiceHelper
             model.Start = ((model.PageNumber - 1) * model.PageSize + 1) - 1;
             model.End = (model.PageNumber * model.PageSize) - model.Start;
         }
+
+        //public LocationModel SaveLoginStatus()
+        //{
+        //    // Get IP
+        //    string HostName = Dns.GetHostName();
+        //    var ipaddress = Dns.GetHostAddresses(HostName);
+        //    //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).FirstOrDefault().ToString();
+
+        //    //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6 && x.IsIPv6LinkLocal == false).FirstOrDefault().ToString();
+
+        //    //string ip = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+        //    //if (string.IsNullOrEmpty(ip))
+        //    //{
+        //    //    ip = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+        //    //}
+
+        //    string ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+        //    if (string.IsNullOrEmpty(ip))
+        //    {
+        //        //ip = "14.99.119.84";
+        //        ip = Request.ServerVariables["REMOTE_ADDR"];
+        //    }
+
+        //    // IP API URL
+        //    var Ip_Api_Url = $"http://ip-api.com/json/{ip}";
+
+        //    LocationModel location = new LocationModel();
+        //    //string url = "https://freegeoip.app/json/{ip}"; // string.Format("https://ipapi.co/{0}/json/", ipAddress);
+        //    using (WebClient client = new WebClient())
+        //    {
+        //        string json = client.DownloadString(Ip_Api_Url);
+        //        location = new JavaScriptSerializer().Deserialize<LocationModel>(json);
+        //    }
+
+        //    return location;
+        //}
     }
 }

@@ -36,6 +36,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user != null)
                 {
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)

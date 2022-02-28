@@ -104,6 +104,7 @@ namespace RB444.Api
 
             services.AddTransient<IBetfairApiServices, BetfairApiServices>();
             services.AddTransient<ICommonService, CommonService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddTransient<IRequestServices, RequestServices>();
         }
