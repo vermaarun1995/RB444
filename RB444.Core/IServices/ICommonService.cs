@@ -40,5 +40,11 @@ namespace RB444.Core.IServices
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetUserActivityLogAsync();
+
+        /// <summary>
+        /// Get Account Statement.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAccountStatementAsync();
     }
 }

@@ -45,18 +45,21 @@ namespace RB444.Api.Controllers
                     if (result.Succeeded)
                     {
                         string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                        var locationModel = commonFun.GetIpInfo(ipAddress);
-                        var activityLog = new ActivityLog
+                        if (ipAddress != "::1")
                         {
-                            Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
-                            IpAddress = locationModel.query,
-                            ISP = locationModel.isp,
-                            LoginDate = DateTime.Now,
-                            UserId = user.Id
-                        };
+                            var locationModel = commonFun.GetIpInfo(ipAddress);
+                            var activityLog = new ActivityLog
+                            {
+                                Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
+                                IpAddress = locationModel.query,
+                                ISP = locationModel.isp,
+                                LoginDate = DateTime.Now,
+                                UserId = user.Id
+                            };
 
-                        var _result = await _baseRepository.InsertAsync(activityLog);
-                        if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                            var _result = await _baseRepository.InsertAsync(activityLog);
+                            if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        }
                         return new CommonReturnResponse { Data = user, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
                     }
                     else

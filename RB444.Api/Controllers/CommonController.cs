@@ -45,5 +45,11 @@ namespace RB444.Api.Controllers
         {
             return await _commonService.GetUserActivityLogAsync();
         }
+
+        [HttpGet, Route("GetAccountStatement")]
+        public async Task<CommonReturnResponse> GetAccountStatement()
+        {
+            return await _commonService.GetAccountStatementAsync();
+        }
     }
 }

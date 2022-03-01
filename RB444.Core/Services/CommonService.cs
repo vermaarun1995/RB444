@@ -20,7 +20,7 @@ namespace RB444.Core.Services
         }
 
         public async Task<CommonReturnResponse> GetAllRolesAsync()
-        {            
+        {
             try
             {
                 var roles = await _baseRepository.GetListAsync<UserRoles>();
@@ -131,6 +131,42 @@ namespace RB444.Core.Services
                     Message = activityLogVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = activityLogVMs.Count > 0,
                     Status = activityLogVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetAccountStatementAsync()
+        {
+            List<AccountStatementVM> accountStatementVMs = new List<AccountStatementVM>();
+            try
+            {
+                var userList = await _baseRepository.GetListAsync<Users>();
+                var accountStatementList = await _baseRepository.GetListAsync<AccountStatement>();
+                foreach (var item in accountStatementList)
+                {
+                    var accountStatementVM = new AccountStatementVM
+                    {
+                        Id = item.Id,
+                        CreatedDate = item.CreatedDate,
+                        Deposit = item.Deposit,
+                        Balance = item.Balance,
+                        Withdraw = item.Withdraw,
+                        Remark = item.Remark,
+                        FromUser = userList.Where(x => x.Id == item.FromUserId).Select(y => y.FullName).FirstOrDefault(),
+                        ToUser = userList.Where(x => x.Id == item.ToUserId).Select(y => y.FullName).FirstOrDefault()
+                    };
+                    accountStatementVMs.Add(accountStatementVM);
+                }
+                return new CommonReturnResponse
+                {
+                    Data = accountStatementVMs,
+                    Message = accountStatementVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = accountStatementVMs.Count > 0,
+                    Status = accountStatementVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
