@@ -62,10 +62,10 @@ namespace RB444.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            var contextUser = HttpContext.User;
             CommonReturnResponse commonModel = null;
             try
             {
-
                 if (ModelState.IsValid)
                 {
                     //// Get auth key from web.config
@@ -77,13 +77,14 @@ namespace RB444.Admin.Controllers
                     //var loginUserId = User.Identity.GetUserId();
 
                     //// Find users
-                    //var loginUser = await _userManager.FindByIdAsync(loginUserId).ConfigureAwait(false);
+                    var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
 
-                    //if (loginUser.AssignCoin < model.AssignCoin && loginUser.Role != 1)
-                    //{
-                    //    var message = loginUser.AssignCoin == 0 ? "no any" : $"only {loginUser.AssignCoin}";
-                    //    return new CommonReturnResponse { Data = null, Message = $"You have {message} coins remaining.", IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
-                    //}
+                    if (loginUser.AssignCoin < model.AssignCoin && loginUser.RoleId != 1)
+                    {
+                        var message = loginUser.AssignCoin == 0 ? "no coin availble" : $"only {loginUser.AssignCoin}";
+                        commonModel = new CommonReturnResponse { Data = null, Message = $"You have {message} coins remaining.", IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
+                        return Json(JsonConvert.SerializeObject(commonModel));
+                    }
 
                     var user = new Users
                     {
@@ -97,7 +98,7 @@ namespace RB444.Admin.Controllers
                         AssignCoin = model.AssignCoin,
                         Commision = model.Commision,
                         ExposureLimit = model.ExposureLimit,
-                        ParentId = 2,
+                        ParentId = loginUser.Id,
                         Status = 1
                     };
                     var result = await _userManager.CreateAsync(user, model.Password);
