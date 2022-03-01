@@ -12,5 +12,17 @@ namespace RB444.Core.IServices
         /// <param name="LoginUserId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> UpdateAssignCoinAsync(long AssignCoin, int LoginUserId);
+
+        /// <summary>
+        /// Get User Roles.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetUserRolesAsync();
+
+        /// <summary>
+        /// Get All Users.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAllUsers();
     }
 }

@@ -85,5 +85,17 @@ namespace RB444.Api.Controllers
         {
             return await _accountService.UpdateAssignCoinAsync(AssignCoin, LoginUserId);
         }
+
+        [HttpGet, Route("GetUserRoles")]
+        public async Task<CommonReturnResponse> GetUserRoles()
+        {
+            return await _accountService.GetUserRolesAsync();
+        }
+
+        [HttpGet, Route("GetAllUsers")]
+        public async Task<CommonReturnResponse> GetAllUsers()
+        {
+            return await _accountService.GetAllUsers();
+        }
     }
 }

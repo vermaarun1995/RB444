@@ -8,73 +8,56 @@
 
 <div class="container">
     <div class="row">
-
-        @for (int i = 1; i < 7; i++)
-        {
-            //var roleUsers = Model.Users != null && Model.Users.Count() > 0 ? Model.Users.Where(x => x.RoleId == i + 1).ToList() : null;
-            List<Users> roleUsers = new List<Users>();
-            var roleName = "";
-            switch (i + 1)
+        @{
+            int i = 0;
+            var user = ViewBag.LoginUser;
+            List<Users> usersList = ViewBag.Users;
+            foreach (var item in ViewBag.UserRoles)
             {
-                case 2:
-                    roleName = "Super Admin";
-                    break;
-                case 3:
-                    roleName = "Admin";
-                    break;
-                case 4:
-                    roleName = "Sub Admin";
-                    break;
-                case 5:
-                    roleName = "Super Master";
-                    break;
-                case 6:
-                    roleName = "Master";
-                    break;
-                case 7:
-                    roleName = "User";
-                    break;
-            }
-
-            <div class="col-lg-6 col-xxl-4 order-1 order-xxl-2">
-                <div class="card card-custom card-stretch gutter-b">
-                    <div class="card-header border-0">
-                        <h3 class="card-title font-weight-bolder text-dark" style="font-style:italic;">@roleName</h3>
-                        <div class="card-toolbar">
-                            @if (i == i && i < 7)
-                            {
-                                <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegisterl" id="@i">
-                                    Create
-                                </button>
-                            }
-                        </div>
-                    </div>
-                    @if (roleUsers != null && roleUsers.Count() >= 0)
-                    {
-                        var counter = 0;
-                        <div class="card-body pt-2">
-                            @foreach (var user in roleUsers)
-                            {
-                                <div class="d-flex align-items-center @(counter++ > 5 ? "hidden" : string.Empty)">
-                                    <div class="d-flex flex-column flex-grow-1">
-                                        <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">@user.FullName</a>
-                                        <span class="text-muted font-weight-bold">5000/10000</span>
+                @if (user.RoleId <= i && i < 7)
+                {
+                    <div class="col-lg-6 col-xxl-4 order-1 order-xxl-2">
+                        <div class="card card-custom card-stretch gutter-b">
+                            <div class="card-header border-0">
+                                <h3 class="card-title font-weight-bolder text-dark" style="font-style:italic;">@item.Name</h3>
+                                @if (user.RoleId == i)
+                                {
+                                    <div class="card-toolbar">
+                                        <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegisterl" id="@i">
+                                            Create
+                                        </button>
                                     </div>
+                                }
+                            </div>
+                            @if (usersList != null && usersList.Count() >= 0)
+                            {
+                                var counter = 0;
+                                <div class="card-body pt-2">
+                                    @foreach (var userData in usersList.Where(x => x.RoleId == i))
+                                    {
+                                        <div class="d-flex align-items-center @(counter++ > 4 ? "hidden" : string.Empty)">
+                                            <div class="d-flex flex-column flex-grow-1">
+                                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">@userData.FullName</a>
+                                                <span class="text-muted font-weight-bold">5000/10000</span>
+                                            </div>
+                                        </div>
+
+                                        @if (usersList.Count() > 5)
+                                        {
+                                            <br />
+                                            <a href="/Home/RegisterUsersList/@(i)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
+                                        }
+                                    }
+                                    <!--end::Item-->
                                 </div>
                             }
-
-                            @*@if (roleUsers.Count() > 5)
-                                {*@
-                            <br />
-                            <a href="/Home/RegisterUsersList/@(i+1)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
-                            @* } *@
-                            <!--end::Item-->
+                            <!--end::Body-->
                         </div>
-                    }
-                    <!--end::Body-->
-                </div>
-                <!--end:List Widget 4-->
-            </div>
+                        <!--end:List Widget 4-->
+                    </div>
+                }
+                i++;
+            }
         }
     </div>
 </div>
@@ -178,6 +161,7 @@
         </div>
     </div>
 </form>
+
 @section PageJs{
     <script src="~/js/custom.js"></script>
     <script type="text/javascript">

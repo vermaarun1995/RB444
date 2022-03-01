@@ -16,8 +16,8 @@
                 </li>
             </ul>
         </div>
-       
-        <ul class="nav navbar-nav align-items-center ms-auto">          
+
+        <ul class="nav navbar-nav align-items-center ms-auto">
             <li class="nav-item dropdown dropdown-notification me-25">
                 <a class="nav-link bellIcon" href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28">
@@ -83,19 +83,48 @@
                 <a class="nav-link dropdown-toggle dropdown-user-link" @*id="dropdown-user"*@ href="#"
                    @*data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"*@>
                     <div class="user-nav d-sm-flex d-none">
-                        <span class="user-name fw-bolder">@*@Session["User_Name"].ToString()*@ Arun Verma</span>
-                        @*@if (Session["userRole"] != null)
-                        {
-                            <span class="user-status">
-                                @Session["userRole"].ToString()
-                            </span>
+                        <span class="user-name fw-bolder">@ViewBag.LoginUser.FullName</span>
+                        @{
+                            if (ViewBag.LoginUser.RoleId == 1)
+                            {
+                                <span class="user-status">
+                                    Domain
+                                </span>
+                            }
+                            else if (ViewBag.LoginUser.RoleId == 2)
+                            {
+                                <span class="user-status">
+                                    Super Admin
+                                </span>
+                            }
+                            else if (ViewBag.LoginUser.RoleId == 3)
+                            {
+                                <span class="user-status">
+                                    Admin
+                                </span>
+                            }
+                            else if (ViewBag.LoginUser.RoleId == 4)
+                            {
+                                <span class="user-status">
+                                    Sub Admin
+                                </span>
+                            }
+                            else if (ViewBag.LoginUser.RoleId == 5)
+                            {
+                                <span class="user-status">
+                                    Super Master
+                                </span>
+                            }
+                            else if (ViewBag.LoginUser.RoleId == 6)
+                            {
+                                <span class="user-status">
+                                    Master
+                                </span>
+                            }
                         }
-                        else
-                        {*@
-                            <span class="user-status">
-                                Super Admin
-                            </span>
-                        @*}*@
+
+
+
 
                     </div><span class="avatar">
                         <img class="round"

@@ -104,7 +104,7 @@ namespace RB444.Admin.Controllers
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}/Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
+                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
                         //var data = JsonConvert.SerializeObject(commonModel);
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = false, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));

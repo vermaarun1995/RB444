@@ -38,7 +38,7 @@ namespace RB444.Core.Services
                     return new CommonReturnResponse
                     {
                         Data = _result,
-                        Message = _result ? MessageStatus.Delete : MessageStatus.Error,
+                        Message = _result ? MessageStatus.Update : MessageStatus.Error,
                         IsSuccess = _result,
                         Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
                     };
@@ -52,6 +52,46 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
             finally { if (users != null) { users = null; } }
+        }
+
+        public async Task<CommonReturnResponse> GetUserRolesAsync()
+        {
+            try
+            {
+                var userRoles = await _baseRepository.GetListAsync<UserRoles>();
+                return new CommonReturnResponse
+                {
+                    Data = userRoles,
+                    Message = userRoles.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = userRoles.Count > 0,
+                    Status = userRoles.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetAllUsers()
+        {
+            try
+            {
+                var users = await _baseRepository.GetListAsync<Users>();
+                return new CommonReturnResponse
+                {
+                    Data = users,
+                    Message = users.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = users.Count > 0,
+                    Status = users.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
         }
     }
 }
