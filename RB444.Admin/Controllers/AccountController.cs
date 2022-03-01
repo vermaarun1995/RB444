@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Models.Model;
@@ -15,11 +17,15 @@ namespace RB444.Admin.Controllers
     {
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
+        private readonly IRequestServices _requestServices;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager)
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, IRequestServices requestServices, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _requestServices = requestServices;
+            _configuration = configuration;
         }
         public ActionResult Login(string returnUrl = null)
         {
@@ -36,7 +42,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if(user != null)
+                if (user != null)
                 {
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
@@ -51,9 +57,10 @@ namespace RB444.Admin.Controllers
                 return View(model);
             }
         }
+
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult> Register(Model.ViewModel.RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
             CommonReturnResponse commonModel = null;
             try
@@ -80,28 +87,28 @@ namespace RB444.Admin.Controllers
 
                     var user = new Users
                     {
-                        UserName = model.Username,
-                        FullName = model.Name,
-                        AssignCoin = model.AssignCoin,
-                        RoleId = 2,
-                        PhoneNumber = model.MobileNumber,
+                        UserName = model.Email,
+                        FullName = model.FullName,
                         Email = model.Email,
-                        ParentId = 1,
-                        RollingCommission = model.RollingCommission
+                        PhoneNumber = model.PhoneNumber,
+                        RoleId = model.RoleId,
+                        CreatedDate = DateTime.Now,
+                        RollingCommission = model.RollingCommission,
+                        AssignCoin = model.AssignCoin,
+                        Commision = model.Commision,
+                        ExposureLimit = model.ExposureLimit,
+                        ParentId = 2,
+                        Status = 1
                     };
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        //bool isRegisterDetailsSaved = await SaveRegisterDetailAsync(model, user.Id);
-                        //if (loginUser.Role != 1)
-                        //{
-                        //    loginUser.AssignCoin -= model.AssignCoin;
-
-                        //}
+                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}/Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
+                        //var data = JsonConvert.SerializeObject(commonModel);
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = false, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));
                     }
-                    commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Error, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };;
+                    commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Error, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST }; ;
                     return Json(JsonConvert.SerializeObject(commonModel));
                 }
 

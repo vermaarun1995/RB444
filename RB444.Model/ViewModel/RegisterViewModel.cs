@@ -24,19 +24,19 @@ namespace RB444.Model.ViewModel
         public int AssignCoin { get; set; }
         public int Commission { get; set; }
         public int ExposureLimit { get; set; }
-        public int Role { get; set; }
-        public List<UserRoles> UserRoles { get; set; }
+        //public int Role { get; set; }
+        //public List<UserRoles> UserRoles { get; set; }
         public string Name { get; set; }
         public string MobileNumber { get; set; }
         //[Required]
-        [Display(Name = "Username")]
+        //[Display(Name = "Username")]
         public string Username { get; set; }
-        public int LoginUserId { get; set; }
-        public int LoginUserRole { get; set; }
-        public List<Users> Users { get; set; }
-        public Users LoginUser { get; set; }
-        public string RoleName { get; set; }
-        public bool RollingCommission { get; set; }
-        public bool IsAbleToChange { get; set; }
+        //public int LoginUserId { get; set; }
+        //public int LoginUserRole { get; set; }
+        //public List<Users> Users { get; set; }
+        //public Users LoginUser { get; set; }
+        //public string RoleName { get; set; }
+        //public bool RollingCommission { get; set; }
+        //public bool IsAbleToChange { get; set; }
     }
 }

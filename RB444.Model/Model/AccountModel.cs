@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RB444.Models.Model
@@ -86,12 +87,15 @@ namespace RB444.Models.Model
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         public string FullName { get; set; }
-        public string PhoneNumber { get; set; }        
+        public string PhoneNumber { get; set; }
         public int RoleId { get; set; }
-        //public UserDetails userDetails { get; set; }
-        //public UserSocialLinks userSocialLinks { get; set; }
-        //public List<UserEducation> userEducations { get; set; }
-        //public List<UserVisaInfo> userVisaInfos { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool RollingCommission { get; set; }
+        public long AssignCoin { get; set; }
+        public float Commision { get; set; }
+        public long ExposureLimit { get; set; }
+        public int ParentId { get; set; }
+        public int Status { get; set; }
     }
 
     public class RegisterVM

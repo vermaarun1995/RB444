@@ -59,5 +59,11 @@ namespace RB444.Api.Controllers
                 return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
+        
+        [HttpGet, Route("UpdateAssignCoin")]
+        public async Task<CommonReturnResponse> UpdateAssignCoin(long AssignCoin, int LoginUserId)
+        {
+            return await _accountService.UpdateAssignCoinAsync(AssignCoin, LoginUserId);
+        }
     }
 }

@@ -120,6 +120,7 @@ namespace RB444.Admin.Controllers
             return View();
         }
         #endregion
+
         #region match setting
         public async Task<ActionResult> MatchSettings()
         {

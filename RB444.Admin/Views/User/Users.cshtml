@@ -1,4 +1,4 @@
-﻿@using RB444.Model.ViewModel
+﻿@using RB444.Models.Model
 @using RB444.Data.Entities
 @model RegisterViewModel
 @{
@@ -43,7 +43,7 @@
                         <div class="card-toolbar">
                             @if (i == i && i < 7)
                             {
-                                <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegisterl">
+                                <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegisterl" id="@i">
                                     Create
                                 </button>
                             }
@@ -93,6 +93,7 @@
                     <div class="form-horizontal">
                         <div class="error" style="display:none;" id="error"></div>
                         <input type="hidden" class="form-control" id="idModel">
+                        <input type="hidden" asp-for="RoleId" value="">
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
                                 <label class="form-label" asp-for="Email">Email</label>
@@ -103,52 +104,10 @@
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
-                                <label class="form-label" asp-for="Username">User Name</label>
+                                <label class="form-label" asp-for="FullName">Name</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" asp-for="Username" placeholder="User Name">
-                            </div>
-                        </div>
-
-                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                            <div class="col-md-4">
-                                <label class="form-label" asp-for="Name">Name</label>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" asp-for="Name" placeholder="Name">
-                            </div>
-                        </div>
-                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                            <div class="col-md-4">
-                                <label class="form-label" asp-for="Commission">Commission(%)</label>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="number" class="form-control" asp-for="Commission" placeholder="Commission(%)">
-                            </div>
-                        </div>
-                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                            <div class="col-md-4">
-                                <label class="form-label" asp-for="AssignCoin">Opening Balance</label>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="number" class="form-control" asp-for="AssignCoin" placeholder="Opening Balance">
-                            </div>
-                        </div>
-                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                            <div class="col-md-4">
-                                <label class="form-label" asp-for="MobileNumber">Mobile Number</label>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="number" class="form-control" asp-for="MobileNumber" placeholder="Mobile Number">
-                            </div>
-                        </div>
-
-                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                            <div class="col-md-4">
-                                <label class="form-label" asp-for="ExposureLimit">Exposure Limit</label>
-                            </div>
-                            <div class="col-md-8">
-                                <input type="number" class="form-control" asp-for="ExposureLimit" placeholder="Exposure Limit">
+                                <input type="text" class="form-control" asp-for="FullName" placeholder="Name">
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -169,10 +128,44 @@
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
+                                <label class="form-label" asp-for="PhoneNumber">Mobile Number</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="PhoneNumber" placeholder="Mobile Number">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="AssignCoin">Opening Balance</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="AssignCoin" placeholder="Opening Balance">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="Commision">Commission(%)</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="Commision" placeholder="Commission(%)">
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
+                                <label class="form-label" asp-for="ExposureLimit">Exposure Limit</label>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" asp-for="ExposureLimit" placeholder="Exposure Limit">
+                            </div>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <div class="col-md-4">
                                 <label class="form-label" asp-for="RollingCommission">Rolling Commissiom</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" asp-for="RollingCommission" placeholder="Rolling Commissiom">
+                                <input type="checkbox" asp-for="RollingCommission" />
+                                <label asp-for="RollingCommission"></label>
                             </div>
                         </div>
                     </div>
@@ -190,9 +183,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(document.body).on("click", ".editRegisterl", function () {
-                //_row = $(this).parents("tr");
-                //var cols = _row.children("td");
-                //$("#idModel").val($(this).attr('data-id'));
+                var id = $(this).attr('id');
+                $("#RoleId").val(parseInt(id) + 1);
                 $('#registerModal').modal('show');
             });
         });
