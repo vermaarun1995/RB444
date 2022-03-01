@@ -170,6 +170,12 @@ namespace RB444.Data.Repository
         //    return execute(connection);
         //}
 
+        public void StartTransaction()
+        {
+            if (_transaction == null)
+                _transaction = _connection.BeginTransaction();
+        }
+
         public void Commit()
         {
             _transaction.Commit();

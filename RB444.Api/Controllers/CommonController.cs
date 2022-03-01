@@ -33,5 +33,17 @@ namespace RB444.Api.Controllers
         {
             return await _commonService.GetLogoAsync();
         }
+
+        [HttpGet, Route("GetActivityLog")]
+        public async Task<CommonReturnResponse> GetActivityLog()
+        {
+            return await _commonService.GetActivityLogAsync();
+        }
+
+        [HttpGet, Route("GetUserActivityLog")]
+        public async Task<CommonReturnResponse> GetUserActivityLog()
+        {
+            return await _commonService.GetUserActivityLogAsync();
+        }
     }
 }

@@ -17,16 +17,10 @@ namespace RB444.Api.Controllers
             _settingService = settingService;
         }
 
-        [HttpPost, Route("UpdateSportsStatus")]
-        public async Task<CommonReturnResponse> UpdateSportsStatus(SportsSetting sportsSetting)
+        [HttpPost, Route("AddOrUpdateSportsSetting")]
+        public async Task<CommonReturnResponse> AddOrUpdateSportsSetting(SportsSetting sportsSetting)
         {
-            return await _settingService.UpdateSportsStatusAsync(sportsSetting);
-        }
-
-        [HttpPost, Route("UpdateSportsLimit")]
-        public async Task<CommonReturnResponse> UpdateSportsLimit(SportsSetting sportsSetting)
-        {
-            return await _settingService.UpdateSportsLimitAsync(sportsSetting);
+            return await _settingService.AddOrUpdateSportsSettingAsync(sportsSetting);
         }
     }
 }

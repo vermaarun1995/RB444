@@ -5,6 +5,8 @@ namespace RB444.Models.Model
 {
     public class CommonModel
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
     public class CommonReturnResponse
     {
@@ -33,7 +35,14 @@ namespace RB444.Models.Model
 
     public class Sports
     {
-        public string group { get; set; }
+        public string sportId { get; set; }
+        public string sportName { get; set; }
+        public string iconUrl { get; set; }
+        public bool highlight { get; set; }
+        public int sequence { get; set; }
+        public bool popular { get; set; }
+        public bool status { get; set; }
+        public bool others { get; set; }
     }
 
     public class Series

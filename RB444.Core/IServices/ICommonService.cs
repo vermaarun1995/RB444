@@ -28,5 +28,17 @@ namespace RB444.Core.IServices
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetLogoAsync();
+
+        /// <summary>
+        /// Get All Role Activity Log.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetActivityLogAsync();
+
+        /// <summary>
+        /// Get User Activity Log.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetUserActivityLogAsync();
     }
 }

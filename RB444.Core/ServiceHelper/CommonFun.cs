@@ -250,13 +250,13 @@ namespace RB444.Core.ServiceHelper
 
             importanceLevelList.Add(importanceLevel);
 
-             importanceLevel = new ImportanceLevel();
+            importanceLevel = new ImportanceLevel();
             importanceLevel.id = 2;
             importanceLevel.name = "Medium";
             importanceLevel.colour_code = "#FFCC01";
             importanceLevelList.Add(importanceLevel);
 
-             importanceLevel = new ImportanceLevel();
+            importanceLevel = new ImportanceLevel();
             importanceLevel.id = 3;
             importanceLevel.name = "Low";
             importanceLevel.colour_code = "#28a745";
@@ -273,40 +273,41 @@ namespace RB444.Core.ServiceHelper
             model.End = (model.PageNumber * model.PageSize) - model.Start;
         }
 
-        //public LocationModel SaveLoginStatus()
-        //{
-        //    // Get IP
-        //    string HostName = Dns.GetHostName();
-        //    var ipaddress = Dns.GetHostAddresses(HostName);
-        //    //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).FirstOrDefault().ToString();
+        public LocationModel GetIpInfo(string ip)
+        {
+            // Get IP
+            string HostName = Dns.GetHostName();
+            var ipaddress = Dns.GetHostAddresses(HostName);
+            //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).FirstOrDefault().ToString();
 
-        //    //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6 && x.IsIPv6LinkLocal == false).FirstOrDefault().ToString();
+            //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6 && x.IsIPv6LinkLocal == false).FirstOrDefault().ToString();
 
-        //    //string ip = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-        //    //if (string.IsNullOrEmpty(ip))
-        //    //{
-        //    //    ip = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-        //    //}
+            //string ip = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            //if (string.IsNullOrEmpty(ip))
+            //{
+            //    ip = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            //}
 
-        //    string ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-        //    if (string.IsNullOrEmpty(ip))
-        //    {
-        //        //ip = "14.99.119.84";
-        //        ip = Request.ServerVariables["REMOTE_ADDR"];
-        //    }
+            //string ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            //if (string.IsNullOrEmpty(ip))
+            //{
+            //    //ip = "14.99.119.84";
+            //    ip = Request.ServerVariables["REMOTE_ADDR"];
+            //}
 
-        //    // IP API URL
-        //    var Ip_Api_Url = $"http://ip-api.com/json/{ip}";
+            // IP API URL
+            var Ip_Api_Url = $"http://ip-api.com/json/{ip}";
 
-        //    LocationModel location = new LocationModel();
-        //    //string url = "https://freegeoip.app/json/{ip}"; // string.Format("https://ipapi.co/{0}/json/", ipAddress);
-        //    using (WebClient client = new WebClient())
-        //    {
-        //        string json = client.DownloadString(Ip_Api_Url);
-        //        location = new JavaScriptSerializer().Deserialize<LocationModel>(json);
-        //    }
+            LocationModel location = new LocationModel();
+            //string url = "https://freegeoip.app/json/{ip}"; // string.Format("https://ipapi.co/{0}/json/", ipAddress);
+            using (WebClient client = new WebClient())
+            {
+                string json = client.DownloadString(Ip_Api_Url);
+                //location = new JavaScriptSerializer().Deserialize<LocationModel>(json);
+                location = jsonParser.ParsJson<LocationModel>(Convert.ToString(json));
+            }
 
-        //    return location;
-        //}
+            return location;
+        }
     }
 }

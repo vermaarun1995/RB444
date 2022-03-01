@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace RB444.Data.Entities
+namespace RB444.Model.ViewModel
 {
-    public partial class ActivityLog
+    public class ActivityLogVM
     {
         public int Id { get; set; }
         public DateTime LoginDate { get; set; }
@@ -12,5 +12,6 @@ namespace RB444.Data.Entities
         public string ISP { get; set; }
         public string Address { get; set; }
         public int UserId { get; set; }
+        public string UserName { get; set; }
     }
 }

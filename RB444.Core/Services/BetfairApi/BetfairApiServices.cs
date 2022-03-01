@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.IServices.BetfairApi;
 using RB444.Core.ServiceHelper;
@@ -26,28 +27,26 @@ namespace RB444.Core.Services.BetfairApi
 
         public async Task<CommonReturnResponse> GetSportsListAsync()
         {
-            List<SportsData> sportsDatalist = null;
+            CommonReturnResponse commonModel = null;            
             var sportslist = new List<Sports>();
-            string groupback = "";
+            List<CommonModel> commonVMList = new List<CommonModel>();
             try
             {
-                sportsDatalist = await _requestServices.GetAsync<List<SportsData>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
-                foreach (var item in sportsDatalist)
+                commonModel = await _requestServices.PostAsync<Sports, CommonReturnResponse>("https://dream444.com/api/exchange/sports/sportsList", null);
+                sportslist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                foreach (var item in sportslist)
                 {
-                    if (item.group != groupback)
-                    {
-                        var sports = new Sports();
-                        sports.group = item.group;
-                        sportslist.Add(sports);
-                    }
-                    groupback = item.group;
+                    var commonVM = new CommonModel();
+                    commonVM.Id = Convert.ToInt32(item.sportId);
+                    commonVM.Name = item.sportName;
+                    commonVMList.Add(commonVM);
                 }
                 return new CommonReturnResponse
                 {
-                    Data = sportslist,
-                    Message = sportsDatalist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = sportsDatalist.Count > 0,
-                    Status = sportsDatalist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Data = commonVMList,
+                    Message = commonVMList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = commonVMList.Count > 0,
+                    Status = commonVMList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
@@ -61,7 +60,7 @@ namespace RB444.Core.Services.BetfairApi
                     Status = ResponseStatusCode.EXCEPTION
                 };
             }
-            finally { if (sportsDatalist != null) { sportsDatalist = null; } }
+            finally { if (sportslist != null) { sportslist = null; } }
         }
 
         public async Task<CommonReturnResponse> GetSeriesListAsync()

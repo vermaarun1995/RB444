@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
+using RB444.Data.Repository;
 using RB444.Models.Model;
 using System;
 using System.Threading.Tasks;
@@ -17,11 +18,14 @@ namespace RB444.Api.Controllers
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
         private readonly IAccountService _accountService;
-        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, IAccountService accountService)
+        private readonly IBaseRepository _baseRepository;
+        CommonFun commonFun = new CommonFun();
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, IAccountService accountService, IBaseRepository baseRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _accountService = accountService;
+            _baseRepository = baseRepository;
         }
 
         [AllowAnonymous]
@@ -40,6 +44,19 @@ namespace RB444.Api.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.email, model.password, model.rememberme, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
+                        string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                        var locationModel = commonFun.GetIpInfo(ipAddress);
+                        var activityLog = new ActivityLog
+                        {
+                            Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
+                            IpAddress = locationModel.query,
+                            ISP = locationModel.isp,
+                            LoginDate = DateTime.Now,
+                            UserId = user.Id
+                        };
+
+                        var _result = await _baseRepository.InsertAsync(activityLog);
+                        if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         return new CommonReturnResponse { Data = user, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
                     }
                     else
@@ -59,7 +76,7 @@ namespace RB444.Api.Controllers
                 return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
-        
+
         [HttpGet, Route("UpdateAssignCoin")]
         public async Task<CommonReturnResponse> UpdateAssignCoin(long AssignCoin, int LoginUserId)
         {
