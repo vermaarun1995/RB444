@@ -36,7 +36,26 @@
     <link href="~/assets/css/themes/dark-layout.css" rel="stylesheet" />
 
     <link href="~/css/NewCss/style.bundle.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <style>
+        .loader {
+           
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            z-index: 9999;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(255,255,255,0.7);
+        }
+
+            .loader img {
+                margin: auto;
+            }
+    </style>
     @*@Styles.Render("~/Content/css")*@
 </head>
 <!-- END: Head-->

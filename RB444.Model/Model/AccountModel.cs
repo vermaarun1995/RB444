@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RB444.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -96,6 +97,17 @@ namespace RB444.Models.Model
         public long ExposureLimit { get; set; }
         public int ParentId { get; set; }
         public int Status { get; set; }
+    }
+
+    public class RegisterListVM: RegisterViewModel
+    {
+        public Users LoginUser { get; set; }
+        public List<UserRoles> UserRoles { get; set; }
+        public string LoginUserId { get; set; }
+        public int LoginUserRole { get; set; }
+        public string RoleName { get; set; }
+        public bool IsAbleToChange { get; set; }
+        public List<Users> Users { get; set; }
     }
 
     public class RegisterVM

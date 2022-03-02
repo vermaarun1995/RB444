@@ -1,0 +1,104 @@
+﻿@model IEnumerable<RB444.Data.Entities.News>
+@{
+    ViewBag.Title = "News";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container">
+    <h2>News Content</h2>
+    <div class="row p-4">
+        <a href="~/OtherSetting/CreateNews" class="btn btn-primary btn-sm w-auto">Create News</a>
+    </div>
+    <table class="sportesTbl table table-striped table-dark">
+        <thead>
+            <tr>
+                <th>S NO.</th>
+                <th>Content</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                int i = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td>@item.NewsText</td>
+                        <td>
+                            @if (item.Status == true)
+                            {
+                                <a href="@Url.Action("ChangeSts","OtherSetting",new { id=item.Id})">Deactived</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("ChangeSts","OtherSetting",new { id=item.Id})">Active</a>
+                            }
+                        </td>
+                    </tr>
+                    i++;
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@section PageJs{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".showModel").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                $("#settingModal_" + id).removeClass("fade");
+                $("#settingModal_" + id).modal('show');
+            });
+
+            $(".hideModel").click(function () {
+                var id = $(this).attr("id").split("_")[1];
+                $("#settingModal_" + id).addClass("fade");
+                $("#settingModal_" + id).modal('hide');
+            });
+            $(".btnEdit").click(function () {
+                var id = $(this).attr("data-value");
+                var checkedid = $(this).find("input");
+                console.log(checkedid);
+                if (checkedid.is(":checked")) {
+                    console.log("true");
+                }
+                else {
+                    console.log("false");
+                }
+
+            });
+
+            $(".submitBtn").click(function () {
+                const id = $(this).parents().eq(3).attr("id").split("_")[1];
+                const minOddLimit = $("#text_minOdd_" + id).val();
+                const maxOddLimit = $("#text_maxOdd_" + id).val();
+                var data = {
+                    Id: id,
+                    Min_odd_limit: minOddLimit,
+                    Max_odd_limit: maxOddLimit
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/SportsSettings",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response.Updated) {
+                            window.location.href = response.Url;
+                        }
+                        else {
+                            alert("Error occured!!")
+                        }
+                    },
+                    error: function () {
+                        alert("Error occured!!")
+                    }
+                });
+            });
+        });
+    </script>
+}
+
