@@ -13,9 +13,11 @@
         <thead>
             <tr>
                 <th>S NO.</th>
+                <th>Sport Id</th>
                 <th>SPORT</th>
                 <th>SETTING</th>
                 <th>ACTION</th>
+                <th>Sequence</th>
             </tr>
         </thead>
         <tbody>
@@ -24,64 +26,65 @@
                 int i = 1;
                 foreach (var item in ViewBag.SportsList)
                 {
-                    <tr>
-                        <th scope="row">@i</th>
-                        <td>@item.group</td>
-                        <td>
-                            <button id="btnShowModal_@i" type="button"
-                                    class="btn btn-primary btn-sm showModel">
-                                Setting
-                            </button>
+            <tr>
+                <td scope="row">@i</td>
+                <td scope="row">@item.sportId</td>
+                <td>@item.sportName</td>
+                <td>
+                    <button id="btnShowModal_@i" type="button"
+                            class="btn btn-primary btn-sm showModel">
+                        Setting
+                    </button>
 
-                            <div class="modal fade" tabindex="-1" id="settingModal_@i"
-                                 data-keyboard="false" data-backdrop="static">
-                                <div class="modal-dialog modal-md">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Sport Setting</h4>
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                ×
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="form-group">
-                                                <label>Min Odd Limit</label>
-                                                <input class="form-control" type="number"
-                                                       placeholder="Login Username" id="text_minOdd_@i" value="500" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Max Odd Limit</label>
-                                                <input class="form-control" placeholder="Login Password"
-                                                       type="number" id="text_maxOdd_@i" value="25000" />
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" id="submitBtn_@i" class="btn btn-primary submitBtn">Submit</button>
-                                            <button type="button" id="btnHideModal_@i" class="btn btn-danger hideModel">
-                                                close
-                                            </button>
-                                        </div>
+                    <div class="modal fade" tabindex="-1" id="settingModal_@i"
+                         data-keyboard="false" data-backdrop="static">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Sport Setting</h4>
+                                    <button type="button" class="close" data-dismiss="modal">
+                                        ×
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>Min Odd Limit</label>
+                                        <input class="form-control" type="number"
+                                               placeholder="Login Username" id="text_minOdd_@i" value="500" />
                                     </div>
+                                    <div class="form-group">
+                                        <label>Max Odd Limit</label>
+                                        <input class="form-control" placeholder="Login Password"
+                                               type="number" id="text_maxOdd_@i" value="25000" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" id="submitBtn_@i" class="btn btn-primary submitBtn">Submit</button>
+                                    <button type="button" id="btnHideModal_@i" class="btn btn-danger hideModel">
+                                        close
+                                    </button>
                                 </div>
                             </div>
-
-                        </td>
-                        <td>
-                            <a data-value="@i"
-                               href="javascript:void(0)" class="btnEdit">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <span class="switch switch-success">
-                                            <label>
-                                                <input type="checkbox" checked="@item.active" name="select" id="checkBoxAction" />
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a data-value="@i"
+                       href="javascript:void(0)" class="btnEdit">
+                        <div class="row">
+                            <div class="col-3">
+                                <span class="switch switch-success">
+                                    <label>
+                                        <input type="checkbox" checked="@item.status" name="select" id="checkBoxAction" />
+                                        <span></span>
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </td>
+                <td>@item.sequence</td>
+            </tr>
                     i++;
                 }
             }

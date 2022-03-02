@@ -43,10 +43,10 @@ namespace RB444.Core.Services.BetfairApi
                 }
                 return new CommonReturnResponse
                 {
-                    Data = commonVMList,
-                    Message = commonVMList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = commonVMList.Count > 0,
-                    Status = commonVMList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Data = sportslist,
+                    Message = sportslist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = sportslist.Count > 0,
+                    Status = sportslist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)

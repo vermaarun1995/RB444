@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using RB444.Core.IServices;
@@ -8,7 +7,6 @@ using RB444.Data.Entities;
 using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace RB444.Admin.Controllers
@@ -34,11 +32,11 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = loginUser;
 
             CommonReturnResponse commonModel = null;
-            List<SportsData> sportsDatalist = null;
+            List<Sports> sportsDatalist = null;
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-                sportsDatalist = jsonParser.ParsJson<List<SportsData>>(Convert.ToString(commonModel.Data));
+                sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
                 ViewBag.SportsList = sportsDatalist;
             }
             catch (Exception ex)
