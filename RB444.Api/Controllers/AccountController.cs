@@ -70,7 +70,7 @@ namespace RB444.Api.Controllers
                 }
                 else
                 {
-                    return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
+                    return new CommonReturnResponse { Data = null, Message = "Inavalid UserName and Password. Please try again", IsSuccess = false, Status = ResponseStatusCode.NOTFOUND };
                 }
             }
             catch (Exception ex)

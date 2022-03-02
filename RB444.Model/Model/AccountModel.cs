@@ -18,8 +18,8 @@ namespace RB444.Models.Model
     public class LoginViewModel
     {
         [Required(ErrorMessage = "Email can't be blank")]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
+        //[DataType(DataType.EmailAddress)]
+        //[EmailAddress]
         public string email { get; set; }
 
         [Required(ErrorMessage = "Password can't be blank")]
