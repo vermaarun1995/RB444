@@ -10,7 +10,9 @@ using RB444.Core.IServices;
 using RB444.Core.Services;
 using RB444.Data;
 using RB444.Data.Entities;
+using RB444.Data.Infrastructure;
 using RB444.Data.Repository;
+using RB444.Data.UOW;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,6 +59,10 @@ namespace RB444.Admin
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IBaseRepository, BaseRepository>();
+            services.AddTransient<IDatabase, Database>();
 
             services.AddTransient<IRequestServices, RequestServices>();
             services.AddTransient<ILoggerService, LoggerService>();

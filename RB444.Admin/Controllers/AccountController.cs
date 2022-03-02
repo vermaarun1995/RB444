@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -51,6 +52,10 @@ namespace RB444.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
+                        //HttpContext.Session.SetString("loginUserId", user.Id.ToString());
+                        //HttpContext.Session.SetString("loginUserFullName", user.FullName);                        
+                        //HttpContext.Session.SetString("loginUserRoleId", user.RoleId.ToString());
+
                         string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
                         if (ipAddress != "::1")
                         {
