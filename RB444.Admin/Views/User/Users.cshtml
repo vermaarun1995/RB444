@@ -42,11 +42,11 @@
                                             </div>
                                         </div>
 
-                                        @if (usersList.Count() > 5)
-                                        {
-                                            <br />
-                                            <a href="/Home/RegisterUsersList/@(i)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
-                                        }
+                                        @*@if (usersList.Count() > 5)
+                                            {*@
+                                        <br />
+                                        <a href="/User/RegisterUsersList?id=@(i)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
+                                        @*}*@
                                     }
                                     <!--end::Item-->
                                 </div>
@@ -67,9 +67,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Add Admin</h5>
-
                     <button type="button" class="close" onclick="closeModel();">
-                        <span aria-hidden="true">&times;</span>
+                        ×
                     </button>
                 </div>
                 <div class="modal-body">
