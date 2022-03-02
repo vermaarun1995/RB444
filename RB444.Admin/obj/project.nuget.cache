@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "6xxniKQaPlABpUNeYSPJ1+7oQkqBGFegZbqs+U9+m+FT70rXyYGZbq0sYyPDDL79dSijKjAoRSIa9v4bZ45VxQ==",
+  "dgSpecHash": "fBWRAZ6yn/qTVOFJUVIhbK1Fl4hauWiXnbYB7bHdORoW28s0cFwTHCGtXrM+W4WMAk7hjmq4TcVRbne7flclwA==",
   "success": true,
   "projectFilePath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Admin\\RB444.Admin.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\Arun Verma\\.nuget\\packages\\awssdk.core\\3.7.5.2\\awssdk.core.3.7.5.2.nupkg.sha512",
     "C:\\Users\\Arun Verma\\.nuget\\packages\\awssdk.s3\\3.7.5\\awssdk.s3.3.7.5.nupkg.sha512",
     "C:\\Users\\Arun Verma\\.nuget\\packages\\bootstrap\\3.3.7\\bootstrap.3.3.7.nupkg.sha512",
+    "C:\\Users\\Arun Verma\\.nuget\\packages\\bootstrap.datepicker\\1.8.0.1\\bootstrap.datepicker.1.8.0.1.nupkg.sha512",
     "C:\\Users\\Arun Verma\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\Arun Verma\\.nuget\\packages\\dapper.simplecrud\\2.3.0\\dapper.simplecrud.2.3.0.nupkg.sha512",
     "C:\\Users\\Arun Verma\\.nuget\\packages\\jquery\\3.3.1\\jquery.3.3.1.nupkg.sha512",
