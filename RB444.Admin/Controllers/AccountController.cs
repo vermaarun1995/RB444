@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
+using RB444.Data.Repository;
 using RB444.Models.Model;
 using System;
 using System.Linq;
@@ -19,13 +20,16 @@ namespace RB444.Admin.Controllers
         private readonly SignInManager<Users> _signInManager;
         private readonly IRequestServices _requestServices;
         private readonly IConfiguration _configuration;
+        private readonly IBaseRepository _baseRepository;
+        CommonFun commonFun = new CommonFun();
 
-        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, IRequestServices requestServices, IConfiguration configuration)
+        public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager, IRequestServices requestServices, IConfiguration configuration, IBaseRepository baseRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _requestServices = requestServices;
             _configuration = configuration;
+            _baseRepository = baseRepository;
         }
         public ActionResult Login(string returnUrl = null)
         {
@@ -47,6 +51,40 @@ namespace RB444.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
+                        string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                        if (ipAddress != "::1")
+                        {
+                            var locationModel = commonFun.GetIpInfo(ipAddress);
+                            try
+                            {                                
+                                var activityLog = new ActivityLog
+                                {
+                                    Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
+                                    IpAddress = locationModel.query,
+                                    ISP = locationModel.isp,
+                                    LoginDate = DateTime.Now,
+                                    UserId = user.Id,
+                                    Status = "login_success"
+                                };
+                                var _result = await _baseRepository.InsertAsync(activityLog);
+                                if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                            }
+                            catch(Exception ex)
+                            {
+                                var activityLog = new ActivityLog
+                                {
+                                    Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
+                                    IpAddress = locationModel.query,
+                                    ISP = locationModel.isp,
+                                    LoginDate = DateTime.Now,
+                                    UserId = user.Id,
+                                    Status = "login_fail"
+                                };
+                                var _result = await _baseRepository.InsertAsync(activityLog);
+                                if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                            }
+                        }
+                            
                         return Redirect("/Home/Index");
                     }
                 }
