@@ -60,7 +60,24 @@ namespace RB444.Api.Controllers
                             var _result = await _baseRepository.InsertAsync(activityLog);
                             if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         }
-                        return new CommonReturnResponse { Data = user, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
+
+                        var userVM = new UserModel
+                        {
+                            Id = user.Id,
+                            UserName = user.UserName,
+                            FullName = user.FullName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            RoleId = user.RoleId,
+                            CreatedDate = user.CreatedDate,
+                            RollingCommission = user.RollingCommission,
+                            AssignCoin = user.AssignCoin,
+                            Commision = user.Commision,
+                            ExposureLimit = user.ExposureLimit,
+                            ParentId = user.ParentId,
+                            Status = user.Status
+                        };
+                        return new CommonReturnResponse { Data = userVM, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
                     }
                     else
                     {

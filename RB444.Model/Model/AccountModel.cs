@@ -7,13 +7,19 @@ namespace RB444.Models.Model
 {
     public class UserModel
     {
-        public int userid { get; set; }
-        public string fullname { get; set; }
-        public string email { get; set; }
-        public string phoneno { get; set; }
-        public string address { get; set; }
-        public int roleid { get; set; }
-        public string access_token { get; set; }
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int RoleId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool RollingCommission { get; set; }
+        public long AssignCoin { get; set; }
+        public double Commision { get; set; }
+        public long ExposureLimit { get; set; }
+        public int ParentId { get; set; }
+        public int Status { get; set; } // 1 for active. 2 for inactive. 3 for blocked
     }
 
     public class LoginViewModel

@@ -27,8 +27,5 @@ namespace RB444.Data.Entities
         public long ExposureLimit { get; set; }
         public int ParentId { get; set; }
         public int Status { get; set; } // 1 for active. 2 for inactive. 3 for blocked
-
-        public virtual Workspace WorkSpace { get; set; }
-        //public virtual Countries Countries { get; set; }
     }
 }
