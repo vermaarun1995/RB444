@@ -24,5 +24,12 @@ namespace RB444.Core.IServices
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetAllUsers();
+
+        /// <summary>
+        /// Get Users who create by your parent user.
+        /// </summary>
+        /// <param name="ParentUserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int ParentUserId);
     }
 }

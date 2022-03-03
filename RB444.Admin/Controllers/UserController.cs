@@ -60,6 +60,7 @@ namespace RB444.Admin.Controllers
             var contextUser = HttpContext.User;
             var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
             ViewBag.LoginUser = loginUser;
+
             var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id : false;
             List<Users> usresList = new List<Users>();
             Users user = new Users { UserName = "arun", AssignCoin = 1000, ExposureLimit = 100, Id = 13, Status = 1 };
