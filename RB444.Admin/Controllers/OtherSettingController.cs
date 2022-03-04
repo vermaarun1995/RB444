@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
@@ -31,64 +32,33 @@ namespace RB444.Admin.Controllers
             var contextUser = HttpContext.User;
             var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
             ViewBag.LoginUser = loginUser;
-           var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
-           var newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
+            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
+            var newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
 
             return View(newsList);
         }
 
-        public async Task<ActionResult> ChangeSts(int id)
-        {
-            // Get login user id
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-            try
-            {
-                //SuperAdminBAL _bal = new SuperAdminBAL();
-                //bool isUpdated = _bal.ChangeNewsSts(id);
-                return RedirectToAction("News", "OtherSetting");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<ActionResult> CreateNews()
-        {
-            // Get login user id
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
-            return View();
-        }
-
         [HttpPost]
-        public ActionResult CreateNews(News obj)
+        public async Task<ActionResult> AddUpdatedCreateNews(News model)
         {
+            CommonReturnResponse commonModel = null;
             try
             {
-                bool isName = obj.NewsText != null && obj.NewsText.Trim() != null ? true : false;
-                if (isName)
-                {
-                    //SuperAdminBAL _bal = new SuperAdminBAL();
-                    //obj.IsDeleted = false;
-                    //bool isUpdated = _bal.PostNews(obj);
-                    return RedirectToAction("News", "OtherSetting");
-                }
-                else
-                {
-                    TempData["ErrorMsg"] = "Please Fill News Content.";
-                    return View();
-                }
+                commonModel = await _requestServices.PostAsync<News, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveNews", _configuration["ApiKeyUrl"]), model);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
             }
         }
+
         #endregion
 
         #region Slider Images settings

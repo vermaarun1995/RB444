@@ -79,7 +79,7 @@ namespace RB444.Core.Services
                 }
                 var serialized = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 
-                using (HttpResponseMessage response = await client.PostAsync(uri, null))
+                using (HttpResponseMessage response = await client.PostAsync(uri, serialized))
                 {
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();

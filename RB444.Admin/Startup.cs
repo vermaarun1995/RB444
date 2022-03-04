@@ -34,6 +34,7 @@ namespace RB444.Admin
             services.AddMemoryCache();
             services.AddSession();
             services.AddHttpContextAccessor();
+            
 
             services.AddDbContext<RB444Context>(options =>
                 options.UseSqlServer(
