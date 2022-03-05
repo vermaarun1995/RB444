@@ -36,7 +36,10 @@ namespace RB444.Admin.Controllers
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-                sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                }
                 ViewBag.SportsList = sportsDatalist;
             }
             catch (Exception ex)
@@ -94,11 +97,17 @@ namespace RB444.Admin.Controllers
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-                sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                }
                 ViewBag.SportsList = sportsDatalist;
 
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSeriesList", _configuration["ApiKeyUrl"]));
-                serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                }
                 ViewBag.SeriesList = serieslist;
             }
             catch (Exception ex)
@@ -150,7 +159,10 @@ namespace RB444.Admin.Controllers
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-                sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                }
                 ViewBag.SportsList = sportsDatalist;
             }
             catch (Exception ex)

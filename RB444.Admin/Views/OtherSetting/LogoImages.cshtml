@@ -1,4 +1,4 @@
-﻿@model IEnumerable< RB444.Data.Entities.Logo >
+﻿@model IEnumerable<RB444.Data.Entities.Logo>
 @{
     ViewData["Title"] = "LogoImages";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -7,7 +7,7 @@
 <div class="container">
     <h2>Logo Images</h2>
     <div class="row p-4">
-        <a href="~/OtherSetting/SaveLogoImages" class="btn btn-primary btn-sm w-auto">Save Logo Images</a>
+        <button class="btn btn-primary btn-sm w-auto" onclick="getRequest()">Add Logo</button>
     </div>
     <table class="sportesTbl table table-striped table-dark">
         <thead>
@@ -45,60 +45,91 @@
         </tbody>
     </table>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $(".showModel").click(function () {
-            var id = $(this).attr("id").split("_")[1];
-            $("#settingModal_" + id).removeClass("fade");
-            $("#settingModal_" + id).modal('show');
-        });
 
-        $(".hideModel").click(function () {
-            var id = $(this).attr("id").split("_")[1];
-            $("#settingModal_" + id).addClass("fade");
-            $("#settingModal_" + id).modal('hide');
-        });
-        $(".btnEdit").click(function () {
-            var id = $(this).attr("data-value");
-            var checkedid = $(this).find("input");
-            console.log(checkedid);
-            if (checkedid.is(":checked")) {
-                console.log("true");
-            }
-            else {
-                console.log("false");
-            }
+<div class="all-modals">
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form id="request-form" autocomplete="off" class="" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Logo Image</h5>
+                        <button type="button" class="close" onclick="closeModel();">
+                            ×
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="error" style="display:none;" id="error"></div>
+                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                                <label class="control-label col-md-4" style="color:black !important;">Select Image</label>
+                                <div class="col-md-8">
+                                    <input type="file" id="inputFiles" name="file" />
+                                </div>
+                            </div>
+                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                                <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                                    <div class="col-md-12">
+                                        <input type="checkbox" id="Status" />
+                                        <label class="form-label">Status</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        });
+                    <div class="modal-footer">
+                        <button type="button" id="cancle" class="btn btn-light" onclick="closeModel();">Cancel</button>
+                        <button type="button" id="btn-save" class="btn btn-primary font-weight-bold" onclick="return saveRequest()">Save</button>
+                    </div>
 
-        $(".submitBtn").click(function () {
-            const id = $(this).parents().eq(3).attr("id").split("_")[1];
-            const minOddLimit = $("#text_minOdd_" + id).val();
-            const maxOddLimit = $("#text_maxOdd_" + id).val();
-            var data = {
-                Id: id,
-                Min_odd_limit: minOddLimit,
-                Max_odd_limit: maxOddLimit
-            };
-            $.ajax({
-                type: "POST",
-                url: "/Home/SportsSettings",
-                data: JSON.stringify(data),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success: function (response) {
-                    if (response.Updated) {
-                        window.location.href = response.Url;
-                    }
-                    else {
-                        alert("Error occured!!")
-                    }
-                },
-                error: function () {
-                    alert("Error occured!!")
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section PageJs{
+    <script src="~/js/custom.js"></script>
+    <script type="text/javascript">
+        function getRequest() {          
+            $('#registerModal').modal('show');
+        }
+
+        function closeModel() {
+            $('#registerModal').modal('hide');
+        }
+        function saveRequest() {
+            let formdata = new FormData();
+            let fileList = document.getElementById("inputFiles").files;
+            if (fileList.length > 0) {
+                for (const file of fileList) {
+                    formdata.append(file.name, file);
                 }
-            });
-        });
-    });
-</script>
+                formdata.append("Status", $("#Status").prop("checked"));
+                let uploadAttachmentJson = {
+                    apiUrl: "@Url.Action("AddUpdatedLogoImages", "OtherSetting")",
+                    postData: formdata
+                }
+                promiseAjaxPost.call(uploadAttachmentJson, false).then(
+                    (res) => {
+                        if (res.IsSuccess && res.Status == 200) {
+                            messagePopup.responseSuccess(res.Message).then(
+                                (r) => { if (r == true) { attachment_show_type() } }
+                            )
+                        } else {
+                            messagePopup.responseError(res.Message);
+                        }
+                    },
+                    (err) => {
+                        messagePopup.error(err.statusText);
+                    }
+                )
+            }
+        }
+
+    </script>
+}
+
 

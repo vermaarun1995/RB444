@@ -176,5 +176,12 @@ namespace RB444.Admin.Controllers
                 return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
