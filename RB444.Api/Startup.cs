@@ -107,6 +107,7 @@ namespace RB444.Api
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IBetApiService, BetApiService>();
             services.AddTransient<IOtherSetting, OtherSetting>();
+            services.AddTransient<ISettingService, SettingService>();
 
             services.AddTransient<IRequestServices, RequestServices>();
         }

@@ -2,8 +2,10 @@
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
+using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RB444.Core.Services
@@ -23,7 +25,7 @@ namespace RB444.Core.Services
                 //string query = string.Format(@"Update SportsSetting set Status = {0} where SportName = '{1}'", sportsSetting.Status, sportsSetting.SportName);
                 //await _baseRepository.QueryAsync<SportsSetting>(query);
                 var sports = await _baseRepository.GetDataByIdAsync<Sports>(sportsSetting.Id);
-                if(sports != null)
+                if (sports != null)
                 {
                     int _resultId = await _baseRepository.UpdateAsync(sportsSetting);
                     if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
@@ -71,5 +73,39 @@ namespace RB444.Core.Services
         //        return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
         //    }
         //}
+
+        public async Task<CommonReturnResponse> UpdateStakeLimitAsync(List<StakeLimit> stakeLimitList)
+        {
+            try
+            {
+                await _baseRepository.BulkUpdate(stakeLimitList);
+                _baseRepository.Commit();
+                return new CommonReturnResponse { Data = true, Message = MessageStatus.Update, IsSuccess = true, Status = ResponseStatusCode.OK };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetStakeLimitAsync()
+        {
+            try
+            {
+                var stakeLimits = await _baseRepository.GetListAsync<StakeLimit>();
+                return new CommonReturnResponse
+                {
+                    Data = stakeLimits,
+                    Message = stakeLimits.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = stakeLimits.Count > 0,
+                    Status = stakeLimits.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
     }
 }
