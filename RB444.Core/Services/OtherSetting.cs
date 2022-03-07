@@ -132,5 +132,92 @@ namespace RB444.Core.Services
                 if (_slider != null) { _slider = null; }
             }
         }
+
+        public async Task<CommonReturnResponse> DeleteLogoAsync(int id)
+        {
+            bool _result = false;
+            try
+            {
+                _result = await _baseRepository.DeleteAsync<Logo>(id) == 1;
+                _baseRepository.Commit();
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AircraftService : DeleteAsync()", ex);
+                return new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.EXCEPTION,
+                    Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
+                    Data = null
+                };
+            }
+        }
+
+        public async Task<CommonReturnResponse> DeleteNewsAsync(int id)
+        {
+            bool _result = false;
+            try
+            {
+                _result = await _baseRepository.DeleteAsync<News>(id) == 1;
+                _baseRepository.Commit();
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AircraftService : DeleteAsync()", ex);
+                return new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.EXCEPTION,
+                    Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
+                    Data = null
+                };
+            }
+        }
+
+        public async Task<CommonReturnResponse> DeleteSliderAsync(int id)
+        {
+            bool _result = false;
+            try
+            {
+                _result = await _baseRepository.DeleteAsync<Slider>(id) == 1;
+                _baseRepository.Commit();
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AircraftService : DeleteAsync()", ex);
+                return new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.EXCEPTION,
+                    Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
+                    Data = null
+                };
+            }
+        }
     }
 }

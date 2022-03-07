@@ -29,7 +29,7 @@ namespace RB444.Core.Services
                     users = await _baseRepository.GetDataByIdAsync<Users>(LoginUserId);
                     if (users != null)
                     {
-                        users.AssignCoin = users.AssignCoin-AssignCoin;
+                        users.AssignCoin = users.AssignCoin - AssignCoin;
                         _result = await _baseRepository.UpdateAsync(users) == 1;
                         if (_result) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                     }
@@ -54,6 +54,38 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
             finally { if (users != null) { users = null; } }
+        }
+
+        public async Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId)
+        {
+            bool _result = false;
+            try
+            {
+                var depositCoint = new AccountStatement
+                {
+                    CreatedDate = DateTime.Now,
+                    Deposit = assignCoin,
+                    Withdraw = 0,
+                    Balance = assignCoin,
+                    Remark = "Deposit",
+                    FromUserId = parentId,
+                    ToUserId = userId
+                };
+                _result = await _baseRepository.InsertAsync(depositCoint) > 0;
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
         }
 
         public async Task<CommonReturnResponse> GetUserRolesAsync()

@@ -103,6 +103,12 @@ namespace RB444.Api.Controllers
             return await _accountService.UpdateAssignCoinAsync(AssignCoin, LoginUserId);
         }
 
+        [HttpGet, Route("DepositAssignCoin")]
+        public async Task<CommonReturnResponse> DepositAssignCoin(long AssignCoin, int ParentId, int UserId)
+        {
+            return await _accountService.DepositAssignCoinAsync(AssignCoin, ParentId, UserId);
+        }
+
         [HttpGet, Route("GetUserRoles")]
         public async Task<CommonReturnResponse> GetUserRoles()
         {

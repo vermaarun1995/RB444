@@ -58,10 +58,10 @@ namespace RB444.Core.Services
                 {
                     sql = string.Format(@"select top {0} * from (select *,ROW_NUMBER() OVER (ORDER BY id) AS ROW_NUM from Bets) x where PlaceTime BETWEEN '{1} 00:00:00.000' AND '{1} 23:59:59.998' and {2} and ROW_NUM>{3}", model.PageSize, date, _condition, Skip);
                 }
-                //else
-                //{
-                //    sql = string.Format("Select * from Bets where PlaceTime BETWEEN '{0} 00:00:00.000' and '{0} 23:59:59.998' and UserId = {1}", date, model.UserId);
-                //}                
+                else
+                {
+                    sql = string.Format(@"select top {0} * from (select *,ROW_NUMBER() OVER (ORDER BY id) AS ROW_NUM from Bets) x where PlaceTime BETWEEN '{1} {2}:00.000' AND '{3} {4}:59.998' and {5} and ROW_NUM>{6}", model.PageSize, model.StartDate, model.StartTime, model.EndDate, model.EndTime, _condition, Skip);
+                }
                 userBetPagination.betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
                 userBetPagination.TotalRecord = await _baseRepository.RecordCountAsync<Bets>("where " + _condition);
 

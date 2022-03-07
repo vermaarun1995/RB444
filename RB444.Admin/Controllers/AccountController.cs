@@ -61,7 +61,7 @@ namespace RB444.Admin.Controllers
                         {
                             var locationModel = commonFun.GetIpInfo(ipAddress);
                             try
-                            {                                
+                            {
                                 var activityLog = new ActivityLog
                                 {
                                     Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
@@ -74,7 +74,7 @@ namespace RB444.Admin.Controllers
                                 var _result = await _baseRepository.InsertAsync(activityLog);
                                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 var activityLog = new ActivityLog
                                 {
@@ -89,7 +89,7 @@ namespace RB444.Admin.Controllers
                                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                             }
                         }
-                            
+
                         return Redirect("/Home/Index");
                     }
                 }
@@ -148,6 +148,9 @@ namespace RB444.Admin.Controllers
                     if (result.Succeeded)
                     {
                         await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
+
+                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/DepositAssignCoin?AssignCoin={1}&ParentId={2}&UserId={3}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId, user.Id));
+
                         //var data = JsonConvert.SerializeObject(commonModel);
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = false, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));
