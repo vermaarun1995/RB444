@@ -122,8 +122,10 @@
                     apiUrl: "@Url.Action("AddUpdatedLogoImages", "OtherSetting")",
                     postData: formdata
                 }
+                $(".loader").show();
                 promiseAjaxPost.call(uploadAttachmentJson, false).then(
                     (res) => {
+                        $(".loader").hide();
                         if (res.IsSuccess && res.Status == 200) {
                             messagePopup.responseSuccess(res.Message).then(
                                 (r) => { if (r == true) { location.reload() } }
