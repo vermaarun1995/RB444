@@ -3,7 +3,18 @@
     ViewData["Title"] = "LogoImages";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    .action-box i {
+       /* background: #fff;*/
+        padding: 5px;
+        border-radius: 4px;
+        margin-right: 4px;
+    }
 
+        .action-box i.fas.fa-user-alt {
+            margin-right: 7px;
+        }
+</style>
 <div class="container">
     <h2>Logo Images</h2>
     <div class="row p-4">
@@ -15,6 +26,7 @@
                 <th>S NO.</th>
                 <th>Image</th>
                 <th>ACTION</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +49,10 @@
                                 <span>Deactived</span>
                                 @*<a href="@Url.Action("ChangeSts","Home",new { id=item.Id})">Active</a>*@
                             }
+                        </td>
+                        <td class="action-box">
+                            <i class="fas fa-edit "></i>
+                            <i class="fas fa-trash-alt delete-user"></i>
                         </td>
                     </tr>
                     i++;
@@ -93,7 +109,7 @@
 @section PageJs{
     <script src="~/js/custom.js"></script>
     <script type="text/javascript">
-        function getRequest() {          
+        function getRequest() {
             $('#registerModal').modal('show');
         }
 
@@ -116,7 +132,7 @@
                     (res) => {
                         if (res.IsSuccess && res.Status == 200) {
                             messagePopup.responseSuccess(res.Message).then(
-                                (r) => { if (r == true) { attachment_show_type() } }
+                                (r) => { if (r == true) { location.reload() } }
                             )
                         } else {
                             messagePopup.responseError(res.Message);

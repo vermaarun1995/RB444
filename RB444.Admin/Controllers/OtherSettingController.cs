@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace RB444.Admin.Controllers
 {
@@ -20,11 +22,13 @@ namespace RB444.Admin.Controllers
         private readonly IRequestServices _requestServices;
         private readonly IConfiguration _configuration;
         private readonly UserManager<Users> _userManager;
-        public OtherSettingController(IRequestServices requestServices, IConfiguration configuration, UserManager<Users> userManager)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public OtherSettingController(IRequestServices requestServices, IConfiguration configuration, UserManager<Users> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _requestServices = requestServices;
             _configuration = configuration;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         #region News settings
@@ -78,15 +82,17 @@ namespace RB444.Admin.Controllers
         public async Task<ActionResult> AddUpdatedSliderImages()
         {
             CommonReturnResponse commonModel = null;
-            Slider slider = new Slider();
+            Slider model = new Slider();
             try
             {
                 bool status = Convert.ToBoolean(Request.Form["Status"]);
                 var file = Request.Form != null && Request.Form.Files.Count > 0 ? Request.Form.Files : null;
 
-                slider.Status = status;
+                model.FileName = UploadedFile(file, "SliderImages");
+                model.FilePath = "SliderImages/" + model.FileName;
+                model.Status = status;
 
-                commonModel = await _requestServices.PostAsync<Slider, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveSlider", _configuration["ApiKeyUrl"]), new Slider());
+                commonModel = await _requestServices.PostAsync<Slider, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveSlider", _configuration["ApiKeyUrl"]), model);
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
@@ -117,15 +123,17 @@ namespace RB444.Admin.Controllers
         public async Task<ActionResult> AddUpdatedLogoImages()
         {
             CommonReturnResponse commonModel = null;
-            Logo logo = new Logo();
+            Logo model = new Logo();
             try
             {
                 bool status = Convert.ToBoolean(Request.Form["Status"]);
                 var file = Request.Form !=null && Request.Form.Files.Count > 0 ? Request.Form.Files : null;
 
-                logo.Status = status;
+                model.FileName = UploadedFile(file, "LogoImages");
+                model.FilePath = "LogoImages/" + model.FileName;
+                model.Status = status;
              
-                commonModel = await _requestServices.PostAsync<Logo, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveLogo", _configuration["ApiKeyUrl"]), new Logo());
+                commonModel = await _requestServices.PostAsync<Logo, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveLogo", _configuration["ApiKeyUrl"]), model);
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
@@ -143,5 +151,24 @@ namespace RB444.Admin.Controllers
         #endregion
 
 
+        private string UploadedFile(IFormFileCollection imageFile, string folderName)
+        {
+            string uniqueFileName = null;
+
+            if (imageFile != null)
+            {
+                foreach (var item in imageFile)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderName);
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + item.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        item.CopyTo(fileStream);
+                    }
+                }
+            }
+            return uniqueFileName;
+        }
     }
 }

@@ -1276,4 +1276,8 @@
     <ProjectReference Include="..\RB444.Data\RB444.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\LogoImages\" />
+  </ItemGroup>
+
 </Project>
