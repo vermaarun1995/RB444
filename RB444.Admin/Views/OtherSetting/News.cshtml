@@ -124,9 +124,10 @@
                 apiUrl: "@Url.Action("AddUpdatedCreateNews", "OtherSetting")",
                 postData: formData
             }
-
+            $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
+                    $(".loader").hide();
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }

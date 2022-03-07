@@ -52,7 +52,7 @@ namespace RB444.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        //HttpContext.Session.SetString("loginUserId", user.Id.ToString());
+                        HttpContext.Session.SetString("loginUserId", user.Id.ToString());
                         //HttpContext.Session.SetString("loginUserFullName", user.FullName);                        
                         //HttpContext.Session.SetString("loginUserRoleId", user.RoleId.ToString());
 
@@ -175,6 +175,37 @@ namespace RB444.Admin.Controllers
                 commonModel = new CommonReturnResponse { Data = false, Message = errorHtml, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
                 return Json(JsonConvert.SerializeObject(commonModel));
             }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(ResetPasswordViewModel model)
+        {
+            var userId = HttpContext.Session.GetString("loginUserId").ToString();
+            model.UserId = userId;
+            var data = new CommonReturnResponse()
+            {
+                IsSuccess = false,
+                Message = "Something Went Wrong."
+            };
+            return Json(JsonConvert.SerializeObject(data));
+
+            //CommonReturnResponse commonModel = null;
+            //try
+            //{
+            //    commonModel = await _rqs.PostAsync<ResetPasswordViewModel, CommonReturnResponse>(String.Format("{0}System/Account/ResetPassword", _configuration["ApiUrl"]), model);
+            //    var data = JsonConvert.SerializeObject(commonModel);
+            //    return Json(data);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    var data = new CommonReturnResponse()
+            //    {
+            //        IsSuccess = false,
+            //        Message = ex.Message
+            //    };
+            //    return Json(JsonConvert.SerializeObject(data));
+            //}
         }
 
         [HttpGet]

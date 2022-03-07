@@ -148,7 +148,6 @@ namespace RB444.Models.Model
 
     public class ResetPasswordViewModel
     {
-        [Required]
         public string UserId { get; set; }
 
         [DataType(DataType.Password)]
@@ -164,7 +163,5 @@ namespace RB444.Models.Model
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        public string Code { get; set; }
     }
 }
