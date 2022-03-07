@@ -3,18 +3,6 @@
     ViewData["Title"] = "SliderImages";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<style>
-    .action-box i {
-        /* background: #fff;*/
-        padding: 5px;
-        border-radius: 4px;
-        margin-right: 4px;
-    }
-
-        .action-box i.fas.fa-user-alt {
-            margin-right: 7px;
-        }
-</style>
 
 <div class="container">
     <h2>Slider Images</h2>
@@ -36,24 +24,25 @@
                 int i = 1;
                 foreach (var item in Model)
                 {
-            <tr>
-                <th scope="row">@i</th>
-                <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
-                <td>
-                    @if (item.Status == true)
-                    {
-                        <span>Active</span>
-                    }
-                    else
-                    {
-                        <span>Deactived</span>
-                    }
-                </td>
-                <td class="action-box">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-alt delete-user"></i>
-                </td>
-            </tr>
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
+                        @if (item.Status == true)
+                        {
+                            <td id="Status_@item.Id" style="color:lawngreen;">
+                                <a onclick="statusChange(@item.Id,false)">Active</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="color:orangered;">
+                                <a onclick="statusChange(@item.Id,true)">DeActive</a>
+                            </td>
+                        }
+                        <td>
+                            <a onclick="deleteRequest(@item.Id,'@item.FilePath')"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
                     i++;
                 }
             }
@@ -75,7 +64,8 @@
                     <div class="modal-body">
                         <div class="form-horizontal">
                             <div class="error" style="display:none;" id="error"></div>
-                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                            <input type="hidden" id="idSlider" value="0">
+                            <div class="form-group d-flex justify-content-between align-items-center mb-75 imageBox">
                                 <label class="control-label col-md-4" style="color:black !important;">Select Image</label>
                                 <div class="col-md-8">
                                     <input type="file" id="inputFiles" name="file" />
@@ -108,10 +98,10 @@
         function getRequest() {
             $('#registerModal').modal('show');
         }
-
         function closeModel() {
             $('#registerModal').modal('hide');
         }
+
         function saveRequest() {
             let formdata = new FormData();
             let fileList = document.getElementById("inputFiles").files;
@@ -139,6 +129,70 @@
                     }
                 )
             }
+        }
+
+        function deleteRequest(id, imagePath) {
+            const formData = new FormData();
+            formData.append("id", id);
+            formData.append("imagePath", imagePath);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("DeleteSlider", "OtherSetting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
+        }
+
+        function statusChange(id, status) {
+            if (id != null || id == 0) {
+                return false;
+            }
+            const formData = new FormData();
+            formData.append("id", id);
+            formData.append("status", status);
+            formData.append("api", 2);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("ChangeSts", "OtherSetting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
         }
 
     </script>

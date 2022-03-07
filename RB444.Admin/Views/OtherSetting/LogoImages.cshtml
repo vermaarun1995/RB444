@@ -3,18 +3,7 @@
     ViewData["Title"] = "LogoImages";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<style>
-    .action-box i {
-       /* background: #fff;*/
-        padding: 5px;
-        border-radius: 4px;
-        margin-right: 4px;
-    }
 
-        .action-box i.fas.fa-user-alt {
-            margin-right: 7px;
-        }
-</style>
 <div class="container">
     <h2>Logo Images</h2>
     <div class="row p-4">
@@ -27,6 +16,7 @@
                 <th>Image</th>
                 <th>ACTION</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -35,26 +25,29 @@
                 int i = 1;
                 foreach (var item in Model)
                 {
-                    <tr>
-                        <th scope="row">@i</th>
-                        <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
-                        <td>
-                            @if (item.Status == true)
-                            {
-                                <span>Active</span>
-                                @*<a href="@Url.Action("ChangeSts","Home",new { id=item.Id})">Deactived</a>*@
-                            }
-                            else
-                            {
-                                <span>Deactived</span>
-                                @*<a href="@Url.Action("ChangeSts","Home",new { id=item.Id})">Active</a>*@
-                            }
-                        </td>
-                        <td class="action-box">
-                            <i class="fas fa-edit "></i>
-                            <i class="fas fa-trash-alt delete-user"></i>
-                        </td>
-                    </tr>
+            <tr>
+                <th scope="row">@i</th>
+                <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
+                @if (item.Status == true)
+                {
+                    <td id="Status_@item.Id" style="color:lawngreen;">
+                        <a onclick="statusChange(@item.Id,false)">Active</a>
+                    </td>
+                }
+                else
+                {
+                    <td style="color:orangered;">
+                        <a onclick="statusChange(@item.Id,true)">DeActive</a>
+                    </td>
+                }
+
+                <td>
+                    <a onclick="getRequest(@item.Id)" class="Edit"><i class="fa fa-edit"></i></a>
+                </td>
+                <td>
+                    <a onclick="deleteRequest(@item.Id)"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
                     i++;
                 }
             }
@@ -116,6 +109,7 @@
         function closeModel() {
             $('#registerModal').modal('hide');
         }
+
         function saveRequest() {
             let formdata = new FormData();
             let fileList = document.getElementById("inputFiles").files;
@@ -143,6 +137,69 @@
                     }
                 )
             }
+        }
+
+        function deleteRequest(id) {
+            const formData = new FormData();
+            formData.append("id", id);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("DeleteLogo", "OtherSetting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
+        }
+
+        function statusChange(id, status) {
+            if (id != null || id == 0) {
+                return false;
+            }
+            const formData = new FormData();
+            formData.append("id", id);
+             formData.append("status", status);
+             formData.append("api", 1);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("ChangeSts", "OtherSetting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
         }
 
     </script>

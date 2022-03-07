@@ -33,5 +33,23 @@ namespace RB444.Api.Controllers
         {
             return await _otherSetting.AddUpdateSliderAsync(model);
         }
+
+        [HttpPost, Route("DeleteLogo")]
+        public async Task<CommonReturnResponse> DeleteLogo(int id)
+        {
+            return await _otherSetting.DeleteLogoAsync(id);
+        }
+
+        [HttpPost, Route("DeleteNews")]
+        public async Task<CommonReturnResponse> DeleteNews(int id)
+        {
+            return await _otherSetting.DeleteNewsAsync(id);
+        }
+
+        [HttpPost, Route("DeleteSlider")]
+        public async Task<CommonReturnResponse> DeleteSlider(int id)
+        {
+            return await _otherSetting.DeleteSliderAsync(id);
+        }
     }
 }

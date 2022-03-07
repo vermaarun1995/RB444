@@ -29,6 +29,9 @@ namespace RB444.Core.Services
                     _logo = await _baseRepository.GetDataByIdAsync<Logo>(model.Id);
                     if (_logo != null)
                     {
+                        model.FilePath = model.FilePath != null ? model.FilePath : _logo.FilePath;
+                        model.FileName = model.FileName != null ? model.FileName : _logo.FileName;
+
                         int _resultId = await _baseRepository.UpdateAsync(model);
                         if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
@@ -105,6 +108,8 @@ namespace RB444.Core.Services
                     _slider = await _baseRepository.GetDataByIdAsync<Slider>(model.Id);
                     if (_slider != null)
                     {
+                        model.FilePath = model.FilePath != null ? model.FilePath : _slider.FilePath;
+                        model.FileName = model.FileName != null ? model.FileName : _slider.FileName;
                         int _resultId = await _baseRepository.UpdateAsync(model);
                         if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
@@ -130,6 +135,93 @@ namespace RB444.Core.Services
             finally
             {
                 if (_slider != null) { _slider = null; }
+            }
+        }
+
+        public async Task<CommonReturnResponse> DeleteLogoAsync(int id)
+        {
+            Logo _logo = null;
+            try
+            {
+                if (id > 0)
+                {
+                    _logo = await _baseRepository.GetDataByIdAsync<Logo>(id);
+                    if (_logo != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<Logo>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : CurrencyService : AddUpdatedAsync()", ex);
+                return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally
+            {
+                if (_logo != null) { _logo = null; }
+            }
+        }
+
+        public async Task<CommonReturnResponse> DeleteNewsAsync(int id)
+        {
+            News news = null;
+            try
+            {
+                if (id > 0)
+                {
+                    news = await _baseRepository.GetDataByIdAsync<News>(id);
+                    if (news != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<News>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : CurrencyService : AddUpdatedAsync()", ex);
+                return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally
+            {
+                if (news != null) { news = null; }
+            }
+        }
+
+        public async Task<CommonReturnResponse> DeleteSliderAsync(int id)
+        {
+            Slider slider = null;
+            try
+            {
+                if (id > 0)
+                {
+                    slider = await _baseRepository.GetDataByIdAsync<Slider>(id);
+                    if (slider != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<Slider>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : CurrencyService : AddUpdatedAsync()", ex);
+                return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally
+            {
+                if (slider != null) { slider = null; }
             }
         }
     }

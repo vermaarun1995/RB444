@@ -26,5 +26,26 @@ namespace RB444.Core.IServices
         /// <param name="model"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> AddUpdateSliderAsync(Slider model);
+
+        /// <summary>
+        /// Add or Update Logo.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> DeleteLogoAsync(int id);
+
+        /// <summary>
+        /// Add or Update News.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> DeleteNewsAsync(int id);
+
+        /// <summary>
+        /// Add or Update Slider.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> DeleteSliderAsync(int id);
     }
 }
