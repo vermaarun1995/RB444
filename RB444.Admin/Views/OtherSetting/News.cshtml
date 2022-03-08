@@ -44,7 +44,7 @@
                             <a onclick="getRequest(@item.Id)" class="Edit"><i class="fa fa-edit"></i></a>
                         </td>
                         <td>
-                            <a href="#"><i class="fa fa-trash"></i></a>
+                            <a onclick="deleteRequest(@item.Id)"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                     i++;
@@ -124,9 +124,10 @@
                 apiUrl: "@Url.Action("AddUpdatedCreateNews", "OtherSetting")",
                 postData: formData
             }
-
+            $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
+                    $(".loader").hide();
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
@@ -143,6 +144,37 @@
             )
             return false;
         }
+
+        function deleteRequest(id) {
+            const formData = new FormData();
+            formData.append("id", id);
+
+            let addRequestJson = {
+                apiUrl: "@Url.Action("DeleteNews", "OtherSetting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(addRequestJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message).then(
+                            (r) => { if (r == true) { location.reload(); } }
+                        )
+                    } else if (res.IsSuccess && res.Status == 208) {
+                        messagePopup.responseWarning(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
+                    }
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+            return false;
+        }
+
+
     </script>
 }
 

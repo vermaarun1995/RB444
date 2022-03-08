@@ -64,6 +64,27 @@ namespace RB444.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> DeleteNews(int id)
+        {
+            CommonReturnResponse commonModel = null;
+            try
+            {
+                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteNews", _configuration["ApiKeyUrl"]), id);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+        }
+
         #endregion
 
         #region Slider Images settings
@@ -106,6 +127,65 @@ namespace RB444.Admin.Controllers
                 return Json(JsonConvert.SerializeObject(data));
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeSts(int id, bool status, int api)
+        {
+            CommonReturnResponse commonModel = null;
+            try
+            {
+                if (api == 1)
+                {
+                    Logo model = new Logo();
+                    model.Id = id;
+                    model.Status = status;
+                    commonModel = await _requestServices.PostAsync<Logo, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveLogo", _configuration["ApiKeyUrl"]), model);
+                    var data = JsonConvert.SerializeObject(commonModel);
+                    return Json(data);
+                }
+                else
+                {
+                    Slider model = new Slider();
+                    model.Id = id;
+                    model.Status = status;
+                    commonModel = await _requestServices.PostAsync<Slider, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveSlider", _configuration["ApiKeyUrl"]), model);
+                    var data = JsonConvert.SerializeObject(commonModel);
+                    return Json(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteSlider(int id, string imagePath)
+        {
+            CommonReturnResponse commonModel = null;
+            try
+            {
+                var isDelete = DeleteFile(imagePath);
+                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteSlider", _configuration["ApiKeyUrl"]), id);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+        }
+
         #endregion
 
         #region Logo Images settings
@@ -127,13 +207,35 @@ namespace RB444.Admin.Controllers
             try
             {
                 bool status = Convert.ToBoolean(Request.Form["Status"]);
-                var file = Request.Form !=null && Request.Form.Files.Count > 0 ? Request.Form.Files : null;
+                var file = Request.Form != null && Request.Form.Files.Count > 0 ? Request.Form.Files : null;
 
                 model.FileName = UploadedFile(file, "LogoImages");
                 model.FilePath = "LogoImages/" + model.FileName;
                 model.Status = status;
-             
+
                 commonModel = await _requestServices.PostAsync<Logo, CommonReturnResponse>(string.Format("{0}OtherSetting/SaveLogo", _configuration["ApiKeyUrl"]), model);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteLogo(int id, string imagePath)
+        {
+            CommonReturnResponse commonModel = null;
+            try
+            {
+                var isDelete = DeleteFile(imagePath);
+                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteLogo", _configuration["ApiKeyUrl"]), id);
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
@@ -169,6 +271,21 @@ namespace RB444.Admin.Controllers
                 }
             }
             return uniqueFileName;
+        }
+
+        private bool DeleteFile(string imgPath)
+        {
+            if (imgPath != null)
+            {
+                string path = Path.Combine(_webHostEnvironment.WebRootPath, imgPath);
+
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

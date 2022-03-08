@@ -29,6 +29,9 @@ namespace RB444.Core.Services
                     _logo = await _baseRepository.GetDataByIdAsync<Logo>(model.Id);
                     if (_logo != null)
                     {
+                        model.FilePath = model.FilePath != null ? model.FilePath : _logo.FilePath;
+                        model.FileName = model.FileName != null ? model.FileName : _logo.FileName;
+
                         int _resultId = await _baseRepository.UpdateAsync(model);
                         if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
@@ -105,6 +108,8 @@ namespace RB444.Core.Services
                     _slider = await _baseRepository.GetDataByIdAsync<Slider>(model.Id);
                     if (_slider != null)
                     {
+                        model.FilePath = model.FilePath != null ? model.FilePath : _slider.FilePath;
+                        model.FileName = model.FileName != null ? model.FileName : _slider.FileName;
                         int _resultId = await _baseRepository.UpdateAsync(model);
                         if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
@@ -135,18 +140,20 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> DeleteLogoAsync(int id)
         {
-            bool _result = false;
+            Logo _logo = null;
             try
             {
-                _result = await _baseRepository.DeleteAsync<Logo>(id) == 1;
-                _baseRepository.Commit();
-                return new CommonReturnResponse
+                if (id > 0)
                 {
-                    Data = _result,
-                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
-                    IsSuccess = _result,
-                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
-                };
+                    _logo = await _baseRepository.GetDataByIdAsync<Logo>(id);
+                    if (_logo != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<Logo>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
             }
             catch (Exception ex)
             {
@@ -159,23 +166,29 @@ namespace RB444.Core.Services
                     Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
                     Data = null
                 };
+            }
+            finally
+            {
+                if (_logo != null) { _logo = null; }
             }
         }
 
         public async Task<CommonReturnResponse> DeleteNewsAsync(int id)
         {
-            bool _result = false;
+            News news = null;
             try
             {
-                _result = await _baseRepository.DeleteAsync<News>(id) == 1;
-                _baseRepository.Commit();
-                return new CommonReturnResponse
+                if (id > 0)
                 {
-                    Data = _result,
-                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
-                    IsSuccess = _result,
-                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
-                };
+                    news = await _baseRepository.GetDataByIdAsync<News>(id);
+                    if (news != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<News>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
             }
             catch (Exception ex)
             {
@@ -188,23 +201,29 @@ namespace RB444.Core.Services
                     Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
                     Data = null
                 };
+            }
+            finally
+            {
+                if (news != null) { news = null; }
             }
         }
 
         public async Task<CommonReturnResponse> DeleteSliderAsync(int id)
         {
-            bool _result = false;
+            Slider slider = null;
             try
             {
-                _result = await _baseRepository.DeleteAsync<Slider>(id) == 1;
-                _baseRepository.Commit();
-                return new CommonReturnResponse
+                if (id > 0)
                 {
-                    Data = _result,
-                    Message = _result ? MessageStatus.Delete : MessageStatus.Error,
-                    IsSuccess = _result,
-                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
-                };
+                    slider = await _baseRepository.GetDataByIdAsync<Slider>(id);
+                    if (slider != null)
+                    {
+                        int _resultId = await _baseRepository.DeleteAsync<Slider>(id);
+                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Delete : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
+                    }
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NoRecord, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
             }
             catch (Exception ex)
             {
@@ -217,6 +236,10 @@ namespace RB444.Core.Services
                     Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
                     Data = null
                 };
+            }
+            finally
+            {
+                if (slider != null) { slider = null; }
             }
         }
     }
