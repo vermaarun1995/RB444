@@ -31,7 +31,7 @@ namespace RB444.Admin.Controllers
             var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = user;
 
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement", _configuration["ApiKeyUrl"]));
+            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement?UserId={1}", _configuration["ApiKeyUrl"], user.Id));
             var accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
 
             return View(accountStatementVM);

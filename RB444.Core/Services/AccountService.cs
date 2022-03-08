@@ -56,7 +56,7 @@ namespace RB444.Core.Services
             finally { if (users != null) { users = null; } }
         }
 
-        public async Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId)
+        public async Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId,int UserRoleId)
         {
             bool _result = false;
             try
@@ -69,7 +69,8 @@ namespace RB444.Core.Services
                     Balance = assignCoin,
                     Remark = "Deposit",
                     FromUserId = parentId,
-                    ToUserId = userId
+                    ToUserId = userId,
+                    ToUserRoleId = UserRoleId
                 };
                 _result = await _baseRepository.InsertAsync(depositCoint) > 0;
                 return new CommonReturnResponse

@@ -50,7 +50,15 @@ namespace RB444.Core.IServices
         /// <summary>
         /// Get Account Statement.
         /// </summary>
+        /// <param name="UserId"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> GetAccountStatementAsync();
+        Task<CommonReturnResponse> GetAccountStatementAsync(int UserId);
+
+        /// <summary>
+        /// Get Account Statement for all user who are below to super admin.
+        /// </summary>
+        /// <param name="AdminId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAccountStatementForSuperAdminAsync(int AdminId);
     }
 }

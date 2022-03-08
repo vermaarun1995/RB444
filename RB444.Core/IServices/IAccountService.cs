@@ -19,8 +19,9 @@ namespace RB444.Core.IServices
         /// <param name="assignCoin"></param>
         /// <param name="parentId"></param>
         /// <param name="userId"></param>
+        /// <param name="UserRoleId"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId);
+        Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId, int UserRoleId);
 
         /// <summary>
         /// Get User Roles.

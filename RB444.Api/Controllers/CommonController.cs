@@ -53,9 +53,15 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetAccountStatement")]
-        public async Task<CommonReturnResponse> GetAccountStatement()
+        public async Task<CommonReturnResponse> GetAccountStatement(int UserId)
         {
-            return await _commonService.GetAccountStatementAsync();
+            return await _commonService.GetAccountStatementAsync(UserId);
+        }
+
+        [HttpGet, Route("GetAccountStatementForSuperAdmin")]
+        public async Task<CommonReturnResponse> GetAccountStatementForSuperAdmin(int AdminId)
+        {
+            return await _commonService.GetAccountStatementForSuperAdminAsync(AdminId);
         }
     }
 }

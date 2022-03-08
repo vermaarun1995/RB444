@@ -158,13 +158,55 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetAccountStatementAsync()
+        public async Task<CommonReturnResponse> GetAccountStatementAsync(int UserId)
         {
+            IDictionary<string, object> _keyValues = new Dictionary<string, object>();
             List<AccountStatementVM> accountStatementVMs = new List<AccountStatementVM>();
             try
             {
                 var userList = await _baseRepository.GetListAsync<Users>();
-                var accountStatementList = await _baseRepository.GetListAsync<AccountStatement>();
+
+                _keyValues.Add("ToUserId", UserId);
+                var accountStatementList = await _baseRepository.SelectAsync<AccountStatement>(_keyValues);
+                foreach (var item in accountStatementList)
+                {
+                    var accountStatementVM = new AccountStatementVM
+                    {
+                        Id = item.Id,
+                        CreatedDate = item.CreatedDate,
+                        Deposit = item.Deposit,
+                        Balance = item.Balance,
+                        Withdraw = item.Withdraw,
+                        Remark = item.Remark,
+                        FromUser = userList.Where(x => x.Id == item.FromUserId).Select(y => y.FullName).FirstOrDefault(),
+                        ToUser = userList.Where(x => x.Id == item.ToUserId).Select(y => y.FullName).FirstOrDefault()
+                    };
+                    accountStatementVMs.Add(accountStatementVM);
+                }
+                return new CommonReturnResponse
+                {
+                    Data = accountStatementVMs,
+                    Message = accountStatementVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = accountStatementVMs.Count > 0,
+                    Status = accountStatementVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetAccountStatementForSuperAdminAsync(int AdminId)
+        {
+            IDictionary<string, object> _keyValues = new Dictionary<string, object>();
+            List<AccountStatementVM> accountStatementVMs = new List<AccountStatementVM>();
+            try
+            {
+                var userList = await _baseRepository.GetListAsync<Users>();
+
+                _keyValues.Add("FromUserId", AdminId);
+                var accountStatementList = await _baseRepository.SelectAsync<AccountStatement>(_keyValues);
                 foreach (var item in accountStatementList)
                 {
                     var accountStatementVM = new AccountStatementVM
