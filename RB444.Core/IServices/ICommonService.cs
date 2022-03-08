@@ -24,7 +24,13 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> GetNewsAsync();
 
         /// <summary>
-        /// Get Logo.
+        /// Get All Logo.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAllLogoAsync();
+
+        /// <summary>
+        /// Get Active Logo.
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetLogoAsync();

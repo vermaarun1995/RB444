@@ -4,8 +4,6 @@ using RB444.Data.Entities;
 using RB444.Data.Repository;
 using RB444.Models.Model;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RB444.Core.Services
@@ -33,7 +31,15 @@ namespace RB444.Core.Services
                         model.FileName = model.FileName != null ? model.FileName : _logo.FileName;
 
                         int _resultId = await _baseRepository.UpdateAsync(model);
-                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        if(_resultId > 0)
+                        {
+                            if (model.Status == true)
+                            {
+                                string sql = string.Format(@"update Logo set Status = 0 where Id <> {0}", model.Id);
+                                var logoList = await _baseRepository.QueryAsync<Logo>(sql);
+                                _baseRepository.Commit();
+                            }
+                        }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                     }
                     else
@@ -42,9 +48,21 @@ namespace RB444.Core.Services
                     }
                 }
                 else
-                {
+                {                   
                     var _result = await _baseRepository.InsertAsync(model);
-                    if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    if(_result <= 0)
+                    {
+                        _baseRepository.Rollback();
+                    }
+                    else
+                    {
+                        if (model.Status == true)
+                        {
+                            string sql = string.Format(@"update Logo set Status = 0 where Id <> {0}", _result);
+                            var logoList = await _baseRepository.QueryAsync<Logo>(sql);
+                            _baseRepository.Commit();
+                        }
+                    }
                     return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? MessageStatus.Create : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                 }
             }
@@ -71,7 +89,15 @@ namespace RB444.Core.Services
                     if (_news != null)
                     {
                         int _resultId = await _baseRepository.UpdateAsync(model);
-                        if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                        if(_resultId > 0)
+                        {
+                            if (model.Status == true)
+                            {
+                                string sql = string.Format(@"update News set Status = 0 where Id <> {0}", model.Id);
+                                var logoList = await _baseRepository.QueryAsync<News>(sql);
+                                _baseRepository.Commit();
+                            }
+                        }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                     }
                     else
@@ -82,7 +108,19 @@ namespace RB444.Core.Services
                 else
                 {
                     var _result = await _baseRepository.InsertAsync(model);
-                    if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    if (_result <= 0)
+                    {
+                        _baseRepository.Rollback();
+                    }
+                    else
+                    {
+                        if (model.Status == true)
+                        {
+                            string sql = string.Format(@"update News set Status = 0 where Id <> {0}", _result);
+                            var logoList = await _baseRepository.QueryAsync<News>(sql);
+                            _baseRepository.Commit();
+                        }
+                    }
                     return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? MessageStatus.Create : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                 }
             }

@@ -125,10 +125,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement(int id)
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             var result = new List<AccountStatementVM>();
             var accountStatements = new List<AccountStatement>();
 
@@ -168,10 +164,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> UserProfile(string id)
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             var isAdmin = string.IsNullOrWhiteSpace(id);
 
             if (!isAdmin)

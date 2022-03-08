@@ -31,6 +31,12 @@ namespace RB444.Api.Controllers
         [HttpGet, Route("GetAllLogo")]
         public async Task<CommonReturnResponse> GetAllLogo()
         {
+            return await _commonService.GetAllLogoAsync();
+        }
+
+        [HttpGet, Route("GetLogo")]
+        public async Task<CommonReturnResponse> GetLogo()
+        {
             return await _commonService.GetLogoAsync();
         }
 

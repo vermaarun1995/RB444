@@ -44,10 +44,10 @@ namespace RB444.Admin
 
             services.AddMvc();
             ////Set Session Timeout. Default is 20 minutes.
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(30);
+            //});
 
             services.AddTransient<IUserStore<Users>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();

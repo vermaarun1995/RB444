@@ -27,10 +27,6 @@ namespace RB444.Admin.Controllers
         #region SportsSetting
         public async Task<ActionResult> SportsSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             try
@@ -52,10 +48,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> CreateSports()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             return View();
         }
 
@@ -87,10 +79,6 @@ namespace RB444.Admin.Controllers
         #region SeriesSetting
         public async Task<ActionResult> SeriesSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             List<Series> serieslist = null;
@@ -120,10 +108,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> CreateSeries()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-            
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
@@ -150,10 +134,6 @@ namespace RB444.Admin.Controllers
         #region match setting
         public async Task<ActionResult> MatchSettings()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             try
@@ -175,10 +155,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> CreateMatchSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             return View();
         }
 
@@ -192,10 +168,6 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> SliderSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<Slider> sliderList = null;
             try
@@ -214,10 +186,6 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> LogoSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<Logo> logoList = null;
             try
@@ -236,10 +204,6 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> NewsSetting()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             CommonReturnResponse commonModel = null;
             List<News> newsList = null;
             try

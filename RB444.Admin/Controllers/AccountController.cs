@@ -52,7 +52,12 @@ namespace RB444.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        HttpContext.Session.SetString("loginUserId", user.Id.ToString());
+                        //string userDetail = JsonConvert.SerializeObject(user);
+                        //HttpContext.Session.SetString("loginUserDetails", userDetail);
+
+                        
+                        
+                        //HttpContext.Session.SetString("loginUserId", user.Id.ToString());
                         //HttpContext.Session.SetString("loginUserFullName", user.FullName);                        
                         //HttpContext.Session.SetString("loginUserRoleId", user.RoleId.ToString());
 

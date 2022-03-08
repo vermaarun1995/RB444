@@ -27,9 +27,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement", _configuration["ApiKeyUrl"]));
             var accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
 
@@ -38,9 +35,6 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> ActivityLog()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetActivityLog", _configuration["ApiKeyUrl"]));
             var activityLogVM = jsonParser.ParsJson<List<ActivityLogVM>>(Convert.ToString(commonModel.Data));
 

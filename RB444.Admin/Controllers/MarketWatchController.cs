@@ -17,55 +17,37 @@ namespace RB444.Admin.Controllers
             _userManager = userManager;
         }
         // GET: MarketWatch       
-        public async Task<ActionResult> MarketWatch()
-        {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
+        public ActionResult MarketWatch()
+        {           
             return View();
         }
 
         [HttpGet]
-        public async Task<ActionResult> TeamMarketWatch(int id)
+        public ActionResult TeamMarketWatch(int id)
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             return View();
         }
 
-        public async Task<ActionResult> ManageSeries()
+        public ActionResult ManageSeries()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             return View();
         }
 
 
-        public async Task<ActionResult> IndianFancy()
+        public ActionResult IndianFancy()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             return View();
         }
 
 
-        public async Task<ActionResult> SessionFancy()
+        public ActionResult SessionFancy()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             return View();
         }
 
 
-        public async Task<ActionResult> BetfairMarket()
+        public ActionResult BetfairMarket()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             return View();
         }
     }

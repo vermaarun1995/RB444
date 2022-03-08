@@ -57,7 +57,7 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetLogoAsync()
+        public async Task<CommonReturnResponse> GetAllLogoAsync()
         {
             try
             {
@@ -68,6 +68,25 @@ namespace RB444.Core.Services
                     Message = logos.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = logos.Count > 0,
                     Status = logos.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetLogoAsync()
+        {
+            try
+            {
+                var logos = (await _baseRepository.GetListAsync<Logo>()).FirstOrDefault();
+                return new CommonReturnResponse
+                {
+                    Data = logos,
+                    Message = logos != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = logos != null,
+                    Status = logos != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)

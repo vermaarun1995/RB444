@@ -34,9 +34,6 @@ namespace RB444.Admin.Controllers
         #region News settings
         public async Task<ActionResult> News()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
             var newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
 
@@ -90,10 +87,6 @@ namespace RB444.Admin.Controllers
         #region Slider Images settings
         public async Task<ActionResult> SliderImages()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
-
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllSliders", _configuration["ApiKeyUrl"]));
             var sliderList = jsonParser.ParsJson<List<Slider>>(Convert.ToString(commonModel.Data));
             return View(sliderList);
@@ -191,9 +184,6 @@ namespace RB444.Admin.Controllers
         #region Logo Images settings
         public async Task<ActionResult> LogoImages()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllLogo", _configuration["ApiKeyUrl"]));
             var LogoList = jsonParser.ParsJson<List<Logo>>(Convert.ToString(commonModel.Data));
             return View(LogoList);
