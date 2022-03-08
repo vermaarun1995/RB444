@@ -163,8 +163,8 @@
             return false;
         }
 
-        function statusChange(id, status) {
-            if (id != null || id == 0) {
+        function statusChange(id, status) {            
+            if (id == null || id == 0) {
                 return false;
             }
             const formData = new FormData();
@@ -173,9 +173,10 @@
             formData.append("api", 2);
 
             let addRequestJson = {
-                apiUrl: "@Url.Action("ChangeSts", "OtherSetting")",
+                apiUrl: "@Url.Action("ChangeStatus", "OtherSetting")",
                 postData: formData
             }
+
             $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {

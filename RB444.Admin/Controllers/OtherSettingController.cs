@@ -129,7 +129,7 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ChangeSts(int id, bool status, int api)
+        public async Task<ActionResult> ChangeStatus(int id, bool status, int api)
         {
             CommonReturnResponse commonModel = null;
             try
