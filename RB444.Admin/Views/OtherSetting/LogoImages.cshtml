@@ -4,7 +4,101 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .image-input {
+        position: relative;
+        display: inline-block;
+        border-radius: 0.42rem;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+        .image-input .image-input-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 0.42rem;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .image-input [data-action=change] {
+            cursor: pointer;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+        }
+
+            .image-input [data-action=change] input {
+                width: 0 !important;
+                height: 0 !important;
+                overflow: hidden;
+                opacity: 0;
+            }
+
+        .image-input [data-action=cancel],
+        .image-input [data-action=remove] {
+            position: absolute;
+            right: -10px;
+            bottom: -5px;
+        }
+
+        .image-input [data-action=cancel] {
+            display: none;
+        }
+
+        .image-input.image-input-changed [data-action=cancel] {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+        }
+
+        .image-input.image-input-changed [data-action=remove] {
+            display: none;
+        }
+
+        .image-input.image-input-empty [data-action=remove],
+        .image-input.image-input-empty [data-action=cancel] {
+            display: none;
+        }
+
+        .image-input.image-input-circle {
+            border-radius: 50%;
+        }
+
+            .image-input.image-input-circle .image-input-wrapper {
+                border-radius: 50%;
+            }
+
+            .image-input.image-input-circle [data-action=change] {
+                right: 5px;
+                top: 5px;
+            }
+
+            .image-input.image-input-circle [data-action=cancel],
+            .image-input.image-input-circle [data-action=remove] {
+                right: 5px;
+                bottom: 5px;
+            }
+
+        .image-input.image-input-outline .image-input-wrapper {
+            border: 3px solid #FFFFFF;
+            -webkit-box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
+            box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
+        }
+</style>
 <div class="container">
+
+    <div class="image-input image-input-empty image-input-outline">
+        <img src="~/images/54404339-542f-4572-9dce-396406ec43f5_Screenshot.png" id="account-upload-img" class="image-input-wrapper" alt="profile image" />
+
+        <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
+            <i class="fa fa-pen icon-sm text-muted"></i>
+            <input type="file" id="ProfileImage" hidden accept="image/*" />
+        </label>
+        <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="Remove avatar">
+            <i class="ki ki-bold-close icon-xs text-muted"></i>
+        </span>
+    </div>
     <h2>Logo Images</h2>
     <div class="row p-4">
         <button class="btn btn-primary btn-sm w-auto" onclick="getRequest()">Add Logo</button>
@@ -25,29 +119,29 @@
                 int i = 1;
                 foreach (var item in Model)
                 {
-            <tr>
-                <th scope="row">@i</th>
-                <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
-                @if (item.Status == true)
-                {
-                    <td id="Status_@item.Id" style="color:lawngreen;">
-                        <a onclick="statusChange(@item.Id,false)">Active</a>
-                    </td>
-                }
-                else
-                {
-                    <td style="color:orangered;">
-                        <a onclick="statusChange(@item.Id,true)">DeActive</a>
-                    </td>
-                }
+                    <tr>
+                        <th scope="row">@i</th>
+                        <td><img style="height:50px; width:100px;" src="../@item.FilePath" /></td>
+                        @if (item.Status == true)
+                        {
+                            <td id="Status_@item.Id" style="color:lawngreen;">
+                                <a onclick="statusChange(@item.Id,false)">Active</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="color:orangered;">
+                                <a onclick="statusChange(@item.Id,true)">DeActive</a>
+                            </td>
+                        }
 
-                <td>
-                    <a onclick="getRequest(@item.Id)" class="Edit"><i class="fa fa-edit"></i></a>
-                </td>
-                <td>
-                    <a onclick="deleteRequest(@item.Id)"><i class="fa fa-trash"></i></a>
-                </td>
-            </tr>
+                        <td>
+                            <a onclick="getRequest(@item.Id)" class="Edit"><i class="fa fa-edit"></i></a>
+                        </td>
+                        <td>
+                            <a onclick="deleteRequest(@item.Id)"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
                     i++;
                 }
             }
@@ -102,6 +196,29 @@
 @section PageJs{
     <script src="~/js/custom.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            var accountUploadImg = $('#account-upload-img');
+            var accountUploadBtn = $('#ProfileImage');
+
+            // Update user photo on click of button
+            if (accountUploadBtn) {
+                accountUploadBtn.on('change', function (e) {
+                    var reader = new FileReader(),
+                        files = e.target.files;
+                    reader.onload = function () {
+                        if (accountUploadImg) {
+                            accountUploadImg.attr('src', reader.result);
+                        }
+                    };
+                    reader.readAsDataURL(files[0]);
+                });
+            }
+            // Reset Photo
+            $(".resetBtn").click(function () {
+                accountUploadImg.attr('src', '');
+            });
+        });
+
         function getRequest() {
             $('#registerModal').modal('show');
         }
