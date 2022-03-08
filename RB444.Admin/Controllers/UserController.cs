@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
@@ -29,13 +30,13 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Users()
         {
-            var contextUser = HttpContext.User;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+
             CommonReturnResponse commonModel = null;
             List<UserRoles> userRoles = null;
             List<Users> users = null;
             try
             {
-                var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserRoles", _configuration["ApiKeyUrl"]));
                 userRoles = jsonParser.ParsJson<List<UserRoles>>(Convert.ToString(commonModel.Data));
 
@@ -43,7 +44,7 @@ namespace RB444.Admin.Controllers
                 users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
 
                 ViewBag.UserRoles = userRoles;
-                ViewBag.LoginUser = loginUser;
+                ViewBag.LoginUser = user;
                 ViewBag.Users = users;
             }
             catch (Exception ex)
@@ -57,8 +58,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> RegisterUsersList(int? id)
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
+            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
 
             var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id : false;
@@ -125,6 +125,9 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement(int id)
         {
+            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = loginUser;
+
             var result = new List<AccountStatementVM>();
             var accountStatements = new List<AccountStatement>();
 
@@ -164,6 +167,9 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> UserProfile(string id)
         {
+            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = loginUser;
+
             var isAdmin = string.IsNullOrWhiteSpace(id);
 
             if (!isAdmin)

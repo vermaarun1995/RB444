@@ -34,6 +34,9 @@ namespace RB444.Admin.Controllers
         #region News settings
         public async Task<ActionResult> News()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
             var newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
 
@@ -87,6 +90,9 @@ namespace RB444.Admin.Controllers
         #region Slider Images settings
         public async Task<ActionResult> SliderImages()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllSliders", _configuration["ApiKeyUrl"]));
             var sliderList = jsonParser.ParsJson<List<Slider>>(Convert.ToString(commonModel.Data));
             return View(sliderList);
@@ -184,6 +190,9 @@ namespace RB444.Admin.Controllers
         #region Logo Images settings
         public async Task<ActionResult> LogoImages()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllLogo", _configuration["ApiKeyUrl"]));
             var LogoList = jsonParser.ParsJson<List<Logo>>(Convert.ToString(commonModel.Data));
             return View(LogoList);

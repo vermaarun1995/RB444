@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RB444.Admin.Models;
 using RB444.Data.Entities;
 using System.Diagnostics;
@@ -20,9 +21,8 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var contextUser = HttpContext.User;
-            var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
-            ViewBag.LoginUser = loginUser;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 

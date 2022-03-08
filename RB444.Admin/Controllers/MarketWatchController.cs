@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RB444.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RB444.Admin.Controllers
 {
@@ -18,36 +15,48 @@ namespace RB444.Admin.Controllers
         }
         // GET: MarketWatch       
         public ActionResult MarketWatch()
-        {           
+        {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 
         [HttpGet]
         public ActionResult TeamMarketWatch(int id)
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 
         public ActionResult ManageSeries()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 
 
         public ActionResult IndianFancy()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 
 
         public ActionResult SessionFancy()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
 
 
         public ActionResult BetfairMarket()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             return View();
         }
     }

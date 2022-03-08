@@ -67,6 +67,7 @@ namespace RB444.Admin
 
             services.AddTransient<IRequestServices, RequestServices>();
             services.AddTransient<ILoggerService, LoggerService>();
+            services.AddTransient<ICookieService, CookieService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

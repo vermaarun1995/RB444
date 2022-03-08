@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
@@ -27,6 +28,9 @@ namespace RB444.Admin.Controllers
         #region SportsSetting
         public async Task<ActionResult> SportsSetting()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             try
@@ -79,6 +83,9 @@ namespace RB444.Admin.Controllers
         #region SeriesSetting
         public async Task<ActionResult> SeriesSetting()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             List<Series> serieslist = null;
@@ -134,6 +141,9 @@ namespace RB444.Admin.Controllers
         #region match setting
         public async Task<ActionResult> MatchSettings()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             try
@@ -168,6 +178,9 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> SliderSetting()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<Slider> sliderList = null;
             try
@@ -186,6 +199,9 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> LogoSetting()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<Logo> logoList = null;
             try
@@ -204,6 +220,9 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> NewsSetting()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             CommonReturnResponse commonModel = null;
             List<News> newsList = null;
             try

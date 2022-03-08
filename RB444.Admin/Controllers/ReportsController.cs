@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using RB444.Model.ViewModel;
+using Newtonsoft.Json;
 
 namespace RB444.Admin.Controllers
 {
@@ -27,6 +28,9 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement", _configuration["ApiKeyUrl"]));
             var accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
 
@@ -35,6 +39,8 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> ActivityLog()
         {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
             var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetActivityLog", _configuration["ApiKeyUrl"]));
             var activityLogVM = jsonParser.ParsJson<List<ActivityLogVM>>(Convert.ToString(commonModel.Data));
 
