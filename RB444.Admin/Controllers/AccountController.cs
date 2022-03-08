@@ -184,6 +184,78 @@ namespace RB444.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(ResetPasswordViewModel model)
+        {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
+            var data = new CommonReturnResponse();
+
+            var isOldPassword = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+            if (isOldPassword)
+            {
+                var Code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, Code, model.Password);
+                if (result.Succeeded)
+                {
+                    data = new CommonReturnResponse()
+                    {
+                        Data = result,
+                        IsSuccess = true,
+                        Message = CustomMessageStatus.resetPwd,
+                        Status = ResponseStatusCode.OK
+                    };
+                    return Json(JsonConvert.SerializeObject(data));
+                }
+
+                data = new CommonReturnResponse()
+                {
+                    Data = result.Errors,
+                    IsSuccess = false,
+                    Message = result.ToString(),
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+            else
+            {
+                data = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = CustomMessageStatus.oldPwd,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+
+            data = new CommonReturnResponse()
+            {
+                IsSuccess = false,
+                Message = "Something Went Wrong."
+            };
+            return Json(JsonConvert.SerializeObject(data));
+
+            //CommonReturnResponse commonModel = null;
+            //try
+            //{
+            //    commonModel = await _rqs.PostAsync<ResetPasswordViewModel, CommonReturnResponse>(String.Format("{0}System/Account/ResetPassword", _configuration["ApiUrl"]), model);
+            //    var data = JsonConvert.SerializeObject(commonModel);
+            //    return Json(data);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    var data = new CommonReturnResponse()
+            //    {
+            //        IsSuccess = false,
+            //        Message = ex.Message
+            //    };
+            //    return Json(JsonConvert.SerializeObject(data));
+            //}
+        }
+
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
