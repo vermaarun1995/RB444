@@ -187,6 +187,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
+            _cookieService.Remove("loginUserDetail");
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }

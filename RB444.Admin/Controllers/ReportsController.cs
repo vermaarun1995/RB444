@@ -11,9 +11,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using RB444.Model.ViewModel;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RB444.Admin.Controllers
 {
+    [Authorize]
     public class ReportsController : Controller
     {
         private readonly IRequestServices _requestServices;
