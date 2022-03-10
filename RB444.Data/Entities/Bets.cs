@@ -10,6 +10,7 @@ namespace RB444.Data.Entities
         public string Event { get; set; }
         public string Market { get; set; }
         public string Selection { get; set; }
+        public int OddsType { get; set; }  // 1 for Match Odds. 2 for Bookmaker. 3 for Fancy Odds.
         public string Type { get; set; }  // Back or Lay
         public float OddsRequest { get; set; }
         public float AmountStake { get; set; }
