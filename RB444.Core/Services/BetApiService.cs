@@ -87,5 +87,17 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
+
+       
+        //string query = @"select * from Vendors where id = @id and isdeleted = 0 and isactive = 1;";
+        //query += @"select * from VendorServiceMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";
+        //            query += @"select * from VendorMembershipMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";
+
+        //            var result = await _baseRepository.GetQueryMultipleAsync(query, new { id = id }, gr => gr.Read<VendorVM>(), gr => gr.Read<VendorServiceMapping>(), gr => gr.Read<VendorMembershipMapping>());
+        //vendorVM = (result[0] as List<VendorVM>).FirstOrDefault();
+        //            if (vendorVM != null)
+        //            {
+        //                vendorVM.vendorServiceMappingList = (result[1] as List<VendorServiceMapping>).ToList();
+        //vendorVM.vendorMembershipMappingList = (result[2] as List<VendorMembershipMapping>).ToList();
     }
 }
