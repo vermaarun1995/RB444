@@ -3,102 +3,7 @@
     ViewData["Title"] = "LogoImages";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<style>
-    .image-input {
-        position: relative;
-        display: inline-block;
-        border-radius: 0.42rem;
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
-        .image-input .image-input-wrapper {
-            width: 120px;
-            height: 120px;
-            border-radius: 0.42rem;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .image-input [data-action=change] {
-            cursor: pointer;
-            position: absolute;
-            right: -10px;
-            top: -10px;
-        }
-
-            .image-input [data-action=change] input {
-                width: 0 !important;
-                height: 0 !important;
-                overflow: hidden;
-                opacity: 0;
-            }
-
-        .image-input [data-action=cancel],
-        .image-input [data-action=remove] {
-            position: absolute;
-            right: -10px;
-            bottom: -5px;
-        }
-
-        .image-input [data-action=cancel] {
-            display: none;
-        }
-
-        .image-input.image-input-changed [data-action=cancel] {
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-        }
-
-        .image-input.image-input-changed [data-action=remove] {
-            display: none;
-        }
-
-        .image-input.image-input-empty [data-action=remove],
-        .image-input.image-input-empty [data-action=cancel] {
-            display: none;
-        }
-
-        .image-input.image-input-circle {
-            border-radius: 50%;
-        }
-
-            .image-input.image-input-circle .image-input-wrapper {
-                border-radius: 50%;
-            }
-
-            .image-input.image-input-circle [data-action=change] {
-                right: 5px;
-                top: 5px;
-            }
-
-            .image-input.image-input-circle [data-action=cancel],
-            .image-input.image-input-circle [data-action=remove] {
-                right: 5px;
-                bottom: 5px;
-            }
-
-        .image-input.image-input-outline .image-input-wrapper {
-            border: 3px solid #FFFFFF;
-            -webkit-box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
-            box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
-        }
-</style>
 <div class="container">
-
-    <div class="image-input image-input-empty image-input-outline">
-        <img src="~/images/54404339-542f-4572-9dce-396406ec43f5_Screenshot.png" id="account-upload-img" class="image-input-wrapper" alt="profile image" />
-
-        <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
-            <i class="fa fa-pen icon-sm text-muted"></i>
-            <input type="file" id="ProfileImage" hidden accept="image/*" />
-        </label>
-        <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="Remove avatar">
-            <i class="ki ki-bold-close icon-xs text-muted"></i>
-        </span>
-    </div>
     <h2>Logo Images</h2>
     <div class="row p-4">
         <button class="btn btn-primary btn-sm w-auto" onclick="getRequest()">Add Logo</button>
@@ -163,17 +68,22 @@
                     <div class="modal-body">
                         <div class="form-horizontal">
                             <div class="error" style="display:none;" id="error"></div>
-                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                                <label class="control-label col-md-4" style="color:black !important;">Select Image</label>
-                                <div class="col-md-8">
-                                    <input type="file" id="inputFiles" name="file" />
-                                </div>
+                            <div class="image-input image-input-empty image-input-outline">
+                                <img src="~/common/UserProfile.png" id="account-upload-img" class="image-input-wrapper" alt="profile image" />
+
+                                <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
+                                    <i class="fa fa-pen icon-sm text-muted"></i>
+                                    <input type="file" id="ProfileImage" name="file" hidden accept="image/*" />
+                                </label>                              
+                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow resetBtn" data-action="remove" data-toggle="tooltip" title="Remove avatar">
+                                    <i class="fa fa-times "></i>
+                                </span>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="form-group d-flex justify-content-between align-items-center mb-75">
-                                    <div class="col-md-12">
-                                        <input type="checkbox" id="Status" />
-                                        <label class="form-label">Status</label>
+                                    <div class="col-md-12 mt-10 d-flex">
+                                        <input type="checkbox" id="Status" style="width: 20px;height: 20px;">
+                                        <label class="form-label ml-2" style="font-size: 20px!important;">Status</label>
                                     </div>
                                 </div>
                             </div>
@@ -184,8 +94,6 @@
                         <button type="button" id="cancle" class="btn btn-light" onclick="closeModel();">Cancel</button>
                         <button type="button" id="btn-save" class="btn btn-primary font-weight-bold" onclick="return saveRequest()">Save</button>
                     </div>
-
-
                 </form>
             </div>
         </div>
@@ -215,7 +123,8 @@
             }
             // Reset Photo
             $(".resetBtn").click(function () {
-                accountUploadImg.attr('src', '');
+                $("#ProfileImage").val("");
+                accountUploadImg.attr('src', '/common/UserProfile.png');
             });
         });
 
@@ -229,7 +138,7 @@
 
         function saveRequest() {
             let formdata = new FormData();
-            let fileList = document.getElementById("inputFiles").files;
+            let fileList = document.getElementById("ProfileImage").files;
             if (fileList.length > 0) {
                 for (const file of fileList) {
                     formdata.append(file.name, file);
@@ -255,6 +164,9 @@
                         messagePopup.error(err.statusText);
                     }
                 )
+            }
+            else {
+                messagePopup.responseError("Please upload Image.");
             }
         }
 
