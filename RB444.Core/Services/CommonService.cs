@@ -80,7 +80,7 @@ namespace RB444.Core.Services
         {
             try
             {
-                var logos = (await _baseRepository.GetListAsync<Logo>()).FirstOrDefault();
+                var logos = (await _baseRepository.GetListAsync<Logo>()).Where(s=>s.Status==true).FirstOrDefault();
                 return new CommonReturnResponse
                 {
                     Data = logos,
