@@ -28,12 +28,12 @@ namespace RB444.Core.Services.BetfairApi
         public async Task<CommonReturnResponse> GetSportsListAsync()
         {
             CommonReturnResponse commonModel = null;            
-            var sportslist = new List<Sports>();
+            var sportslist = new List<SportsSettings>();
             List<CommonModel> commonVMList = new List<CommonModel>();
             try
             {
-                commonModel = await _requestServices.PostAsync<Sports, CommonReturnResponse>("https://dream444.com/api/exchange/sports/sportsList", null);
-                sportslist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                commonModel = await _requestServices.PostAsync<SportsSettings, CommonReturnResponse>("https://dream444.com/api/exchange/sports/sportsList", null);
+                sportslist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
                 foreach (var item in sportslist)
                 {
                     var commonVM = new CommonModel();

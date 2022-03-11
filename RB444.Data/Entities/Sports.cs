@@ -1,6 +1,6 @@
 ﻿namespace RB444.Data.Entities
 {
-    public class SportsSetting
+    public class Sports
     {
         public int Id { get; set; }
         public string SportName { get; set; }

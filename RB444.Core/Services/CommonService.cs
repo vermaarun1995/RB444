@@ -19,6 +19,35 @@ namespace RB444.Core.Services
             _baseRepository = baseRepository;
         }
 
+        public async Task<CommonReturnResponse> GetSportsAsync(int type)
+        {
+            IDictionary<string, object> _keyValues = null;
+            var sports = new List<Sports>();
+            try
+            {
+                if(type == 1)
+                {
+                    sports = await _baseRepository.GetListAsync<Sports>();
+                }
+                else
+                {
+                    _keyValues = new Dictionary<string, object> { { "Status", 1 } };
+                    sports = (await _baseRepository.SelectAsync<Sports>(_keyValues)).ToList();
+                }
+                return new CommonReturnResponse
+                {
+                    Data = sports,
+                    Message = sports.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = sports.Count > 0,
+                    Status = sports.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }        
+
         public async Task<CommonReturnResponse> GetAllRolesAsync()
         {
             try

@@ -33,7 +33,7 @@ namespace RB444.Models.Model
         public bool has_outrights { get; set; }
     }
 
-    public class Sports
+    public class SportsSettings
     {
         public string sportId { get; set; }
         public string sportName { get; set; }

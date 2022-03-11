@@ -12,7 +12,7 @@ namespace RB444.Core.IServices
         /// </summary>
         /// <param name="sportsSetting"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> AddOrUpdateSportsSettingAsync(SportsSetting sportsSetting);
+        Task<CommonReturnResponse> AddOrUpdateSportsSettingAsync(Sports sportsSetting);
         /// <summary>
         /// Update Status of Sports.
         /// </summary>

@@ -32,13 +32,13 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<Sports> sportsDatalist = null;
+            List<SportsSettings> sportsDatalist = null;
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
             }
@@ -56,7 +56,7 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateSports(SportsSetting obj)
+        public ActionResult CreateSports(Sports obj)
         {
             try
             {
@@ -87,14 +87,14 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<Sports> sportsDatalist = null;
+            List<SportsSettings> sportsDatalist = null;
             List<Series> serieslist = null;
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
 
@@ -116,9 +116,9 @@ namespace RB444.Admin.Controllers
         public async Task<ActionResult> CreateSeries()
         {
             CommonReturnResponse commonModel = null;
-            List<Sports> sportsDatalist = null;
+            List<SportsSettings> sportsDatalist = null;
             commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-            sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+            sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
             ViewBag.SportsList = sportsDatalist;
             return View();
         }
@@ -145,13 +145,13 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<Sports> sportsDatalist = null;
+            List<SportsSettings> sportsDatalist = null;
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
             }

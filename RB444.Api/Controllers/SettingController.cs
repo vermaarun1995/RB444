@@ -19,7 +19,7 @@ namespace RB444.Api.Controllers
         }
 
         [HttpPost, Route("AddOrUpdateSportsSetting")]
-        public async Task<CommonReturnResponse> AddOrUpdateSportsSetting(SportsSetting sportsSetting)
+        public async Task<CommonReturnResponse> AddOrUpdateSportsSetting(Sports sportsSetting)
         {
             return await _settingService.AddOrUpdateSportsSettingAsync(sportsSetting);
         }

@@ -18,13 +18,13 @@ namespace RB444.Core.Services
             _baseRepository = baseRepository;
         }
 
-        public async Task<CommonReturnResponse> AddOrUpdateSportsSettingAsync(SportsSetting sportsSetting)
+        public async Task<CommonReturnResponse> AddOrUpdateSportsSettingAsync(Sports sportsSetting)
         {
             try
             {
                 //string query = string.Format(@"Update SportsSetting set Status = {0} where SportName = '{1}'", sportsSetting.Status, sportsSetting.SportName);
                 //await _baseRepository.QueryAsync<SportsSetting>(query);
-                var sports = await _baseRepository.GetDataByIdAsync<Sports>(sportsSetting.Id);
+                var sports = await _baseRepository.GetDataByIdAsync<SportsSettings>(sportsSetting.Id);
                 if (sports != null)
                 {
                     int _resultId = await _baseRepository.UpdateAsync(sportsSetting);

@@ -16,6 +16,12 @@ namespace RB444.Api.Controllers
             _commonService = commonService;
         }
 
+        [HttpGet, Route("GetSports")]
+        public async Task<CommonReturnResponse> GetSports(int type)
+        {
+            return await _commonService.GetSportsAsync(type);
+        }
+
         [HttpGet, Route("GetAllSliders")]
         public async Task<CommonReturnResponse> GetAllSliders()
         {
