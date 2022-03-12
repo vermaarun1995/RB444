@@ -7,5 +7,7 @@
         public long MinOddLimit { get; set; }
         public long MaxOddLimit { get; set; }
         public bool Status { get; set; }
+        public int Sequence { get; set; }
+        public bool Highlight { get; set; }
     }
 }
