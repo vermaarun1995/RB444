@@ -20,6 +20,12 @@ namespace RB444.Api.Controllers.BetfairApi
             _exchangeService = exchangeService;
         }
 
+        [HttpGet, Route("GetSports")]
+        public async Task<CommonReturnResponse> GetSports(int type)
+        {
+            return await _exchangeService.GetSportsAsync(type);
+        }
+
         [HttpGet, Route("GetSeries")]
         public async Task<CommonReturnResponse> GetSeries(int SportId, int type)
         {
