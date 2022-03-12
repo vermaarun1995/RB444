@@ -36,9 +36,16 @@ namespace RB444.Admin.Controllers
         }
         public async Task<ActionResult> Login(string returnUrl = null)
         {
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetLogo", _configuration["ApiKeyUrl"]));
-            Logo logo = jsonParser.ParsJson<Logo>(Convert.ToString(commonModel.Data));
-            ViewBag.Logo = logo.FilePath;
+            try
+            {
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetLogo", _configuration["ApiKeyUrl"]));
+                Logo logo = jsonParser.ParsJson<Logo>(Convert.ToString(commonModel.Data));
+                ViewBag.Logo = logo.FilePath;               
+            }
+            catch (Exception ex)
+            {
+                
+            }
             return View();
         }
 

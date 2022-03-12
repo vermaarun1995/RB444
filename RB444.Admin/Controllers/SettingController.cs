@@ -32,13 +32,13 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<SportsSettings> sportsDatalist = null;
+            List<Sports> sportsDatalist = null;
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetSports?type=1", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
             }
