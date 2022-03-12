@@ -13,5 +13,6 @@ namespace RB444.Model.Model
         public float AmountStake { get; set; }
         public int? ResultType { get; set; }  // 1 for Win and 2 for Loss 3 from Draw/Tie
         public float? MatchFinishedAmount { get; set; }
+        public string Runner { get; set; }
     }
 }
