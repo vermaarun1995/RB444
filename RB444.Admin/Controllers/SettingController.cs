@@ -88,7 +88,7 @@ namespace RB444.Admin.Controllers
 
             CommonReturnResponse commonModel = null;
             List<SportsSettings> sportsDatalist = null;
-            List<Series> serieslist = null;
+            List<SeriesDataByApi> serieslist = null;
             try
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
@@ -101,7 +101,7 @@ namespace RB444.Admin.Controllers
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSeriesList", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                    serieslist = jsonParser.ParsJson<List<SeriesDataByApi>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SeriesList = serieslist;
             }

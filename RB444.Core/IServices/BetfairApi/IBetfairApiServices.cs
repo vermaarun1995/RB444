@@ -12,12 +12,6 @@ namespace RB444.Core.IServices.BetfairApi
         Task<CommonReturnResponse> GetSportsListAsync();
 
         /// <summary>
-        /// Get Series List.
-        /// </summary>
-        /// <returns></returns>
-        Task<CommonReturnResponse> GetSeriesListAsync();
-
-        /// <summary>
         /// Get Series list with specific sport
         /// </summary>
         /// <param name="SportName">Sport Name</param>

@@ -103,6 +103,7 @@ namespace RB444.Api
             services.AddTransient<IDatabase, Database>();
 
             services.AddTransient<IBetfairApiServices, BetfairApiServices>();
+            services.AddTransient<IExchangeService, ExchangeService>();
             services.AddTransient<ICommonService, CommonService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IBetApiService, BetApiService>();

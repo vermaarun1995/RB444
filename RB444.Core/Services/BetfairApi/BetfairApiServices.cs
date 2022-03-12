@@ -27,7 +27,7 @@ namespace RB444.Core.Services.BetfairApi
 
         public async Task<CommonReturnResponse> GetSportsListAsync()
         {
-            CommonReturnResponse commonModel = null;            
+            CommonReturnResponse commonModel = null;
             var sportslist = new List<SportsSettings>();
             List<CommonModel> commonVMList = new List<CommonModel>();
             try
@@ -63,36 +63,13 @@ namespace RB444.Core.Services.BetfairApi
             finally { if (sportslist != null) { sportslist = null; } }
         }
 
-        public async Task<CommonReturnResponse> GetSeriesListAsync()
-        {
-            List<Series> serieslist = null;
-            try
-            {
-                serieslist = await _requestServices.GetAsync<List<Series>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
-                serieslist = serieslist.ToList();
-                return new CommonReturnResponse
-                {
-                    Data = serieslist,
-                    Message = serieslist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = serieslist.Count > 0,
-                    Status = serieslist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
-                };
-            }
-            catch (Exception ex)
-            {
-                //_logger.LogException("Exception : AircraftService : GetAircarftDetailsAsync()", ex);
-                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
-            }
-            finally { if (serieslist != null) { serieslist = null; } }
-        }
-
         public async Task<CommonReturnResponse> GetSeriesListBySportsAsync(string SportName)
         {
-            List<Series> serieslist = null;
+            List<SeriesDataByApi> serieslist = null;
             try
             {
-                serieslist = await _requestServices.GetAsync<List<Series>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
-                serieslist = serieslist.Where(x => x.group == SportName).ToList();
+                serieslist = await _requestServices.GetAsync<List<SeriesDataByApi>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
+                serieslist = serieslist.ToList();
                 return new CommonReturnResponse
                 {
                     Data = serieslist,
