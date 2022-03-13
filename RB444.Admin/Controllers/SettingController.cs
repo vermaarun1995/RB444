@@ -35,7 +35,7 @@ namespace RB444.Admin.Controllers
             List<Sports> sportsDatalist = null;
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetSports?type=1", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSports?type=2", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
                     sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
@@ -47,11 +47,6 @@ namespace RB444.Admin.Controllers
                 //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
-            return View();
-        }
-
-        public async Task<ActionResult> CreateSports()
-        {
             return View();
         }
 
@@ -87,21 +82,21 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<SportsSettings> sportsDatalist = null;
-            List<SeriesDataByApi> serieslist = null;
+            List<Sports> sportsDatalist = null;
+            List<Series> serieslist = null;
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSports?type=2", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
 
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSeriesList", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSeries?SportId=4&type=2", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    serieslist = jsonParser.ParsJson<List<SeriesDataByApi>>(Convert.ToString(commonModel.Data));
+                    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SeriesList = serieslist;
             }
@@ -113,16 +108,7 @@ namespace RB444.Admin.Controllers
             return View();
         }
 
-        public async Task<ActionResult> CreateSeries()
-        {
-            CommonReturnResponse commonModel = null;
-            List<SportsSettings> sportsDatalist = null;
-            commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
-            sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
-            ViewBag.SportsList = sportsDatalist;
-            return View();
-        }
-
+      
         [HttpPost]
         public ActionResult CreateSeries(SeriesSetting obj)
         {
@@ -145,13 +131,13 @@ namespace RB444.Admin.Controllers
             ViewBag.LoginUser = user;
 
             CommonReturnResponse commonModel = null;
-            List<SportsSettings> sportsDatalist = null;
+            List<Sports> sportsDatalist = null;
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}BetfairApi/BetfairApi/GetSportsList", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSports?type=2", _configuration["ApiKeyUrl"]));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    sportsDatalist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
                 }
                 ViewBag.SportsList = sportsDatalist;
             }
@@ -160,11 +146,6 @@ namespace RB444.Admin.Controllers
                 //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
-            return View();
-        }
-
-        public async Task<ActionResult> CreateMatchSetting()
-        {
             return View();
         }
 

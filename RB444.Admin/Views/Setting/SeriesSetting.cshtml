@@ -1,7 +1,9 @@
-﻿
+﻿@using RB444.Data.Entities;
 @{
     ViewBag.Title = "Series Setting";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var sportsList = ViewBag.SportsList as List<Sports>;
 }
 
 <div class="container">
@@ -20,9 +22,9 @@
             <label class="control-label">Sport Name</label>
             <select class="form-control" id="ddlSportName">
                 <option value="0">Please Select Sport</option>
-                @foreach (var item in ViewBag.SportsList)
+                @foreach (var item in sportsList)
                 {
-                    <option>@item.group</option>
+                    <option value="@item.Id">@item.SportName</option>
                 }
             </select>
         </div>
@@ -31,15 +33,15 @@
             @Html.TextBox("SeriesName", null, new { placeholder = "Series Name", @class = "form-control" })
         </div>
         @*<div class="col-md-3 mt-auto">
-            <a href="~/setting/CreateSeries" class="btn btn-primary"> Manual Series</a>
-        </div>*@
+                <a href="~/setting/CreateSeries" class="btn btn-primary"> Manual Series</a>
+            </div>*@
     </div>
     <table class="sportesTbl table table-striped table-dark">
         <thead>
             <tr>
                 <th>S NO.</th>
                 <th>SPORT NAME</th>
-                <th>NAME</th>
+                <th>Tournament Name</th>
                 <th>ACTION</th>
             </tr>
         </thead>
@@ -51,18 +53,18 @@
                 {
                     <tr>
                         <th scope="row">@i</th>
-                        <td>@item.group</td>
+                        <td>@sportsList.Where(x=>x.Id==item.SportId).Select(s=>s.SportName).FirstOrDefault()</td>
                         <td>
-                            @item.title
+                            @item.tournamentName
                         </td>
                         <td>
-                            <a data-value="@item.key"
+                            <a data-value="@item.SportId"
                                href="javascript:void(0)" class="btnEdit">
                                 <div class="row">
                                     <div class="col-3">
                                         <span class="switch switch-success">
                                             <label>
-                                                <input type="checkbox" checked="@item.active" name="select" id="checkBoxAction" />
+                                                <input type="checkbox" checked="@item.Status" name="select" id="checkBoxAction" />
                                                 <span></span>
                                             </label>
                                         </span>

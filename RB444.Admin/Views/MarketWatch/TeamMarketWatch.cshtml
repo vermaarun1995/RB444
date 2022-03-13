@@ -1,6 +1,8 @@
-﻿@{
+﻿@using RB444.Model.Model;
+@{
     ViewData["Title"] = "TeamMarketWatch";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var MarketWatchVM = ViewBag.MarketWatchVM as List<MarketWatchVM>;
 }
 
 <style>
@@ -471,7 +473,7 @@
             </div>
             <div class="col-sm-12 p-0 mt-4">
                 <div class="w-100" style="display: flex; justify-content: start; background-color: #1e1e2d;">
-                    <div>Matched Bet(2)</div>
+                    <div>Matched Bet(@MarketWatchVM.Where(x => x.OddsType == 1).Count())</div>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
@@ -485,34 +487,44 @@
                             <th>P&L</th>
                         </tr>
                         <tbody>
-                           
-                            <tr>
-                                <td>1</td>
-                                <td>D</td>
-                                <td>C</td>
-                                <td>Demou</td>
-                                <td>asfsdf sf s fsd fds f</td>
-                                <td>53.00</td>
-                                <td>400</td>
-                                <td>400</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>D</td>
-                                <td>C</td>
-                                <td>Demou</td>
-                                <td>asfsdf sf s fsd fds f</td>
-                                <td>53.00</td>
-                                <td>400</td>
-                                <td>400</td>
-                            </tr>
+
+                            @if (MarketWatchVM != null && MarketWatchVM.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in MarketWatchVM.Where(x => x.OddsType == 1).ToList())
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>D</td>
+                                        <td>C</td>
+                                        <td>@item.FullName</td>
+                                        <td>asfsdf sf s fsd fds f</td>
+                                        <td>@item.OddsRequest</td>
+                                        <td>@item.AmountStake</td>
+                                        <td>@item.MatchFinishedAmount</td>
+                                    </tr>
+                                    i++;
+                                }
+
+                            }
+
+                            @*<tr>
+                            <td>1</td>
+                            <td>D</td>
+                            <td>C</td>
+                            <td>Demou</td>
+                            <td>asfsdf sf s fsd fds f</td>
+                            <td>53.00</td>
+                            <td>400</td>
+                            <td>400</td>
+                        </tr>*@
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="col-sm-12 p-0 mt-4">
                 <div class="w-100" style="display: flex; justify-content: start; background-color: #1e1e2d;">
-                    <div>Fancy Bet(2)</div>
+                    <div>Fancy Bet(@MarketWatchVM.Where(x => x.OddsType == 2).Count())</div>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
@@ -526,26 +538,67 @@
                             <th>P&L</th>
                         </tr>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>D</td>
-                                <td>C</td>
-                                <td>Demou</td>
-                                <td>asfsdf sf s fsd fds f</td>
-                                <td>53.00</td>
-                                <td>400</td>
-                                <td>400</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>D</td>
-                                <td>C</td>
-                                <td>Demou</td>
-                                <td>asfsdf sf s fsd fds f</td>
-                                <td>53.00</td>
-                                <td>400</td>
-                                <td>400</td>
-                            </tr>
+                            @if (MarketWatchVM != null && MarketWatchVM.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in MarketWatchVM.Where(x => x.OddsType == 2).ToList())
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>D</td>
+                                        <td>C</td>
+                                        <td>@item.FullName</td>
+                                        <td>asfsdf sf s fsd fds f</td>
+                                        <td>@item.OddsRequest</td>
+                                        <td>@item.AmountStake</td>
+                                        <td>@item.MatchFinishedAmount</td>
+                                    </tr>
+                                    i++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-sm-12 p-0 mt-4">
+                <div class="w-100" style="display: flex; justify-content: start; background-color: #1e1e2d;">
+                    <div>BookMark Bet(@MarketWatchVM.Where(x => x.OddsType == 3).Count())</div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr style="background-color: #1e1e2d !important;color:white;">
+                            <th>S.No.</th>
+                            <th colspan="2"></th>
+                            <th>User</th>
+                            <th>Runner</th>
+                            <th>Odds</th>
+                            <th>Stack</th>
+                            <th>P&L</th>
+                        </tr>
+                        <tbody>
+                            @if (MarketWatchVM != null && MarketWatchVM.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in MarketWatchVM.Where(x => x.OddsType == 3).ToList())
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>D</td>
+                                        <td>C</td>
+                                        <td>@item.FullName</td>
+                                        <td>asfsdf sf s fsd fds f</td>
+                                        <td>@item.OddsRequest</td>
+                                        <td>@item.AmountStake</td>
+                                        <td>@item.MatchFinishedAmount</td>
+                                    </tr>
+                                    i++;
+                                }
+
+                            }
+
                         </tbody>
                     </table>
                 </div>

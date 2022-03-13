@@ -9,6 +9,7 @@ using RB444.Data.Entities;
 using RB444.Model.Model;
 using RB444.Models.Model;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RB444.Admin.Controllers
@@ -40,9 +41,23 @@ namespace RB444.Admin.Controllers
         {
             var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = user;
-
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}MarketWatch/GetBetHistory?SportId={1}&UserId={2}", _configuration["ApiKeyUrl"], SportId, user.Id));
-            ViewBag.MarketWatchVM = jsonParser.ParsJson<MarketWatchVM>(Convert.ToString(commonModel.Data));
+            CommonReturnResponse commonModel = null;
+            List<MarketWatchVM> marketWatchVM = new List<MarketWatchVM>();
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}MarketWatch/GetBetHistory?SportId={1}&UserId={2}", _configuration["ApiKeyUrl"], SportId, 13));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    marketWatchVM = jsonParser.ParsJson<List<MarketWatchVM>>(Convert.ToString(commonModel.Data));
+                }
+                ViewBag.MarketWatchVM = marketWatchVM;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+          
             return View();
         }
 
