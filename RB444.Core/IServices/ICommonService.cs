@@ -6,13 +6,6 @@ namespace RB444.Core.IServices
     public interface ICommonService
     {
         /// <summary>
-        /// Get all sports.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        Task<CommonReturnResponse> GetSportsAsync(int type);
-
-        /// <summary>
         /// Get All user Roles.
         /// </summary>
         /// <returns></returns>

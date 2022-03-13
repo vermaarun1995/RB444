@@ -16,6 +16,15 @@ namespace RB444.Models.Model
         public dynamic Data { get; set; }
     }
 
+    public class SeriesReturnResponse
+    {
+        public string message { get; set; }
+        public int code { get; set; }
+        public bool error { get; set; }
+        public List<SeriesDataByApi> data { get; set; }
+        public long currentTime { get; set; }
+    }
+
     public class PriorityStatus
     {
         public int PriorityId { get; set; }
@@ -45,14 +54,10 @@ namespace RB444.Models.Model
         public bool others { get; set; }
     }
 
-    public class Series
+    public class SeriesDataByApi
     {
-        public string key { get; set; }
-        public string group { get; set; }
-        public string title { get; set; }
-        public string description { get; set; }
-        public bool active { get; set; }
-        public bool has_outrights { get; set; }
+        public string eventId { get; set; }
+        public string eventName { get; set; }
     }
 
     public class Outcome
