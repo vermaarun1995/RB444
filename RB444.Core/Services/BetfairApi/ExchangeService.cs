@@ -60,32 +60,98 @@ namespace RB444.Core.Services.BetfairApi
             IDictionary<string, object> _keyValues = null;
             var seriesReturnResponse = new SeriesReturnResponse();
             List<SeriesDataByApi> seriesDataByApis = null;
+            List<SeriesDataByApi> seriesDistinctDataByApis = new List<SeriesDataByApi>();
             List<Series> serieslistByDatabase = null;
             List<Series> serieslist = new List<Series>();
             try
             {
                 seriesReturnResponse = await _requestServices.GetAsync<SeriesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
                 seriesDataByApis = seriesReturnResponse.data;
-                //serieslist = serieslist.ToList();
+                foreach (var itemSeries in seriesDataByApis)
+                {
+                    if (!seriesDistinctDataByApis.Any(x => x.SeriesId == itemSeries.SeriesId))
+                        seriesDistinctDataByApis.Add(itemSeries);
+                }
                 _keyValues = new Dictionary<string, object> { { "SportId", SportId } };
                 serieslistByDatabase = (await _baseRepository.SelectAsync<Series>(_keyValues)).ToList();
 
-                foreach (var item in seriesDataByApis)
+                foreach (var item in seriesDistinctDataByApis)
                 {
                     var series = new Series
                     {
-                        tournamentId = Convert.ToInt64(item.eventId),
-                        tournamentName = item.eventName,
+                        tournamentId = Convert.ToInt64(item.SeriesId),
+                        tournamentName = item.SeriesName,
                         SportId = SportId,
-                        Status = true
+                        Status = serieslistByDatabase.Where(x=>x.tournamentId==item.SeriesId).Select(s=>s.Status).FirstOrDefault()
+
                     };
                     serieslist.Add(series);
 
-                    if (serieslistByDatabase.Count > 0)
+                    if (serieslistByDatabase.Count > 0 && type == 1)
                     {
                         foreach (var item2 in serieslistByDatabase)
                         {
-                            if (item.eventName.Equals(item2.tournamentName) && item2.Status != true && type == 1)
+                            if (item.SeriesName.Equals(item2.tournamentName) && item2.Status != true)
+                            {
+                                serieslist.Remove(item2);
+                            }
+                        }
+                    }
+                }
+
+                return new CommonReturnResponse
+                {
+                    Data = serieslist,
+                    Message = serieslist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = serieslist.Count > 0,
+                    Status = serieslist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AircraftService : GetAircarftDetailsAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally { if (seriesDataByApis != null) { seriesDataByApis = null; } }
+        }
+
+        public async Task<CommonReturnResponse> GetMatchesListAsync(int SportId, long SeriesId, int type)
+        {
+            IDictionary<string, object> _keyValues = null;
+            var seriesReturnResponse = new SeriesReturnResponse();
+            List<SeriesDataByApi> seriesDataByApis = null;
+            List<SeriesDataByApi> seriesDistinctDataByApis = new List<SeriesDataByApi>();
+            List<Series> serieslistByDatabase = null;
+            List<Series> serieslist = new List<Series>();
+            try
+            {
+                seriesReturnResponse = await _requestServices.GetAsync<SeriesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                seriesDataByApis = seriesReturnResponse.data;
+                foreach (var itemSeries in seriesDataByApis)
+                {
+                    if (!seriesDistinctDataByApis.Any(x => x.SeriesId == itemSeries.SeriesId))
+                        seriesDistinctDataByApis.Add(itemSeries);
+                }
+                _keyValues = new Dictionary<string, object> { { "SportId", SportId } };
+                serieslistByDatabase = (await _baseRepository.SelectAsync<Series>(_keyValues)).ToList();
+
+                foreach (var item in seriesDistinctDataByApis)
+                {
+                    var series = new Series
+                    {
+                        tournamentId = Convert.ToInt64(item.SeriesId),
+                        tournamentName = item.SeriesName,
+                        SportId = SportId,
+                        Status = serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).Select(s => s.Status).FirstOrDefault()
+
+                    };
+                    serieslist.Add(series);
+
+                    if (serieslistByDatabase.Count > 0 && type == 1)
+                    {
+                        foreach (var item2 in serieslistByDatabase)
+                        {
+                            if (item.SeriesName.Equals(item2.tournamentName) && item2.Status != true)
                             {
                                 serieslist.Remove(item2);
                             }

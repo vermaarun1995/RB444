@@ -56,8 +56,17 @@ namespace RB444.Models.Model
 
     public class SeriesDataByApi
     {
-        public string eventId { get; set; }
+        public long SeriesId { get; set; }
+        public string SeriesName { get; set; }
+    }
+
+    public class MatchesDataByApi
+    {
+        public long eventId { get; set; }
         public string eventName { get; set; }
+        public string marketId { get; set; }
+        public string marketName { get; set; }
+        public string marketType { get; set; }
     }
 
     public class Outcome
