@@ -34,6 +34,15 @@ namespace RB444.Models.Model
         public long currentTime { get; set; }
     }
 
+    public class EventReturnResponse
+    {
+        public List<List<MatchOddsVM>> t1 { get; set; }
+        //public List<object> t2 { get; set; }
+        //public object t3 { get; set; }
+        //public object t4 { get; set; }
+        public string delayed { get; set; }
+    }
+
     public class PriorityStatus
     {
         public int PriorityId { get; set; }
@@ -76,16 +85,33 @@ namespace RB444.Models.Model
         public DateTime eventDate { get; set; }
         public long SeriesId { get; set; }
         public string SeriesName { get; set; }
-        public string marketId { get; set; }
-        public string marketName { get; set; }
-        public string marketType { get; set; }
-        public long selectionId1 { get; set; }
-        public long selectionId2 { get; set; }
-        public long selectionId3 { get; set; }
-        public string runnerName1 { get; set; }
-        public string runnerName2 { get; set; }
-        public string runnerName3 { get; set; }
 
+    }
+
+    public class MatchOddsVM
+    {
+        public string mid { get; set; }
+        public string mstatus { get; set; }
+        public string mname { get; set; }
+        public string iplay { get; set; }
+        public string sid { get; set; }
+        public string nat { get; set; }
+        public string b1 { get; set; }
+        public string bs1 { get; set; }
+        public string b2 { get; set; }
+        public string bs2 { get; set; }
+        public string b3 { get; set; }
+        public string bs3 { get; set; }
+        public string l1 { get; set; }
+        public string ls1 { get; set; }
+        public string l2 { get; set; }
+        public string ls2 { get; set; }
+        public string l3 { get; set; }
+        public string ls3 { get; set; }
+        public string status { get; set; }
+        public string srno { get; set; }
+        public string gtype { get; set; }
+        public string utime { get; set; }
     }
 
     public class Outcome

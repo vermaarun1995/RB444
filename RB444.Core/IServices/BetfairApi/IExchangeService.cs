@@ -19,5 +19,21 @@ namespace RB444.Core.IServices.BetfairApi
         /// <param name="type"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetSeriesListAsync(int SportId, int type);
+
+        /// <summary>
+        /// Get matches list.
+        /// </summary>
+        /// <param name="SportId"></param>
+        /// <param name="SeriesId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetMatchesListAsync(int SportId, long SeriesId, int type);
+
+        /// <summary>
+        /// Get matches list.
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetMatchEventsAsync(long eventId);
     }
 }
