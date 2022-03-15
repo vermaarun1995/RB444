@@ -89,4 +89,23 @@ namespace RB444.Model.Model
         public int status_code { get; set; }
         public bool status { get; set; }
     }
+
+    public class SportsEventModel
+    {
+        public string gameId { get; set; }
+        public string marketId { get; set; }
+        public string eid { get; set; }
+        public string eventName { get; set; }
+        public string inPlay { get; set; }
+        public string tv { get; set; }
+        public double back1 { get; set; }
+        public double lay1 { get; set; }
+        public double back11 { get; set; }
+        public double lay11 { get; set; }
+        public double back12 { get; set; }
+        public double lay12 { get; set; }
+        public string m1 { get; set; }
+        public string f { get; set; }
+        public int vir { get; set; }
+    }
 }

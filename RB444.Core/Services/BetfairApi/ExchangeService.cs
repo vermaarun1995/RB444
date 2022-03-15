@@ -330,5 +330,42 @@ namespace RB444.Core.Services.BetfairApi
             }
             //finally { if (matchDataByApis != null) { matchDataByApis = null; } }
         }
+
+        public async Task<CommonReturnResponse> GetSportsEventsAsync(int SportId)
+        {
+            string sportNameForApi = "";
+            if(SportId == 1)
+            {
+                sportNameForApi = "getsoccermatches";
+            }
+            else if(SportId == 2)
+            {
+                sportNameForApi = "gettennismatches";
+            }
+            else if(SportId == 4)
+            {
+                sportNameForApi = "getcricketmatches";
+            }
+
+            var sportsEventModelList = new List<SportsEventModel>();
+            try
+            {
+                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", sportNameForApi));                
+
+                return new CommonReturnResponse
+                {
+                    Data = sportsEventModelList,
+                    Message = sportsEventModelList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = sportsEventModelList.Count > 0,
+                    Status = sportsEventModelList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AircraftService : GetAircarftDetailsAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally { if (sportsEventModelList != null) { sportsEventModelList = null; } }
+        }
     }
 }
