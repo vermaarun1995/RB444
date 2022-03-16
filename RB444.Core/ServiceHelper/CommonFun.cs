@@ -28,6 +28,22 @@ namespace RB444.Core.ServiceHelper
             Request = 6
         }
 
+        public enum MonthName
+        {
+            Jan = 1,
+            Feb = 2,
+            Mar = 3,
+            Apr = 4,
+            May = 5,
+            Jun = 6,
+            Jul = 7,
+            Aug = 8,
+            Sep = 9,
+            Oct = 10,
+            Nov = 11,
+            Dec = 12
+        }
+
         public enum AttachmentsTable
         {
             Countries = 1,
@@ -237,6 +253,37 @@ namespace RB444.Core.ServiceHelper
                 };
             }
             return formDetails;
+        }
+
+        public string GetMonthName(int monthId)
+        {
+            string monthName = string.Empty;
+            if (monthId == (int)MonthName.Jan)
+                monthName = MonthName.Jan.ToString();
+            if (monthId == (int)MonthName.Feb)
+                monthName = MonthName.Feb.ToString();
+            if (monthId == (int)MonthName.Mar)
+                monthName = MonthName.Mar.ToString();
+            if (monthId == (int)MonthName.Apr)
+                monthName = MonthName.Apr.ToString();
+            if (monthId == (int)MonthName.May)
+                monthName = MonthName.May.ToString();
+            if (monthId == (int)MonthName.Jun)
+                monthName = MonthName.Jun.ToString();
+            if (monthId == (int)MonthName.Jul)
+                monthName = MonthName.Jul.ToString();
+            if (monthId == (int)MonthName.Aug)
+                monthName = MonthName.Aug.ToString();
+            if (monthId == (int)MonthName.Sep)
+                monthName = MonthName.Sep.ToString();
+            if (monthId == (int)MonthName.Oct)
+                monthName = MonthName.Oct.ToString();
+            if (monthId == (int)MonthName.Nov)
+                monthName = MonthName.Nov.ToString();
+            if (monthId == (int)MonthName.Dec)
+                monthName = MonthName.Dec.ToString();
+
+            return monthName;
         }
 
         public static List<ImportanceLevel> GetImportanceLevel()

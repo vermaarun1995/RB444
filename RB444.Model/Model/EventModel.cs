@@ -108,4 +108,11 @@ namespace RB444.Model.Model
         public string f { get; set; }
         public int vir { get; set; }
     }
+
+    public class SportInPlayEventModel
+    {
+        public List<SportsEventModel> sportsEventModelInPlay { get; set; }
+        public List<SportsEventModel> sportsEventModelToday { get; set; }
+        public List<SportsEventModel> sportsEventModelTommorow { get; set; }
+    }
 }

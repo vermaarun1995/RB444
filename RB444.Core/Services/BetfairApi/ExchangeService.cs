@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static RB444.Core.ServiceHelper.CommonFun;
 
 namespace RB444.Core.Services.BetfairApi
 {
@@ -20,6 +21,7 @@ namespace RB444.Core.Services.BetfairApi
         private readonly IBaseRepository _baseRepository;
         private readonly IRequestServices _requestServices;
         private readonly IConfiguration _configuration;
+        CommonFun commonFun = new CommonFun();
 
         public ExchangeService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration)
         {
@@ -185,133 +187,86 @@ namespace RB444.Core.Services.BetfairApi
             List<MatchOddsData> matchOddsDataList = new List<MatchOddsData>();
             List<Runner> runnerList = new List<Runner>();
             Price price = new Price();
-            List<Back> backList = new List<Back>();
-            List<Lay> layList = new List<Lay>();
-            List<Back> back2List = new List<Back>();
-            List<Lay> lay2List = new List<Lay>();
             try
             {
                 eventReturnResponse = await _requestServices.GetAsync<EventReturnResponse>(string.Format("{0}getdata/{1}", _configuration["DiamondApiKeyUrl"], eventId));
-
+                var eventCnt = eventReturnResponse.t1.Count;
                 totalMatched = Math.Round(Convert.ToDouble(eventReturnResponse.t1[0][0].bs1) + Convert.ToDouble(eventReturnResponse.t1[0][0].bs2) + Convert.ToDouble(eventReturnResponse.t1[0][0].bs3) + Convert.ToDouble(eventReturnResponse.t1[0][0].ls1) + Convert.ToDouble(eventReturnResponse.t1[0][0].ls2) + Convert.ToDouble(eventReturnResponse.t1[0][0].ls3) + Convert.ToDouble(eventReturnResponse.t1[0][1].bs1) + Convert.ToDouble(eventReturnResponse.t1[0][1].bs2) + Convert.ToDouble(eventReturnResponse.t1[0][1].bs3) + Convert.ToDouble(eventReturnResponse.t1[0][1].ls1) + Convert.ToDouble(eventReturnResponse.t1[0][1].ls2) + Convert.ToDouble(eventReturnResponse.t1[0][1].ls3), 2);
-
-                backList.Add(new Back
+                for (int i = 0; i < eventCnt; i++)
                 {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].b1),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].bs1)
-                });
-
-                backList.Add(new Back
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].b2),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].bs2)
-                });
-
-                backList.Add(new Back
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].b3),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].bs3)
-                });
-
-                back2List.Add(new Back
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].b1),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].bs1)
-                });
-
-                back2List.Add(new Back
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].b2),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].bs2)
-                });
-
-                back2List.Add(new Back
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].b3),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].bs3)
-                });
-
-                layList.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].l1),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].ls1)
-                });
-
-                layList.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].l2),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].ls2)
-                });
-
-                layList.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][0].l3),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][0].ls3)
-                });
-
-                lay2List.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].l1),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].ls1)
-                });
-
-                lay2List.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].l2),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].ls2)
-                });
-
-                lay2List.Add(new Lay
-                {
-                    price = Convert.ToDouble(eventReturnResponse.t1[0][1].l3),
-                    size = Convert.ToDouble(eventReturnResponse.t1[0][1].ls3)
-                });
-
-                runnerList.Add(new Runner
-                {
-                    selectionId = Convert.ToInt32(eventReturnResponse.t1[0][0].sid),
-                    handicap = 0,
-                    status = eventReturnResponse.t1[0][0].status,
-                    price = new Price
+                    for (int j = 0; j < eventReturnResponse.t1[i].Count; j++)
                     {
-                        back = backList,
-                        lay = layList
-                    }
-                });
-                runnerList.Add(new Runner
-                {
-                    selectionId = Convert.ToInt32(eventReturnResponse.t1[0][1].sid),
-                    handicap = 0,
-                    status = eventReturnResponse.t1[0][1].status,
-                    price = new Price
-                    {
-                        back = back2List,
-                        lay = lay2List
-                    }
-                });
+                        List<Back> backList = new List<Back>();
+                        List<Lay> layList = new List<Lay>();
+                        backList.Add(new Back
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].b1),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs1)
+                        });
 
-                matchOddsDataList.Add(new MatchOddsData
-                {
-                    exEventId = eventId.ToString(),
-                    marketId = eventReturnResponse.t1[0][0].mid,
-                    isSettlement = 0,
-                    isScore = false,
-                    isVoid = 0,
-                    marketName = eventReturnResponse.t1[0][0].mname,
-                    marketType = eventReturnResponse.t1[0][0].gtype,
-                    max = 25000,
-                    min = 100,
-                    tableFlag = eventReturnResponse.t1[0][0].mname,
-                    oddsType = eventReturnResponse.t1[0][0].mname,
-                    oddsData = new OddsData
-                    {
-                        inPlay = Convert.ToBoolean(eventReturnResponse.t1[0][0].iplay),
-                        betDelay = 5,
-                        status = eventReturnResponse.t1[0][0].mstatus,
-                        totalMatched = totalMatched.ToString(),
-                        runners = runnerList
+                        backList.Add(new Back
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].b2),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs2)
+                        });
+
+                        backList.Add(new Back
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].b3),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs3)
+                        });
+                        layList.Add(new Lay
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].l1),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls1)
+                        });
+
+                        layList.Add(new Lay
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].l2),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls2)
+                        });
+
+                        layList.Add(new Lay
+                        {
+                            price = Convert.ToDouble(eventReturnResponse.t1[i][j].l3),
+                            size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls3)
+                        });
+                        runnerList.Add(new Runner
+                        {
+                            selectionId = Convert.ToInt32(eventReturnResponse.t1[i][j].sid),
+                            handicap = 0,
+                            status = eventReturnResponse.t1[i][j].status,
+                            price = new Price
+                            {
+                                back = backList,
+                                lay = layList
+                            }
+                        });
                     }
-                });
+                    matchOddsDataList.Add(new MatchOddsData
+                    {
+                        exEventId = eventId.ToString(),
+                        marketId = eventReturnResponse.t1[i][0].mid,
+                        isSettlement = 0,
+                        isScore = false,
+                        isVoid = 0,
+                        marketName = eventReturnResponse.t1[i][0].mname,
+                        marketType = eventReturnResponse.t1[i][0].gtype,
+                        max = 25000,
+                        min = 100,
+                        tableFlag = eventReturnResponse.t1[i][0].mname,
+                        oddsType = eventReturnResponse.t1[i][0].mname,
+                        oddsData = new OddsData
+                        {
+                            inPlay = Convert.ToBoolean(eventReturnResponse.t1[i][0].iplay),
+                            betDelay = 5,
+                            status = eventReturnResponse.t1[i][0].mstatus,
+                            totalMatched = totalMatched.ToString(),
+                            runners = runnerList
+                        }
+                    });
+                }
 
                 eventModel.data.matchOddsData = matchOddsDataList;
 
@@ -334,15 +289,15 @@ namespace RB444.Core.Services.BetfairApi
         public async Task<CommonReturnResponse> GetSportsEventsAsync(int SportId)
         {
             string sportNameForApi = "";
-            if(SportId == 1)
+            if (SportId == 1)
             {
                 sportNameForApi = "getsoccermatches";
             }
-            else if(SportId == 2)
+            else if (SportId == 2)
             {
                 sportNameForApi = "gettennismatches";
             }
-            else if(SportId == 4)
+            else if (SportId == 4)
             {
                 sportNameForApi = "getcricketmatches";
             }
@@ -350,7 +305,7 @@ namespace RB444.Core.Services.BetfairApi
             var sportsEventModelList = new List<SportsEventModel>();
             try
             {
-                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", sportNameForApi));                
+                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", sportNameForApi));
 
                 return new CommonReturnResponse
                 {
@@ -358,6 +313,52 @@ namespace RB444.Core.Services.BetfairApi
                     Message = sportsEventModelList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = sportsEventModelList.Count > 0,
                     Status = sportsEventModelList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AircraftService : GetAircarftDetailsAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally { if (sportsEventModelList != null) { sportsEventModelList = null; } }
+        }
+
+        public async Task<CommonReturnResponse> GetSportsInPlayEventsAsync(int SportId)
+        {
+            string sportNameForApi = "";
+            if (SportId == 1)
+            {
+                sportNameForApi = "getsoccermatches";
+            }
+            else if (SportId == 2)
+            {
+                sportNameForApi = "gettennismatches";
+            }
+            else if (SportId == 4)
+            {
+                sportNameForApi = "getcricketmatches";
+            }
+
+            var sportsEventModelList = new List<SportsEventModel>();
+            var sportsInPlayEventList = new SportInPlayEventModel();
+            try
+            {
+                string todayDate = commonFun.GetMonthName(DateTime.Now.Month) + " " + DateTime.Now.Day.ToString() + " " + DateTime.Now.Year.ToString();
+                string tommorowDate = commonFun.GetMonthName(DateTime.Now.Month) + " " + (DateTime.Now.Day + 1 ).ToString() + " " + DateTime.Now.Year.ToString();
+                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", sportNameForApi));
+
+                sportsInPlayEventList.sportsEventModelInPlay = sportsEventModelList.Where(x => Convert.ToBoolean(x.inPlay) == true).ToList();
+
+                sportsInPlayEventList.sportsEventModelToday = sportsEventModelList.Where(x => x.eventName.Split('/')[1].Trim().Substring(0,11) == todayDate).ToList();
+
+                sportsInPlayEventList.sportsEventModelTommorow = sportsEventModelList.Where(x => x.eventName.Split('/')[1].Trim().Substring(0, 11) == tommorowDate).ToList();
+
+                return new CommonReturnResponse
+                {
+                    Data = sportsInPlayEventList,
+                    Message = sportsInPlayEventList != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = sportsInPlayEventList != null,
+                    Status = sportsInPlayEventList != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
