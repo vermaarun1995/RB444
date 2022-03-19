@@ -45,9 +45,8 @@ namespace RB444.Core.IServices.BetfairApi
 
         /// <summary>
         /// Get Sport Event In Play.
-        /// </summary>
-        /// <param name="SportId"></param>
+        /// </summary>        
         /// <returns></returns>
-        Task<CommonReturnResponse> GetSportsInPlayEventsAsync(int SportId);
+        Task<CommonReturnResponse> GetSportsInPlayEventsAsync();
     }
 }

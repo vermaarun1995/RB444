@@ -323,33 +323,21 @@ namespace RB444.Core.Services.BetfairApi
             finally { if (sportsEventModelList != null) { sportsEventModelList = null; } }
         }
 
-        public async Task<CommonReturnResponse> GetSportsInPlayEventsAsync(int SportId)
+        public async Task<CommonReturnResponse> GetSportsInPlayEventsAsync()
         {
-            string sportNameForApi = "";
-            if (SportId == 1)
-            {
-                sportNameForApi = "getsoccermatches";
-            }
-            else if (SportId == 2)
-            {
-                sportNameForApi = "gettennismatches";
-            }
-            else if (SportId == 4)
-            {
-                sportNameForApi = "getcricketmatches";
-            }
-
             var sportsEventModelList = new List<SportsEventModel>();
             var sportsInPlayEventList = new SportInPlayEventModel();
             try
             {
                 string todayDate = commonFun.GetMonthName(DateTime.Now.Month) + " " + DateTime.Now.Day.ToString() + " " + DateTime.Now.Year.ToString();
-                string tommorowDate = commonFun.GetMonthName(DateTime.Now.Month) + " " + (DateTime.Now.Day + 1 ).ToString() + " " + DateTime.Now.Year.ToString();
-                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", sportNameForApi));
+                string tommorowDate = commonFun.GetMonthName(DateTime.Now.Month) + " " + (DateTime.Now.Day + 1).ToString() + " " + DateTime.Now.Year.ToString();
+                sportsEventModelList = await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", "getsoccermatches"));
+                sportsEventModelList.AddRange(await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", "gettennismatches")));
+                sportsEventModelList.AddRange(await _requestServices.GetAsync<List<SportsEventModel>>(string.Format("http://marketsarket.in:3000/{0}", "getcricketmatches")));
 
                 sportsInPlayEventList.sportsEventModelInPlay = sportsEventModelList.Where(x => Convert.ToBoolean(x.inPlay) == true).ToList();
 
-                sportsInPlayEventList.sportsEventModelToday = sportsEventModelList.Where(x => x.eventName.Split('/')[1].Trim().Substring(0,11) == todayDate).ToList();
+                sportsInPlayEventList.sportsEventModelToday = sportsEventModelList.Where(x => x.eventName.Split('/')[1].Trim().Substring(0, 11) == todayDate).ToList();
 
                 sportsInPlayEventList.sportsEventModelTommorow = sportsEventModelList.Where(x => x.eventName.Split('/')[1].Trim().Substring(0, 11) == tommorowDate).ToList();
 
