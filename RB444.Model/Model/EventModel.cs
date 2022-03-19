@@ -32,6 +32,7 @@ namespace RB444.Model.Model
     public class Runner
     {
         public int selectionId { get; set; }
+        public string runnerName { get; set; }
         public int handicap { get; set; }
         public string status { get; set; }
         public Price price { get; set; }
@@ -46,12 +47,6 @@ namespace RB444.Model.Model
         public string status { get; set; }
         public bool crossMatching { get; set; }
         public List<Runner> runners { get; set; }
-    }
-
-    public class RunnersData
-    {
-        public string _7287668 { get; set; }
-        public string _9633043 { get; set; }
     }
 
     public class MatchOddsData
@@ -69,7 +64,6 @@ namespace RB444.Model.Model
         public int isVoid { get; set; }
         public int isSettlement { get; set; }
         public OddsData oddsData { get; set; }
-        public RunnersData runnersData { get; set; }
         public string oddsType { get; set; }
     }
 

@@ -33,8 +33,9 @@ namespace RB444.Core.IServices.BetfairApi
         /// Get matches list.
         /// </summary>
         /// <param name="eventId"></param>
+        /// <param name="SportId"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> GetMatchEventsAsync(long eventId);
+        Task<CommonReturnResponse> GetMatchEventsAsync(long eventId, int SportId);
 
         /// <summary>
         /// Get Matches List By Sports.

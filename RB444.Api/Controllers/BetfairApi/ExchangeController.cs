@@ -39,9 +39,9 @@ namespace RB444.Api.Controllers.BetfairApi
         }
 
         [HttpGet, Route("GetMatchOdds")]
-        public async Task<CommonReturnResponse> GetMatchOdds(long eventId)
+        public async Task<CommonReturnResponse> GetMatchOdds(long eventId, int SportId)
         {
-            return await _exchangeService.GetMatchEventsAsync(eventId);
+            return await _exchangeService.GetMatchEventsAsync(eventId, SportId);
         }
 
         [HttpGet, Route("GetSportEvents")]
