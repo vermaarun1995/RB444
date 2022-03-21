@@ -36,3 +36,4 @@ C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.Assem
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.csproj.CoreCompileInputs.cache
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.dll
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.pdb
+C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.csproj.AssemblyReference.cache

@@ -520,6 +520,7 @@ namespace RB444.Data.Repository
         Task<int> BulkUpdate<T>(IEnumerable<T> data, SqlTransaction transaction = null, int batchSize = 0, int bulkCopyTimeout = 30, bool identityInsert = false);
         #endregion
 
+        void StartTransaction();
         void Commit();
         void Rollback();
     }

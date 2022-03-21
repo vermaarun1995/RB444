@@ -12,5 +12,6 @@ namespace RB444.Data.Entities
         public string Remark { get; set; }
         public int FromUserId { get; set; }
         public int ToUserId { get; set; }
+        public int ToUserRoleId { get; set; }
     }
 }

@@ -1,15 +1,7 @@
-﻿@*@{
-        ViewBag.Title = "Dashboard";
-        Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    }
-
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    </div>*@
+﻿@using RB444.Data.Entities
 @{
     ViewBag.Title = "Dashboard";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";   
 }
 
 <style>
@@ -53,7 +45,7 @@
 </style>
 
 <div class="container">
-    <h2>Welcome you are login as a @ViewData["LoginUserRole"].</h2>
+    <h2>Welcome you are login as a @ViewBag.LoginUser.FullName.</h2>
 
     <table>
         <thead>

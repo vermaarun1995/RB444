@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.IServices.BetfairApi;
 using RB444.Core.ServiceHelper;
@@ -26,28 +27,26 @@ namespace RB444.Core.Services.BetfairApi
 
         public async Task<CommonReturnResponse> GetSportsListAsync()
         {
-            List<SportsData> sportsDatalist = null;
-            var sportslist = new List<Sports>();
-            string groupback = "";
+            CommonReturnResponse commonModel = null;
+            var sportslist = new List<SportsSettings>();
+            List<CommonModel> commonVMList = new List<CommonModel>();
             try
             {
-                sportsDatalist = await _requestServices.GetAsync<List<SportsData>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
-                foreach (var item in sportsDatalist)
+                commonModel = await _requestServices.PostAsync<SportsSettings, CommonReturnResponse>("https://dream444.com/api/exchange/sports/sportsList", null);
+                sportslist = jsonParser.ParsJson<List<SportsSettings>>(Convert.ToString(commonModel.Data));
+                foreach (var item in sportslist)
                 {
-                    if (item.group != groupback)
-                    {
-                        var sports = new Sports();
-                        sports.group = item.group;
-                        sportslist.Add(sports);
-                    }
-                    groupback = item.group;
+                    var commonVM = new CommonModel();
+                    commonVM.Id = Convert.ToInt32(item.sportId);
+                    commonVM.Name = item.sportName;
+                    commonVMList.Add(commonVM);
                 }
                 return new CommonReturnResponse
                 {
                     Data = sportslist,
-                    Message = sportsDatalist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = sportsDatalist.Count > 0,
-                    Status = sportsDatalist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Message = sportslist.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = sportslist.Count > 0,
+                    Status = sportslist.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
@@ -61,16 +60,16 @@ namespace RB444.Core.Services.BetfairApi
                     Status = ResponseStatusCode.EXCEPTION
                 };
             }
-            finally { if (sportsDatalist != null) { sportsDatalist = null; } }
+            finally { if (sportslist != null) { sportslist = null; } }
         }
 
         public async Task<CommonReturnResponse> GetSeriesListBySportsAsync(string SportName)
         {
-            List<Series> serieslist = null;
+            List<SeriesDataByApi> serieslist = null;
             try
             {
-                serieslist = await _requestServices.GetAsync<List<Series>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
-                serieslist = serieslist.Where(x => x.group == SportName).ToList();
+                serieslist = await _requestServices.GetAsync<List<SeriesDataByApi>>(string.Format("{0}?apiKey={1}", _configuration["ApiKeyUrl"], _configuration["ApiKey"]));
+                serieslist = serieslist.ToList();
                 return new CommonReturnResponse
                 {
                     Data = serieslist,

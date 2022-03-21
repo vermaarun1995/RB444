@@ -94,7 +94,7 @@ namespace RB444.Api
 
             services.AddCors(c =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
 
             services.AddHttpContextAccessor();
@@ -103,8 +103,13 @@ namespace RB444.Api
             services.AddTransient<IDatabase, Database>();
 
             services.AddTransient<IBetfairApiServices, BetfairApiServices>();
+            services.AddTransient<IExchangeService, ExchangeService>();
             services.AddTransient<ICommonService, CommonService>();
-
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IBetApiService, BetApiService>();
+            services.AddTransient<IOtherSetting, OtherSetting>();
+            services.AddTransient<ISettingService, SettingService>();
+            services.AddTransient<IMarketWatchService, MarketWatchService>();
             services.AddTransient<IRequestServices, RequestServices>();
         }
 
@@ -117,7 +122,7 @@ namespace RB444.Api
             }
 
             app.UseDeveloperExceptionPage();
-            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseHttpsRedirection();
 
             app.UseRouting();            

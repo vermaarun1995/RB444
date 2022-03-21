@@ -10,7 +10,9 @@ using RB444.Core.IServices;
 using RB444.Core.Services;
 using RB444.Data;
 using RB444.Data.Entities;
+using RB444.Data.Infrastructure;
 using RB444.Data.Repository;
+using RB444.Data.UOW;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,6 +34,7 @@ namespace RB444.Admin
             services.AddMemoryCache();
             services.AddSession();
             services.AddHttpContextAccessor();
+            
 
             services.AddDbContext<RB444Context>(options =>
                 options.UseSqlServer(
@@ -41,10 +44,10 @@ namespace RB444.Admin
 
             services.AddMvc();
             ////Set Session Timeout. Default is 20 minutes.
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-            });
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(30);
+            //});
 
             services.AddTransient<IUserStore<Users>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
@@ -58,8 +61,13 @@ namespace RB444.Admin
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IBaseRepository, BaseRepository>();
+            services.AddTransient<IDatabase, Database>();
+
             services.AddTransient<IRequestServices, RequestServices>();
             services.AddTransient<ILoggerService, LoggerService>();
+            services.AddTransient<ICookieService, CookieService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

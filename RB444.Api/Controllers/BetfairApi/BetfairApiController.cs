@@ -23,12 +23,6 @@ namespace RB444.Api.Controllers.BetfairApi
             return await _betfairApiServices.GetSportsListAsync();
         }
 
-        [HttpGet, Route("GetSeriesListBySports")]
-        public async Task<CommonReturnResponse> GetSeriesListBySports(string SportName)
-        {
-            return await _betfairApiServices.GetSeriesListBySportsAsync(SportName);
-        }
-
         [HttpGet, Route("GetMatchList")]
         public async Task<CommonReturnResponse> GetMatchList(string Key)
         {

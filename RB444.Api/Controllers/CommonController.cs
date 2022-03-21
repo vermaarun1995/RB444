@@ -14,7 +14,7 @@ namespace RB444.Api.Controllers
         public CommonController(ICommonService commonService)
         {
             _commonService = commonService;
-        }
+        }       
 
         [HttpGet, Route("GetAllSliders")]
         public async Task<CommonReturnResponse> GetAllSliders()
@@ -31,7 +31,37 @@ namespace RB444.Api.Controllers
         [HttpGet, Route("GetAllLogo")]
         public async Task<CommonReturnResponse> GetAllLogo()
         {
+            return await _commonService.GetAllLogoAsync();
+        }
+
+        [HttpGet, Route("GetLogo")]
+        public async Task<CommonReturnResponse> GetLogo()
+        {
             return await _commonService.GetLogoAsync();
+        }
+
+        [HttpGet, Route("GetActivityLog")]
+        public async Task<CommonReturnResponse> GetActivityLog()
+        {
+            return await _commonService.GetActivityLogAsync();
+        }
+
+        [HttpGet, Route("GetUserActivityLog")]
+        public async Task<CommonReturnResponse> GetUserActivityLog()
+        {
+            return await _commonService.GetUserActivityLogAsync();
+        }
+
+        [HttpGet, Route("GetAccountStatement")]
+        public async Task<CommonReturnResponse> GetAccountStatement(int UserId)
+        {
+            return await _commonService.GetAccountStatementAsync(UserId);
+        }
+
+        [HttpGet, Route("GetAccountStatementForSuperAdmin")]
+        public async Task<CommonReturnResponse> GetAccountStatementForSuperAdmin(int AdminId)
+        {
+            return await _commonService.GetAccountStatementForSuperAdminAsync(AdminId);
         }
     }
 }

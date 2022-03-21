@@ -31,6 +31,7 @@
     ".NETCoreApp,Version=v3.1": {
       "RB444.Admin/1.0.0": {
         "dependencies": {
+          "Bootstrap.Datepicker": "1.8.0.1",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "3.1.21",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.21",
           "Microsoft.AspNetCore.Identity.UI": "3.1.21",
@@ -351,6 +352,7 @@
           "jQuery": "3.3.1"
         }
       },
+      "Bootstrap.Datepicker/1.8.0.1": {},
       "Dapper/2.0.123": {
         "dependencies": {
           "System.Reflection.Emit.Lightweight": "4.7.0"
@@ -4529,6 +4531,13 @@
       "sha512": "sha512-3YTWhPNh6UcnUvzw9u6A2/hy2w0h4lznxPbX6FY47lFia3+Ib4zBixTpW6YieYA/b2fLXbkjoD59OjcVF3cJXw==",
       "path": "bootstrap/3.3.7",
       "hashPath": "bootstrap.3.3.7.nupkg.sha512"
+    },
+    "Bootstrap.Datepicker/1.8.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/pKY2/KjIGQHmK2reK2iowG0Weu6w42VRjBT8vS5AMcsdKMMxQ4NBrvOxWHUpzf0idY+YaKGnjXyWb+Ba+/M3g==",
+      "path": "bootstrap.datepicker/1.8.0.1",
+      "hashPath": "bootstrap.datepicker.1.8.0.1.nupkg.sha512"
     },
     "Dapper/2.0.123": {
       "type": "package",

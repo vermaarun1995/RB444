@@ -1,24 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using RB444.Data.Entities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RB444.Models.Model
 {
     public class UserModel
     {
-        public int userid { get; set; }
-        public string fullname { get; set; }
-        public string email { get; set; }
-        public string phoneno { get; set; }
-        public string address { get; set; }
-        public int roleid { get; set; }
-        public string access_token { get; set; }
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public int RoleId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool RollingCommission { get; set; }
+        public long AssignCoin { get; set; }
+        public double Commision { get; set; }
+        public long ExposureLimit { get; set; }
+        public int ParentId { get; set; }
+        public int Status { get; set; } // 1 for active. 2 for inactive. 3 for blocked
     }
 
     public class LoginViewModel
     {
         [Required(ErrorMessage = "Email can't be blank")]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
+        //[DataType(DataType.EmailAddress)]
+        //[EmailAddress]
         public string email { get; set; }
 
         [Required(ErrorMessage = "Password can't be blank")]
@@ -86,12 +94,26 @@ namespace RB444.Models.Model
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         public string FullName { get; set; }
-        public string PhoneNumber { get; set; }        
+        public string PhoneNumber { get; set; }
         public int RoleId { get; set; }
-        //public UserDetails userDetails { get; set; }
-        //public UserSocialLinks userSocialLinks { get; set; }
-        //public List<UserEducation> userEducations { get; set; }
-        //public List<UserVisaInfo> userVisaInfos { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public bool RollingCommission { get; set; }
+        public long AssignCoin { get; set; }
+        public float Commision { get; set; }
+        public long ExposureLimit { get; set; }
+        public int ParentId { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class RegisterListVM: RegisterViewModel
+    {
+        public Users LoginUser { get; set; }
+        public List<UserRoles> UserRoles { get; set; }
+        public string LoginUserId { get; set; }
+        public int LoginUserRole { get; set; }
+        public string RoleName { get; set; }
+        public bool IsAbleToChange { get; set; }
+        public List<Users> Users { get; set; }
     }
 
     public class RegisterVM
@@ -126,7 +148,6 @@ namespace RB444.Models.Model
 
     public class ResetPasswordViewModel
     {
-        [Required]
         public string UserId { get; set; }
 
         [DataType(DataType.Password)]
@@ -142,7 +163,5 @@ namespace RB444.Models.Model
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
-        public string Code { get; set; }
     }
 }

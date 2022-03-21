@@ -24,9 +24,41 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> GetNewsAsync();
 
         /// <summary>
-        /// Get Logo.
+        /// Get All Logo.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAllLogoAsync();
+
+        /// <summary>
+        /// Get Active Logo.
         /// </summary>
         /// <returns></returns>
         Task<CommonReturnResponse> GetLogoAsync();
+
+        /// <summary>
+        /// Get All Role Activity Log.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetActivityLogAsync();
+
+        /// <summary>
+        /// Get User Activity Log.
+        /// </summary>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetUserActivityLogAsync();
+
+        /// <summary>
+        /// Get Account Statement.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAccountStatementAsync(int UserId);
+
+        /// <summary>
+        /// Get Account Statement for all user who are below to super admin.
+        /// </summary>
+        /// <param name="AdminId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetAccountStatementForSuperAdminAsync(int AdminId);
     }
 }
