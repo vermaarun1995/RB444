@@ -56,7 +56,7 @@ namespace RB444.Core.Services
             finally { if (users != null) { users = null; } }
         }
 
-        public async Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId,int UserRoleId)
+        public async Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId, int UserRoleId)
         {
             bool _result = false;
             try
@@ -73,6 +73,7 @@ namespace RB444.Core.Services
                     ToUserRoleId = UserRoleId
                 };
                 _result = await _baseRepository.InsertAsync(depositCoint) > 0;
+                if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse
                 {
                     Data = _result,
@@ -129,29 +130,88 @@ namespace RB444.Core.Services
             }
         }
 
-        //public async Task<CommonReturnResponse> GetParentUserDetailAsync(int LoginParentUserId)
-        //{
-        //    IDictionary<string, object> _keyValues = null;
-        //    try
-        //    {
-        //        _keyValues = new Dictionary<string, object> { { "ParentId", ParentUserId } };
-        //        var usersList = (await _baseRepository.SelectAsync<Users>(_keyValues)).OrderByDescending(a => a.Id).ToList();
-        //        return new CommonReturnResponse
-        //        {
-        //            Data = usersList,
-        //            Message = usersList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-        //            IsSuccess = usersList.Count > 0,
-        //            Status = usersList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
-        //        };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
-        //        return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
-        //    }
-        //}
+        public async Task<CommonReturnResponse> GetUserDetailAsync(int UserId)
+        {
+            try
+            {
+                var user = await _baseRepository.GetDataByIdAsync<Users>(UserId);
+                return new CommonReturnResponse
+                {
+                    Data = user,
+                    Message = user != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = user != null,
+                    Status = user != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
 
-        public async Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int ParentUserId)
+        public async Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int LoginUserId, int RoleId)
+        {
+            IDictionary<string, object> _keyValues = null;
+            try
+            {
+                var userRoles = await _baseRepository.GetListAsync<UserRoles>();
+                _keyValues = new Dictionary<string, object> { { "Id", LoginUserId } };
+                var loginUser = (await _baseRepository.SelectAsync<Users>(_keyValues)).FirstOrDefault();
+
+                _keyValues = new Dictionary<string, object> { { "ParentId", LoginUserId } };
+                var users = (await _baseRepository.SelectAsync<Users>(_keyValues)).ToList();
+
+                var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 : false;
+
+                var u = users.Where(x => x.ParentId == LoginUserId).ToList();
+                var totalUser = u;
+                if (u != null && u.Count() > 0)
+                {
+                    for (; ; )
+                    {
+                        var ids = u.Select(x => x.Id).ToList();
+                        var u1 = users.Where(x => ids.Contains(x.ParentId)).ToList();
+                        if (u1.Count == 0)
+                        {
+                            break;
+                        }
+
+                        totalUser.AddRange(u1);
+                        u = u1;
+                    }
+                }
+
+                totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
+                var roleName = userRoles.Where(y => y.Id == RoleId).Select(x => x.Name).FirstOrDefault();
+
+                var model = new RegisterListVM
+                {
+                    LoginUserId = loginUser.Id,
+                    LoginUserRole = loginUser.RoleId,
+                    LoginUser = loginUser,
+                    RoleName = roleName,
+                    Users = totalUser,
+                    UserRoles = userRoles,
+                    IsAbleToChange = isAbleToChange
+                };
+
+                return new CommonReturnResponse
+                {
+                    Data = model,
+                    Message = model != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = model != null,
+                    Status = model != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> CheckCoinAsync(int ParentUserId, long AssignCoin)
         {
             IDictionary<string, object> _keyValues = null;
             try

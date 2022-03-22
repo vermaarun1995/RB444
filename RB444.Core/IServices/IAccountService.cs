@@ -38,8 +38,16 @@ namespace RB444.Core.IServices
         /// <summary>
         /// Get Users who create by your parent user.
         /// </summary>
-        /// <param name="ParentUserId"></param>
+        /// <param name="LoginUserId"></param>
+        /// <param name="RoleId"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int ParentUserId);
+        Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int LoginUserId, int RoleId);
+
+        /// <summary>
+        /// Get User Detail.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetUserDetailAsync(int UserId);
     }
 }

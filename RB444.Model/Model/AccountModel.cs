@@ -109,7 +109,7 @@ namespace RB444.Models.Model
     {
         public Users LoginUser { get; set; }
         public List<UserRoles> UserRoles { get; set; }
-        public string LoginUserId { get; set; }
+        public int LoginUserId { get; set; }
         public int LoginUserRole { get; set; }
         public string RoleName { get; set; }
         public bool IsAbleToChange { get; set; }

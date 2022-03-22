@@ -60,50 +60,13 @@ namespace RB444.Admin.Controllers
         {
             var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
-            var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id - 1 : false;
             CommonReturnResponse commonModel = null;
-            List<Users> usresList = null;
+            var model = new RegisterListVM();
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserRoles", _configuration["ApiKeyUrl"]));
-                var userRoles = jsonParser.ParsJson<List<UserRoles>>(Convert.ToString(commonModel.Data));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsersByParentId?ParentId={1}&RoleId={2}", _configuration["ApiKeyUrl"], loginUser.Id, id));
+                model = jsonParser.ParsJson<RegisterListVM>(Convert.ToString(commonModel.Data));
 
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsersByParentId?ParentId=" + id, _configuration["ApiKeyUrl"]));
-                usresList = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
-
-                var roleName = string.Empty;
-                switch (loginUser.RoleId)
-                {
-                    case 2:
-                        roleName = "Super Admin";
-                        break;
-                    case 3:
-                        roleName = "Admin";
-                        break;
-                    case 4:
-                        roleName = "Sub Admin";
-                        break;
-                    case 5:
-                        roleName = "Super Master";
-                        break;
-                    case 6:
-                        roleName = "Master";
-                        break;
-                    case 7:
-                        roleName = "User";
-                        break;
-                }
-
-                var model = new RegisterListVM
-                {
-                    LoginUserId = loginUser.Id.ToString(),
-                    LoginUserRole = loginUser.RoleId,
-                    LoginUser = loginUser,
-                    RoleName = roleName,
-                    Users = usresList,
-                    UserRoles = userRoles,
-                    IsAbleToChange = isAbleToChange
-                };
                 return View(model);
             }
             catch (Exception)

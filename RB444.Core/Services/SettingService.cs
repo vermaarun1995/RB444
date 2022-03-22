@@ -79,12 +79,12 @@ namespace RB444.Core.Services
             try
             {
                 await _baseRepository.BulkUpdate(stakeLimitList);
-                _baseRepository.Commit();
+                //_baseRepository.Commit();
                 return new CommonReturnResponse { Data = true, Message = MessageStatus.Update, IsSuccess = true, Status = ResponseStatusCode.OK };
             }
             catch (Exception ex)
             {
-                _baseRepository.Rollback();
+                //_baseRepository.Rollback();
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }

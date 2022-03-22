@@ -165,9 +165,15 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetAllUsersByParentId")]
-        public async Task<CommonReturnResponse> GetAllUsersByParentId(int ParentId)
+        public async Task<CommonReturnResponse> GetAllUsersByParentId(int ParentId, int RoleId)
         {
-            return await _accountService.GetAllUsersByParentIdAsync(ParentId);
+            return await _accountService.GetAllUsersByParentIdAsync(ParentId, RoleId);
+        }
+
+        [HttpGet, Route("GetUserDetail")]
+        public async Task<CommonReturnResponse> GetUserDetail(int UserId)
+        {
+            return await _accountService.GetUserDetailAsync(UserId);
         }
     }
 }
