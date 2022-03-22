@@ -86,6 +86,7 @@ namespace RB444.Admin.Controllers
                                     UserId = user.Id,
                                     Status = "login_success"
                                 };
+
                                 var _result = await _baseRepository.InsertAsync(activityLog);
                                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                             }
