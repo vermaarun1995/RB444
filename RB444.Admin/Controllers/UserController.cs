@@ -60,68 +60,58 @@ namespace RB444.Admin.Controllers
         {
             var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
-
             var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id : false;
-            List<Users> usresList = new List<Users>();
-            Users user = new Users { UserName = "arun", AssignCoin = 1000, ExposureLimit = 100, Id = 13, Status = 1 };
-            usresList.Add(user);
-            //// Get users
-            //var users = UserManager.Users;//.Where(x => x.ParentId == loginUserId);
-            //var u = users.Where(x => x.ParentId == loginUserId).ToList();
-            //var totalUser = u;
-            //if (u != null && u.Count() > 0)
-            //{
-            //    for (; ; )
-            //    {
-            //        var ids = u.Select(x => x.Id).ToList();
-            //        var u1 = users.Where(x => ids.Contains(x.ParentId)).ToList();
-            //        if (u1.Count == 0)
-            //        {
-            //            break;
-            //        }
-
-            //        totalUser.AddRange(u1);
-            //        u = u1;
-            //    }
-            //}
-
-            //totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.Role == id).ToList() : totalUser;
-
-            //var roleName = string.Empty;
-            //switch (id)
-            //{
-            //    case 2:
-            //        roleName = "Super Admin";
-            //        break;
-            //    case 3:
-            //        roleName = "Admin";
-            //        break;
-            //    case 4:
-            //        roleName = "Sub Admin";
-            //        break;
-            //    case 5:
-            //        roleName = "Super Master";
-            //        break;
-            //    case 6:
-            //        roleName = "Master";
-            //        break;
-            //    case 7:
-            //        roleName = "User";
-            //        break;
-            //}
-
-            var model = new RegisterListVM
+            CommonReturnResponse commonModel = null;
+            List<Users> usresList = null;
+            try
             {
-                LoginUserId = "3",
-                LoginUserRole = 2,
-                LoginUser = loginUser,
-                RoleName = "Super Admin",
-                Users = usresList,
-                IsAbleToChange = isAbleToChange
-            };
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserRoles", _configuration["ApiKeyUrl"]));
+                var userRoles = jsonParser.ParsJson<List<UserRoles>>(Convert.ToString(commonModel.Data));
 
-            return View(model);
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsersByParentId?ParentId=" + id, _configuration["ApiKeyUrl"]));
+                usresList = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
+
+                var roleName = string.Empty;
+                switch (loginUser.RoleId)
+                {
+                    case 2:
+                        roleName = "Super Admin";
+                        break;
+                    case 3:
+                        roleName = "Admin";
+                        break;
+                    case 4:
+                        roleName = "Sub Admin";
+                        break;
+                    case 5:
+                        roleName = "Super Master";
+                        break;
+                    case 6:
+                        roleName = "Master";
+                        break;
+                    case 7:
+                        roleName = "User";
+                        break;
+                }
+
+                var model = new RegisterListVM
+                {
+                    LoginUserId = loginUser.Id.ToString(),
+                    LoginUserRole = loginUser.RoleId,
+                    LoginUser = loginUser,
+                    RoleName = roleName,
+                    Users = usresList,
+                    UserRoles = userRoles,
+                    IsAbleToChange = isAbleToChange
+                };
+                return View(model);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
+
 
         public async Task<ActionResult> AccountStatement(int id)
         {
@@ -176,7 +166,7 @@ namespace RB444.Admin.Controllers
             {
                 //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers", _configuration["ApiKeyUrl"]));
                 //var users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
-               // user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
+                // user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
             }
 
             var result = new UserProfileVM
@@ -208,13 +198,13 @@ namespace RB444.Admin.Controllers
             }
             catch
             {
-               // var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                // var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
                 var errorHtml = "<ul>";
                 //if (errorArr != null && errorArr.Count > 0)
                 //{
                 //    foreach (var error in errorArr)
                 //    {
-                      errorHtml += "<li>error</li>";
+                errorHtml += "<li>error</li>";
                 //    }
                 //}
 
@@ -277,7 +267,7 @@ namespace RB444.Admin.Controllers
                 //{
                 //    foreach (var error in errorArr)
                 //    {
-                       errorHtml += "<li>error</li>";
+                errorHtml += "<li>error</li>";
                 //    }
                 //}
 

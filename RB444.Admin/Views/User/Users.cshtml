@@ -94,18 +94,18 @@
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
-                                <label class="form-label" asp-for="Password">Password</label>
+                                <label class="form-label" for="PasswordReg">Password</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+                                <input type="password" class="form-control" id="PasswordReg" placeholder="Password">
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
-                                <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+                                <label class="form-label" for="ConfirmPasswordReg">Confirm Password</label>
                             </div>
                             <div class="col-md-8">
-                                <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Confirm Password">
+                                <input type="password" class="form-control" id="ConfirmPasswordReg" placeholder="Confirm Password">
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -176,8 +176,17 @@
             $('#registerModal').modal('hide');
         };
         function saveRequest() {
-            const form = document.getElementById("request-form");
-            const formData = new FormData(form);
+            const formData = new FormData();
+            formData.append("RoleId", $("#RoleId").val());
+            formData.append("Email", $("#Email").val());
+            formData.append("FullName", $("#FullName").val());
+            formData.append("Password", $("#PasswordReg").val());
+            formData.append("ConfirmPassword", $("#ConfirmPasswordReg").val());
+            formData.append("PhoneNumber", $("#PhoneNumber").val());
+            formData.append("AssignCoin", $("#AssignCoin").val());
+            formData.append("Commision", $("#Commision").val());
+            formData.append("ExposureLimit", $("#ExposureLimit").val());
+            formData.append("RollingCommission", $("#RollingCommission").prop("checked"));
 
             let addRequestJson = {
                 apiUrl: "@Url.Action("Register", "Account")",

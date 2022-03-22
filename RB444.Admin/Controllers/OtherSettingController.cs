@@ -34,11 +34,23 @@ namespace RB444.Admin.Controllers
         #region News settings
         public async Task<ActionResult> News()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            var newsList = new List<News>();
+            try
+            {
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = user;
 
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
-            var newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
+                if (commonModel.Data != null)
+                {
+                    newsList = jsonParser.ParsJson<List<News>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
             return View(newsList);
         }
@@ -70,7 +82,7 @@ namespace RB444.Admin.Controllers
             CommonReturnResponse commonModel = null;
             try
             {
-                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteNews", _configuration["ApiKeyUrl"]), id);
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteNews?id=" + id, _configuration["ApiKeyUrl"]));
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
@@ -90,11 +102,24 @@ namespace RB444.Admin.Controllers
         #region Slider Images settings
         public async Task<ActionResult> SliderImages()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            var sliderList = new List<Slider>();
+            try
+            {
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = user;
 
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllSliders", _configuration["ApiKeyUrl"]));
-            var sliderList = jsonParser.ParsJson<List<Slider>>(Convert.ToString(commonModel.Data));
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllSliders", _configuration["ApiKeyUrl"]));
+                if (commonModel.Data != null)
+                {
+                    sliderList = jsonParser.ParsJson<List<Slider>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
             return View(sliderList);
         }
 
@@ -170,7 +195,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 var isDelete = DeleteFile(imagePath);
-                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteSlider", _configuration["ApiKeyUrl"]), id);
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteSlider?id=" + id, _configuration["ApiKeyUrl"]));
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
@@ -190,12 +215,24 @@ namespace RB444.Admin.Controllers
         #region Logo Images settings
         public async Task<ActionResult> LogoImages()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            List<Logo> logoList = new List<Logo>();
+            try
+            {
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = user;
 
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllLogo", _configuration["ApiKeyUrl"]));
-            var LogoList = jsonParser.ParsJson<List<Logo>>(Convert.ToString(commonModel.Data));
-            return View(LogoList);
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllLogo", _configuration["ApiKeyUrl"]));
+                if (commonModel.Data != null)
+                {
+                    logoList = jsonParser.ParsJson<List<Logo>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return View(logoList);
         }
 
         [HttpPost]
@@ -234,7 +271,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 var isDelete = DeleteFile(imagePath);
-                commonModel = await _requestServices.PostAsync<int, CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteLogo", _configuration["ApiKeyUrl"]), id);
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}OtherSetting/DeleteLogo?id=" + id, _configuration["ApiKeyUrl"]));
                 var data = JsonConvert.SerializeObject(commonModel);
                 return Json(data);
             }
