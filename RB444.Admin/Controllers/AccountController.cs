@@ -86,6 +86,7 @@ namespace RB444.Admin.Controllers
                                     UserId = user.Id,
                                     Status = "login_success"
                                 };
+
                                 var _result = await _baseRepository.InsertAsync(activityLog);
                                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                             }
@@ -167,7 +168,7 @@ namespace RB444.Admin.Controllers
                         await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/DepositAssignCoin?AssignCoin={1}&ParentId={2}&UserId={3}&UserRoleId={4}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId, user.Id, model.RoleId));
 
                         //var data = JsonConvert.SerializeObject(commonModel);
-                        commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = false, Status = ResponseStatusCode.OK };
+                        commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = true, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));
                     }
                     commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Error, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST }; ;

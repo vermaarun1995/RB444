@@ -255,7 +255,7 @@
                     var status = user.Status == 1 ? "active" : user.Status.ToString();
                     status = user.Status != 1 ? "deleted" : status;
                     <tr data-id="@user.Id" data-name="@user.UserName" data-status="@status">
-                        <td><label><span class="role-box">@Model.UserRoles.Where(s => s.Id == user.RoleId).Select(s => s.Name).FirstOrDefault()</span> @user.FullName</label></td>
+                        <td><label><span class="role-box">@Model.RoleName</span> @user.FullName</label></td>
                         <td>
                             <label class="edit-menu">
                                 0.00

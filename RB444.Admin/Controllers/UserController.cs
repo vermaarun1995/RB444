@@ -60,7 +60,7 @@ namespace RB444.Admin.Controllers
         {
             var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
-            var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id : false;
+            var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id - 1 : false;
             CommonReturnResponse commonModel = null;
             List<Users> usresList = null;
             try
@@ -111,6 +111,7 @@ namespace RB444.Admin.Controllers
                 throw;
             }
         }
+
 
         public async Task<ActionResult> AccountStatement(int id)
         {
@@ -165,7 +166,7 @@ namespace RB444.Admin.Controllers
             {
                 //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers", _configuration["ApiKeyUrl"]));
                 //var users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
-               // user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
+                // user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
             }
 
             var result = new UserProfileVM
@@ -197,13 +198,13 @@ namespace RB444.Admin.Controllers
             }
             catch
             {
-               // var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                // var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
                 var errorHtml = "<ul>";
                 //if (errorArr != null && errorArr.Count > 0)
                 //{
                 //    foreach (var error in errorArr)
                 //    {
-                      errorHtml += "<li>error</li>";
+                errorHtml += "<li>error</li>";
                 //    }
                 //}
 
@@ -266,7 +267,7 @@ namespace RB444.Admin.Controllers
                 //{
                 //    foreach (var error in errorArr)
                 //    {
-                       errorHtml += "<li>error</li>";
+                errorHtml += "<li>error</li>";
                 //    }
                 //}
 
