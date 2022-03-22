@@ -39,6 +39,10 @@ namespace RB444.Core.Services
                                 var logoList = await _baseRepository.QueryAsync<Logo>(sql);
                                 _baseRepository.Commit();
                             }
+                            else
+                            {
+                                _baseRepository.Commit();
+                            }
                         }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                     }
@@ -60,6 +64,10 @@ namespace RB444.Core.Services
                         {
                             string sql = string.Format(@"update Logo set Status = 0 where Id <> {0}", _result);
                             var logoList = await _baseRepository.QueryAsync<Logo>(sql);
+                            _baseRepository.Commit();
+                        }
+                        else
+                        {
                             _baseRepository.Commit();
                         }
                     }
@@ -97,6 +105,10 @@ namespace RB444.Core.Services
                                 var logoList = await _baseRepository.QueryAsync<News>(sql);
                                 _baseRepository.Commit();
                             }
+                            else
+                            {
+                                _baseRepository.Commit();
+                            }
                         }
                         return new CommonReturnResponse { Data = null, Message = _resultId > 0 ? MessageStatus.Update : MessageStatus.Error, IsSuccess = _resultId > 0, Status = _resultId > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
                     }
@@ -118,6 +130,10 @@ namespace RB444.Core.Services
                         {
                             string sql = string.Format(@"update News set Status = 0 where Id <> {0}", _result);
                             var logoList = await _baseRepository.QueryAsync<News>(sql);
+                            _baseRepository.Commit();
+                        }
+                        else
+                        {
                             _baseRepository.Commit();
                         }
                     }

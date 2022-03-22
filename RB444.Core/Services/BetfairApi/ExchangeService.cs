@@ -181,6 +181,7 @@ namespace RB444.Core.Services.BetfairApi
         {
             double totalMatched;
             string eventName = "";
+            bool inPlay = false;
             var matchReturnResponse = new MatchesReturnResponse();
             var eventReturnResponse = new EventReturnResponse();
             var eventModel = new EventModel();
@@ -202,8 +203,10 @@ namespace RB444.Core.Services.BetfairApi
                     {
                         totalMatched = Math.Round(Convert.ToDouble(eventReturnResponse.t1[i][0].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls3) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls3), 2);
 
+                        inPlay = Convert.ToBoolean(eventReturnResponse.t1[i][0].iplay);
+
                         for (int j = 0; j < eventReturnResponse.t1[i].Count; j++)
-                        {
+                        {                            
                             List<Back> backList = new List<Back>();
                             List<Lay> layList = new List<Lay>();
                             backList.Add(new Back
@@ -268,17 +271,18 @@ namespace RB444.Core.Services.BetfairApi
                             tableFlag = eventReturnResponse.t1[i][0].mname,
                             oddsType = eventReturnResponse.t1[i][0].mname,
                             oddsData = new OddsData
-                            {
-                                inPlay = Convert.ToBoolean(eventReturnResponse.t1[i][0].iplay),
+                            {                                
                                 betDelay = 5,
                                 status = eventReturnResponse.t1[i][0].mstatus,
                                 totalMatched = totalMatched.ToString(),
                                 runners = runnerList
-                            }
+                            },                            
                         });
                     }
 
                     eventModel.data.matchOddsData = matchOddsDataList;
+                    eventModel.data.delayed = Convert.ToBoolean(eventReturnResponse.delayed);
+                    eventModel.data.inPlay = inPlay;
                 }
                 else
                 {

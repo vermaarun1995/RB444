@@ -40,7 +40,6 @@ namespace RB444.Model.Model
 
     public class OddsData
     {
-        public bool inPlay { get; set; }
         public bool preBet { get; set; }
         public int betDelay { get; set; }
         public string totalMatched { get; set; }
@@ -75,6 +74,8 @@ namespace RB444.Model.Model
         public List<object> sportsbookData { get; set; }
         public List<object> binaryData { get; set; }
         public bool isScore { get; set; }
+        public bool delayed { get; set; }
+        public bool inPlay { get; set; }
     }
 
     public class Meta
