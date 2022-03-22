@@ -60,7 +60,7 @@ namespace RB444.Admin.Controllers
         {
             var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
-            var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id : false;
+            var isAbleToChange = id != null && id > 0 ? loginUser.RoleId == id - 1 : false;
             CommonReturnResponse commonModel = null;
             List<Users> usresList = null;
             try

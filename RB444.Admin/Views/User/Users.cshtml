@@ -32,24 +32,24 @@
                             @if (usersList != null && usersList.Count() >= 0)
                             {
                                 var counter = 0;
-                                <div class="card-body pt-2">
-                                    @foreach (var userData in usersList.Where(x => x.RoleId == (i + 1)))
-                                    {
-                                        <div class="d-flex align-items-center @(counter++ > 4 ? "hidden" : string.Empty)">
-                                            <div class="d-flex flex-column flex-grow-1">
-                                                <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">@userData.FullName</a>
-                                                <span class="text-muted font-weight-bold">5000/@userData.AssignCoin</span>
-                                            </div>
-                                        </div>
-
-                                        @*@if (usersList.Count() > 5)
-                                            {*@
-                                        <br />
-                                        <a href="/User/RegisterUsersList?id=@(i)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
-                                        @*}*@
-                                    }
-                                    <!--end::Item-->
+                        <div class="card-body pt-2">
+                            @foreach (var userData in usersList.Where(x => x.RoleId == (i + 1)))
+                            {
+                                <div class="d-flex align-items-center @(counter++ > 4 ? "hidden" : string.Empty)">
+                                    <div class="d-flex flex-column flex-grow-1">
+                                        <a href="#" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg mb-1">@userData.FullName</a>
+                                        <span class="text-muted font-weight-bold">5000/@userData.AssignCoin</span>
+                                    </div>
                                 </div>
+
+                            }
+                            @if (usersList.Count() > 5)
+                            {
+                                <br />
+                                <a href="/User/RegisterUsersList?id=@(i+1)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
+                            }
+                            <!--end::Item-->
+                        </div>
                             }
                             <!--end::Body-->
                         </div>
