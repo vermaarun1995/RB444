@@ -58,6 +58,7 @@ namespace RB444.Admin.Controllers
             }
             try
             {
+
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
