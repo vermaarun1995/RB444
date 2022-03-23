@@ -188,7 +188,6 @@ namespace RB444.Core.Services.BetfairApi
             eventModel.data = new Model.Model.Data();
             eventModel.data.matchOddsData = new List<MatchOddsData>();
             List<MatchOddsData> matchOddsDataList = new List<MatchOddsData>();
-            List<Runner> runnerList = new List<Runner>();
             Price price = new Price();
             try
             {
@@ -201,6 +200,7 @@ namespace RB444.Core.Services.BetfairApi
                     var eventCnt = eventReturnResponse.t1.Count;
                     for (int i = 0; i < eventCnt; i++)
                     {
+                        List<Runner> runnerList = new List<Runner>();
                         totalMatched = Math.Round(Convert.ToDouble(eventReturnResponse.t1[i][0].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls3) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls3), 2);
 
                         inPlay = Convert.ToBoolean(eventReturnResponse.t1[i][0].iplay);
