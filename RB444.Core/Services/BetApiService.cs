@@ -31,6 +31,7 @@ namespace RB444.Core.Services
                 model.PlaceTime = DateTime.Now;
                 model.MatchedTime = DateTime.Now.AddSeconds(5);
                 model.SettleTime = model.MatchedTime;
+                model.ResultAmount = 0;
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? MessageStatus.Create : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };

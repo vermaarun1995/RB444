@@ -47,9 +47,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetUserActivityLog")]
-        public async Task<CommonReturnResponse> GetUserActivityLog()
+        public async Task<CommonReturnResponse> GetUserActivityLog(int UserId)
         {
-            return await _commonService.GetUserActivityLogAsync();
+            return await _commonService.GetUserActivityLogAsync(UserId);
         }
 
         [HttpGet, Route("GetAccountStatement")]
@@ -61,7 +61,14 @@ namespace RB444.Api.Controllers
         [HttpGet, Route("GetAccountStatementForSuperAdmin")]
         public async Task<CommonReturnResponse> GetAccountStatementForSuperAdmin(int AdminId)
         {
+            // not usable
             return await _commonService.GetAccountStatementForSuperAdminAsync(AdminId);
+        }
+
+        [HttpGet, Route("GetProfitAndLoss")]
+        public async Task<CommonReturnResponse> GetProfitAndLoss(int UserId)
+        {
+            return await _commonService.GetProfitAndLossAsync(UserId);
         }
     }
 }

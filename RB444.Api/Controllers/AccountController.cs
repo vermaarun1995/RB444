@@ -61,6 +61,7 @@ namespace RB444.Api.Controllers
                             if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                         }
 
+                        var response = await GetOpeningBalance(user.Id);
                         var userVM = new UserModel
                         {
                             Id = user.Id,
@@ -71,7 +72,7 @@ namespace RB444.Api.Controllers
                             RoleId = user.RoleId,
                             CreatedDate = user.CreatedDate,
                             RollingCommission = user.RollingCommission,
-                            AssignCoin = user.AssignCoin,
+                            AssignCoin = Convert.ToInt64(response.Data),
                             Commision = user.Commision,
                             ExposureLimit = user.ExposureLimit,
                             ParentId = user.ParentId,
@@ -140,6 +141,12 @@ namespace RB444.Api.Controllers
             }
         }
 
+        [HttpGet, Route("GetOpeningBalance")]
+        public async Task<CommonReturnResponse> GetOpeningBalance(int UserId)
+        {
+            return await _accountService.GetOpeningBalanceAsync(UserId);
+        }
+
         [HttpGet, Route("UpdateAssignCoin")]
         public async Task<CommonReturnResponse> UpdateAssignCoin(long AssignCoin, int LoginUserId)
         {
@@ -152,6 +159,12 @@ namespace RB444.Api.Controllers
             return await _accountService.DepositAssignCoinAsync(AssignCoin, ParentId, UserId, UserRoleId);
         }
 
+        [HttpGet, Route("DepositWithdrawCoin")]
+        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId)
+        {
+            return await _accountService.DepositAssignCoinAsync(Amount, ParentId, UserId, UserRoleId);
+        }
+
         [HttpGet, Route("GetUserRoles")]
         public async Task<CommonReturnResponse> GetUserRoles()
         {
@@ -159,21 +172,27 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetAllUsers")]
-        public async Task<CommonReturnResponse> GetAllUsers()
+        public async Task<CommonReturnResponse> GetAllUsers(int RoleId, int LoginUserId)
         {
-            return await _accountService.GetAllUsers();
+            return await _accountService.GetAllUsers(RoleId, LoginUserId);
         }
 
-        [HttpGet, Route("GetAllUsersByParentId")]
-        public async Task<CommonReturnResponse> GetAllUsersByParentId(int ParentId, int RoleId)
+        [HttpGet, Route("GetUsersByParentId")]
+        public async Task<CommonReturnResponse> GetUsersByParentId(int ParentId, int RoleId, int UserId)
         {
-            return await _accountService.GetAllUsersByParentIdAsync(ParentId, RoleId);
+            return await _accountService.GetUsersByParentIdAsync(ParentId, RoleId, UserId);
         }
 
         [HttpGet, Route("GetUserDetail")]
         public async Task<CommonReturnResponse> GetUserDetail(int UserId)
         {
             return await _accountService.GetUserDetailAsync(UserId);
+        }
+
+        [HttpGet, Route("UpdateUserDetail")]
+        public async Task<CommonReturnResponse> UpdateUserDetail(string query)
+        {
+            return await _accountService.UpdateUserDetailAsync(query);
         }
     }
 }

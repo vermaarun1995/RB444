@@ -2,6 +2,7 @@
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
+using RB444.Model.Model;
 using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
@@ -138,12 +139,12 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetUserActivityLogAsync()
+        public async Task<CommonReturnResponse> GetUserActivityLogAsync(int UserId)
         {
             List<ActivityLogVM> activityLogVMs = null;
             try
             {
-                string query = "select ActivityLog.*,Users.FullName as UserName from ActivityLog,Users where ActivityLog.UserId = Users.Id and Users.RoleId = 7;";
+                string query = "select ActivityLog.*,Users.FullName as UserName from ActivityLog,Users where ActivityLog.UserId = Users.Id and Users.RoleId = 7 and UserId = " + UserId + ";";
                 var result = await _baseRepository.GetQueryMultipleAsync(query, null, gr => gr.Read<ActivityLogVM>());
                 activityLogVMs = (result[0] as List<ActivityLogVM>).ToList();
                 return new CommonReturnResponse
@@ -166,7 +167,7 @@ namespace RB444.Core.Services
             List<AccountStatementVM> accountStatementVMs = new List<AccountStatementVM>();
             try
             {
-                var userList = await _baseRepository.GetListAsync<Users>();
+                var userList = await _baseRepository.GetListAsync<Users>();                
 
                 _keyValues.Add("ToUserId", UserId);
                 var accountStatementList = await _baseRepository.SelectAsync<AccountStatement>(_keyValues);
@@ -230,6 +231,29 @@ namespace RB444.Core.Services
                     Message = accountStatementVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = accountStatementVMs.Count > 0,
                     Status = accountStatementVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetProfitAndLossAsync(int UserId)
+        {
+            List<ProfitAndLossVM> profitAndLossVMs = new List<ProfitAndLossVM>();
+            try
+            {
+                string query = string.Format(@"select  Bets.Id,BetId,Sports.SportName,Event,Market,Selection,(CASE WHEN OddsType = 1 THEN 'Match Odds' ELSE Case WHEN OddsType = 2 THEN 'Bookmaker' ELSE 'Fancy' end END) as OddsType,Type,OddsRequest,AmountStake,PlaceTime,SettleTime,IsSettlement,(CASE WHEN ResultType = 1 THEN 'Win' ELSE Case WHEN ResultType = 2 THEN 'Loss' ELSE 'Draw' end END) as ResultType,ResultAmount from Bets,Sports where Bets.SportId = Sports.Id and Bets.Status = 1 and Bets.IsSettlement = 1 and UserId = {0}", UserId);
+
+                var result = await _baseRepository.GetQueryMultipleAsync(query, new { UserId = UserId }, gr => gr.Read<ProfitAndLossVM>());
+                profitAndLossVMs = (result[0] as List<ProfitAndLossVM>).ToList();
+                return new CommonReturnResponse
+                {
+                    Data = profitAndLossVMs,
+                    Message = profitAndLossVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = profitAndLossVMs.Count > 0,
+                    Status = profitAndLossVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)

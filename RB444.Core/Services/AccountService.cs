@@ -18,6 +18,38 @@ namespace RB444.Core.Services
         {
             _baseRepository = baseRepository;
         }
+
+        public async Task<CommonReturnResponse> GetOpeningBalanceAsync(int UserId)
+        {
+            float totalBetAmount = 0;
+            double openingBalance = 0;
+            try
+            {
+                string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", UserId);
+                var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
+
+                query = string.Format(@"select * from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
+                var betAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).ToList();
+                foreach (var item in betAmountList)
+                {
+                    totalBetAmount = totalBetAmount + item;
+                }
+                openingBalance = balance - totalBetAmount;
+                return new CommonReturnResponse
+                {
+                    Data = openingBalance,
+                    Message = MessageStatus.Success,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
         public async Task<CommonReturnResponse> UpdateAssignCoinAsync(long AssignCoin, int LoginUserId)
         {
             Users users = null;
@@ -61,7 +93,7 @@ namespace RB444.Core.Services
             bool _result = false;
             try
             {
-                var depositCoint = new AccountStatement
+                var depositCoin = new AccountStatement
                 {
                     CreatedDate = DateTime.Now,
                     Deposit = assignCoin,
@@ -72,7 +104,71 @@ namespace RB444.Core.Services
                     ToUserId = userId,
                     ToUserRoleId = UserRoleId
                 };
-                _result = await _baseRepository.InsertAsync(depositCoint) > 0;
+                _result = await _baseRepository.InsertAsync(depositCoin) > 0;
+
+                string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
+                var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
+                var withdrawCoin = new AccountStatement
+                {
+                    CreatedDate = DateTime.Now,
+                    Deposit = 0,
+                    Withdraw = assignCoin,
+                    Balance = latestAccountStatement.Balance - assignCoin,
+                    Remark = "Assign Coin to other user",
+                    FromUserId = userId,
+                    ToUserId = userId,
+                    ToUserRoleId = UserRoleId
+                };
+
+                if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, int Type)
+        {
+            bool _result = false;
+            try
+            {
+                var depositCoin = new AccountStatement
+                {
+                    CreatedDate = DateTime.Now,
+                    Deposit = Type == 1 ? Amount : 0,
+                    Withdraw = Type == 2 ? Amount : 0,
+                    Balance = Amount,
+                    Remark = Type == 1 ? "Deposit" : "Withdraw",
+                    FromUserId = parentId,
+                    ToUserId = userId,
+                    ToUserRoleId = UserRoleId
+                };
+                _result = await _baseRepository.InsertAsync(depositCoin) > 0;
+
+                string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
+                var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
+                var withdrawCoin = new AccountStatement
+                {
+                    CreatedDate = DateTime.Now,
+                    Deposit = 0,
+                    Withdraw = Amount,
+                    Balance = latestAccountStatement.Balance - Amount,
+                    Remark = "Assign Coin to other user",
+                    FromUserId = userId,
+                    ToUserId = userId,
+                    ToUserRoleId = UserRoleId
+                };
+
                 if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse
                 {
@@ -110,17 +206,38 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetAllUsers()
+        public async Task<CommonReturnResponse> GetAllUsers(int RoleId, int LoginUserId)
         {
             try
             {
-                var users = await _baseRepository.GetListAsync<Users>();
+                string sql = string.Format(@"select Users.Id,Users.FullName,Users.RoleId,Users.ParentId,(select top 1 Balance from AccountStatement where ToUserId = Users.Id order by Id desc) as AssignCoin from Users where RoleId > {0}", RoleId);
+                var users = (await _baseRepository.QueryAsync<Users>(sql)).ToList();
+
+                var u = users.Where(x => x.ParentId == LoginUserId).ToList();
+                var totalUser = u;
+                if (u != null && u.Count() > 0)
+                {
+                    for (; ; )
+                    {
+                        var ids = u.Select(x => x.Id).ToList();
+                        var u1 = users.Where(x => ids.Contains(x.ParentId)).ToList();
+                        if (u1.Count == 0)
+                        {
+                            break;
+                        }
+
+                        totalUser.AddRange(u1);
+                        u = u1;
+                    }
+                }
+
+                //totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
                 return new CommonReturnResponse
                 {
-                    Data = users,
-                    Message = users.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
-                    IsSuccess = users.Count > 0,
-                    Status = users.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    Data = totalUser,
+                    Message = totalUser.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = totalUser.Count > 0,
+                    Status = totalUser.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)
@@ -150,7 +267,7 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetAllUsersByParentIdAsync(int LoginUserId, int RoleId)
+        public async Task<CommonReturnResponse> GetUsersByParentIdAsync(int LoginUserId, int RoleId, int UserId)
         {
             IDictionary<string, object> _keyValues = null;
             try
@@ -159,8 +276,9 @@ namespace RB444.Core.Services
                 _keyValues = new Dictionary<string, object> { { "Id", LoginUserId } };
                 var loginUser = (await _baseRepository.SelectAsync<Users>(_keyValues)).FirstOrDefault();
 
-                _keyValues = new Dictionary<string, object> { { "ParentId", LoginUserId } };
-                var users = (await _baseRepository.SelectAsync<Users>(_keyValues)).ToList();
+                //_keyValues = new Dictionary<string, object> { { "ParentId", LoginUserId } };
+                //var users = (await _baseRepository.SelectAsync<Users>(_keyValues)).ToList();
+                var users = await _baseRepository.GetListAsync<Users>();
 
                 var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 : false;
 
@@ -183,6 +301,10 @@ namespace RB444.Core.Services
                 }
 
                 totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
+                if (UserId > 0)
+                {
+                    totalUser = totalUser.Where(x => x.Id == UserId).ToList();
+                }
                 var roleName = userRoles.Where(y => y.Id == RoleId).Select(x => x.Name).FirstOrDefault();
 
                 var model = new RegisterListVM
@@ -231,6 +353,31 @@ namespace RB444.Core.Services
                 //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
+        }
+
+        public async Task<CommonReturnResponse> UpdateUserDetailAsync(string query)
+        {
+            Users users = null;
+            bool _result = false;
+            try
+            {
+                await _baseRepository.QueryAsync<Users>(query);
+                _baseRepository.Commit();
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = MessageStatus.Update,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+            finally { if (users != null) { users = null; } }
         }
     }
 }

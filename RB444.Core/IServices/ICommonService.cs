@@ -45,7 +45,7 @@ namespace RB444.Core.IServices
         /// Get User Activity Log.
         /// </summary>
         /// <returns></returns>
-        Task<CommonReturnResponse> GetUserActivityLogAsync();
+        Task<CommonReturnResponse> GetUserActivityLogAsync(int UserId);
 
         /// <summary>
         /// Get Account Statement.
@@ -60,5 +60,12 @@ namespace RB444.Core.IServices
         /// <param name="AdminId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetAccountStatementForSuperAdminAsync(int AdminId);
+
+        /// <summary>
+        /// Get Profit and loss data of user.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetProfitAndLossAsync(int UserId);
     }
 }

@@ -23,7 +23,7 @@ namespace RB444.Data.Entities
         public int UserId { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public int? ResultType { get; set; }  // 1 for Win and 2 for Loss 3 from Draw/Tie
-        public float? MatchFinishedAmount { get; set; } // Profit and Loss Amout
+        public int? ResultType { get; set; }  // 1 for Win and 2 for Loss 3 for Draw 4 for Tie 5 for no result
+        public float? ResultAmount { get; set; } // Profit and Loss Amout
     }
 }
