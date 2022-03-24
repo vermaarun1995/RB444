@@ -30,21 +30,37 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            List<AccountStatementVM> accountStatementVM = null;
+            try
+            {
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = user;
 
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement?UserId={1}", _configuration["ApiKeyUrl"], user.Id));
-            var accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatementForSuperAdmin?AdminId={1}", _configuration["ApiKeyUrl"], user.Id));
+                accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
             return View(accountStatementVM);
         }
 
         public async Task<ActionResult> ActivityLog()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetActivityLog", _configuration["ApiKeyUrl"]));
-            var activityLogVM = jsonParser.ParsJson<List<ActivityLogVM>>(Convert.ToString(commonModel.Data));
+            List<ActivityLogVM> activityLogVM = null;
+            try
+            {
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = user;
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetActivityLog", _configuration["ApiKeyUrl"]));
+                activityLogVM = jsonParser.ParsJson<List<ActivityLogVM>>(Convert.ToString(commonModel.Data));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
             return View(activityLogVM);
         }

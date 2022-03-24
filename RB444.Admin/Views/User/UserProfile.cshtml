@@ -135,16 +135,14 @@
                 };
 
                 var url = "/user/UpdateUserProfile";
-                $(".loader-1.loading-img").show();
 
                 $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
-                    if (data.toLowerCase() == "ok") {
-                        toastr.success("User information update successfully!");
+                    if (data.issuccess) {
+                        toastr.success(data.message);
                         window.location.reload();
                     }
                     else {
-                        toastr.error(data);
+                        toastr.error(data.message);
                     }
                 });
             }

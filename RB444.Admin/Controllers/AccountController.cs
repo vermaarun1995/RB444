@@ -40,11 +40,11 @@ namespace RB444.Admin.Controllers
             {
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetLogo", _configuration["ApiKeyUrl"]));
                 Logo logo = jsonParser.ParsJson<Logo>(Convert.ToString(commonModel.Data));
-                ViewBag.Logo = logo.FilePath;               
+                ViewBag.Logo = logo.FilePath;
             }
             catch (Exception ex)
             {
-                
+
             }
             return View();
         }
@@ -101,7 +101,7 @@ namespace RB444.Admin.Controllers
                                     UserId = user.Id,
                                     Status = "login_fail"
                                 };
-                                var _result = await _baseRepository.InsertAsync(activityLog); 
+                                var _result = await _baseRepository.InsertAsync(activityLog);
                                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                             }
                         }
@@ -204,11 +204,51 @@ namespace RB444.Admin.Controllers
 
             var data = new CommonReturnResponse();
 
-            var isOldPassword = await _userManager.CheckPasswordAsync(user, model.OldPassword);
-            if (isOldPassword)
+            if (model.OldPassword.Length > 0)
             {
-                var Code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, Code, model.Password);
+                var isOldPassword = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+                if (isOldPassword)
+                {
+                    var Code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, Code, model.Password);
+                    if (result.Succeeded)
+                    {
+                        data = new CommonReturnResponse()
+                        {
+                            Data = result,
+                            IsSuccess = true,
+                            Message = CustomMessageStatus.resetPwd,
+                            Status = ResponseStatusCode.OK
+                        };
+                        return Json(JsonConvert.SerializeObject(data));
+                    }
+
+                    data = new CommonReturnResponse()
+                    {
+                        Data = result.Errors,
+                        IsSuccess = false,
+                        Message = result.ToString(),
+                        Status = ResponseStatusCode.NOTACCEPTABLE
+                    };
+                    return Json(JsonConvert.SerializeObject(data));
+                }
+                else
+                {
+                    data = new CommonReturnResponse()
+                    {
+                        Data = null,
+                        IsSuccess = false,
+                        Message = CustomMessageStatus.oldPwd,
+                        Status = ResponseStatusCode.NOTACCEPTABLE
+                    };
+                    return Json(JsonConvert.SerializeObject(data));
+                }
+            }
+            else
+            {
+                var profileUser = await _userManager.FindByIdAsync(model.UserId);
+                var Code = await _userManager.GeneratePasswordResetTokenAsync(profileUser);
+                var result = await _userManager.ResetPasswordAsync(profileUser, Code, model.Password);
                 if (result.Succeeded)
                 {
                     data = new CommonReturnResponse()
@@ -226,17 +266,6 @@ namespace RB444.Admin.Controllers
                     Data = result.Errors,
                     IsSuccess = false,
                     Message = result.ToString(),
-                    Status = ResponseStatusCode.NOTACCEPTABLE
-                };
-                return Json(JsonConvert.SerializeObject(data));
-            }
-            else
-            {
-                data = new CommonReturnResponse()
-                {
-                    Data = null,
-                    IsSuccess = false,
-                    Message = CustomMessageStatus.oldPwd,
                     Status = ResponseStatusCode.NOTACCEPTABLE
                 };
                 return Json(JsonConvert.SerializeObject(data));

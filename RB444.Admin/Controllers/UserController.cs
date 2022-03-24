@@ -40,7 +40,7 @@ namespace RB444.Admin.Controllers
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserRoles", _configuration["ApiKeyUrl"]));
                 userRoles = jsonParser.ParsJson<List<UserRoles>>(Convert.ToString(commonModel.Data));
 
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers", _configuration["ApiKeyUrl"]));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers?RoleId={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], user.RoleId, user.Id));
                 users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
 
                 ViewBag.UserRoles = userRoles;
@@ -56,7 +56,7 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> RegisterUsersList(int? id)
+        public async Task<ActionResult> RegisterUsersList(int? id, int? userId)
         {
             var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
             ViewBag.LoginUser = loginUser;
@@ -64,7 +64,7 @@ namespace RB444.Admin.Controllers
             var model = new RegisterListVM();
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsersByParentId?ParentId={1}&RoleId={2}", _configuration["ApiKeyUrl"], loginUser.Id, id));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUsersByParentId?ParentId={1}&RoleId={2}&UserId={3}", _configuration["ApiKeyUrl"], loginUser.Id, id, userId));
                 model = jsonParser.ParsJson<RegisterListVM>(Convert.ToString(commonModel.Data));
 
                 return View(model);
@@ -78,70 +78,54 @@ namespace RB444.Admin.Controllers
 
         public async Task<ActionResult> AccountStatement(int id)
         {
-            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = loginUser;
-
-            var result = new List<AccountStatementVM>();
-            var accountStatements = new List<AccountStatement>();
-
-            var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers", _configuration["ApiKeyUrl"]));
-            var users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
-
-            //if (!string.IsNullOrWhiteSpace(id))
-            //{
-            //    accountStatements = accountStatements.Where(x => x.ToUserId == id).ToList();
-            //}
-
-            //if (accountStatements?.Count > 0)
-            //{
-            //    result = accountStatements.Select(x => new AccountStatementVM
-            //    {
-            //        Balance = x.Balance,
-            //        CreatedDate = x.CreatedDate,
-            //        Deposit = x.Deposit,
-            //        Withdraw = x.Withdraw,
-            //        Remark = x.Remark,
-            //        FromUser = users.FirstOrDefault(y => y.Id == x.FromUserId).Name,
-            //        ToUser = users.FirstOrDefault(y => y.Id == x.ToUserId).Name
-            //    }).ToList();
-            //}
-            result.Add(new AccountStatementVM
+            List<AccountStatementVM> accountStatementVM = null;
+            try
             {
-                Balance = 1000,
-                CreatedDate = DateTime.Now,
-                Deposit = 100,
-                Withdraw = 10,
-                Remark = "withdraw 10000",
-                FromUser = "super admin",
-                ToUser = "admin"
-            });
-            return View(result);
+                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = loginUser;
+
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement?UserId={1}", _configuration["ApiKeyUrl"], id));
+                accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return View(accountStatementVM);
         }
 
-        public async Task<ActionResult> UserProfile(string id)
+        public async Task<ActionResult> UserProfile(int id)
         {
-            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = loginUser;
-
-            var isAdmin = string.IsNullOrWhiteSpace(id);
-
-            if (!isAdmin)
+            Users users = null;
+            try
             {
-                //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetAllUsers", _configuration["ApiKeyUrl"]));
-                //var users = jsonParser.ParsJson<List<Users>>(Convert.ToString(commonModel.Data));
-                // user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
+                users = new Users();
+                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                ViewBag.LoginUser = loginUser;
+
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserDetail?UserId={1}", _configuration["ApiKeyUrl"], id));
+                if (commonModel.Data != null)
+                {
+                    users = jsonParser.ParsJson<Users>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
 
             var result = new UserProfileVM
             {
                 AgentRollingCommission = false,
-                Commision = 1000,
-                ExposureLimit = 1000,
-                MobileNumber = "9887328875",
-                Name = "Test",
-                RollingCommission = false,
-                UserId = "13",
-                IsAdmin = isAdmin
+                Commision = users.Commision,
+                ExposureLimit = users.ExposureLimit,
+                MobileNumber = users.PhoneNumber,
+                Name = users.FullName,
+                RollingCommission = users.RollingCommission,
+                UserId = users.Id,
+                IsAdmin = true
             };
 
             return View(result);
@@ -159,83 +143,74 @@ namespace RB444.Admin.Controllers
 
                 return "ok";
             }
-            catch
+            catch(Exception ex)
             {
-                // var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-                var errorHtml = "<ul>";
-                //if (errorArr != null && errorArr.Count > 0)
-                //{
-                //    foreach (var error in errorArr)
-                //    {
-                errorHtml += "<li>error</li>";
-                //    }
-                //}
-
-                errorHtml += "</ul>";
-                return errorHtml;
+                throw;
             }
         }
 
         [HttpPost]
-        public async Task<string> UpdateUserProfile(string userId, string id, string value)
+        public async Task<JsonResult> UpdateUserProfile(string userId, string id, string value)
         {
+            CommonReturnResponse commonModel = null;
+            string sql = string.Empty;
             try
             {
-                //switch (id)
-                //{
-                //    case "RollingCommission":
-                //        var rollingCommission = value.ToLower() == "on";
-                //        await _dbContext.Database.ExecuteSqlCommandAsync("UPDATE AspNetUsers SET RollingCommission=@rollingCommission WHERE Id=@id",
-                //            new SqlParameter("rollingCommission", rollingCommission),
-                //            new SqlParameter("id", userId));
-                //        await _dbContext.SaveChangesAsync();
-                //        break;
-                //    case "ExposureLimit":
-                //        await _dbContext.Database.ExecuteSqlCommandAsync("UPDATE AspNetUsers SET ExposureLimit=@exposureLimit WHERE Id=@id",
-                //            new SqlParameter("exposureLimit", Convert.ToInt32(value)),
-                //            new SqlParameter("id", userId));
-                //        await _dbContext.SaveChangesAsync();
-                //        break;
-                //    case "MobileNumber":
-                //        await _dbContext.Database.ExecuteSqlCommandAsync("UPDATE AspNetUsers SET MobileNumber=@mobileNumber, PhoneNumber=@mobileNumber WHERE Id=@id",
-                //            new SqlParameter("mobileNumber", value),
-                //            new SqlParameter("id", userId));
-                //        await _dbContext.SaveChangesAsync();
-                //        break;
-                //    case "Password":
-                //        // Get auth key from web.config
-                //        string authKey = WebConfigurationManager.AppSettings["AuthKey"];
+                commonModel = new CommonReturnResponse();
+                switch (id)
+                {
+                    case "RollingCommission":
+                        var rollingCommission = value.ToLower() == "on";
+                        sql = "UPDATE Users SET RollingCommission=" + rollingCommission + " WHERE Id=" + userId;
+                        commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserDetail?query={1}", _configuration["ApiKeyUrl"], sql));
+                        break;
+                    case "ExposureLimit":
+                        sql = "UPDATE Users SET ExposureLimit=" + value + " WHERE Id=" + userId;
+                        commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserDetail?query={1}", _configuration["ApiKeyUrl"], sql));
+                        break;
+                    case "MobileNumber":
+                        sql = "UPDATE Users SET PhoneNumber=" + value + " WHERE Id=" + userId;
+                       commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserDetail?query={1}", _configuration["ApiKeyUrl"], sql));
+                        break;
+                    case "Password":
+                        var profileUser = await _userManager.FindByIdAsync(userId);
+                        var Code = await _userManager.GeneratePasswordResetTokenAsync(profileUser);
+                        var result = await _userManager.ResetPasswordAsync(profileUser, Code, value);
+                        if (result.Succeeded)
+                        {
+                            commonModel = new CommonReturnResponse()
+                            {
+                                Data = result,
+                                IsSuccess = true,
+                                Message = CustomMessageStatus.resetPwd,
+                                Status = ResponseStatusCode.OK
+                            };
+                        }
+                        else
+                        {
+                            commonModel = new CommonReturnResponse()
+                            {
+                                Data = result.Errors,
+                                IsSuccess = false,
+                                Message = result.ToString(),
+                                Status = ResponseStatusCode.NOTACCEPTABLE
+                            };
+                        }
+                        break;
+                }
 
-                //        // Encrypt password with specific key
-                //        var encryptPassword = General.EncryptString(authKey, value);
-
-                //        // Get user
-                //        var user = await UserManager.FindByIdAsync(userId).ConfigureAwait(false);
-
-                //        var hashedPassword = UserManager.PasswordHasher.HashPassword(encryptPassword);
-                //        user.PasswordHash = hashedPassword;
-                //        user.Password = encryptPassword;
-                //        await UserManager.UpdateAsync(user);
-                //        await _dbContext.SaveChangesAsync();
-                //        break;
-                //}
-
-                return "ok";
+                return Json(commonModel);
             }
-            catch
+            catch (Exception ex)
             {
-                //var errorArr = ModelState.Values?.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
-                var errorHtml = "<ul>";
-                //if (errorArr != null && errorArr.Count > 0)
-                //{
-                //    foreach (var error in errorArr)
-                //    {
-                errorHtml += "<li>error</li>";
-                //    }
-                //}
-
-                errorHtml += "</ul>";
-                return errorHtml;
+                commonModel = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
 
