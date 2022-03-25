@@ -108,7 +108,7 @@ namespace RB444.Models.Model
 
     public class RegisterListVM: RegisterViewModel
     {
-        public Users LoginUser { get; set; }
+        public UsersVM LoginUser { get; set; }
         public List<UserRoles> UserRoles { get; set; }
         public int LoginUserId { get; set; }
         public int LoginUserRole { get; set; }

@@ -143,12 +143,15 @@ namespace RB444.Core.Services
             bool _result = false;
             try
             {
+                string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
+                var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
+
                 var depositWithdrawCoin = new AccountStatement
                 {
                     CreatedDate = DateTime.Now,
                     Deposit = Type == true ? Amount : 0,
                     Withdraw = Type == false ? Amount : 0,
-                    Balance = Amount,
+                    Balance = Type == true ? balance + Amount : balance - Amount,
                     Remark = Remark,
                     FromUserId = parentId,
                     ToUserId = userId,
@@ -271,6 +274,7 @@ namespace RB444.Core.Services
 
                 var u = usersVM.Where(x => x.ParentId == LoginUserId).ToList();
                 var totalUser = u;
+                var loginParentUser = usersVM.Where(x => x.Id == LoginUserId).FirstOrDefault();
                 if (u != null && u.Count() > 0)
                 {
                     for (; ; )
@@ -287,6 +291,7 @@ namespace RB444.Core.Services
                     }
                 }
 
+                
                 totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
                 if (UserId > 0)
                 {
@@ -298,7 +303,7 @@ namespace RB444.Core.Services
                 {
                     LoginUserId = loginUser.Id,
                     LoginUserRole = loginUser.RoleId,
-                    LoginUser = loginUser,
+                    LoginUser = loginParentUser,
                     RoleName = roleName,
                     Users = totalUser,
                     UserRoles = userRoles,
