@@ -41,55 +41,64 @@ namespace RB444.Api.Controllers
                 var user = await _userManager.FindByEmailAsync(model.email);
                 if (user != null)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(model.email, model.password, model.rememberme, lockoutOnFailure: false);
-                    if (result.Succeeded)
+                    if (user.Status == 2)
                     {
-                        string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                        if (ipAddress != "::1")
+                        return new CommonReturnResponse { Data = null, Message = "User suspended.", IsSuccess = false, Status = ResponseStatusCode.NOTACCEPTABLE };
+                    }
+                    else if (user.Status == 3)
+                    {
+                        return new CommonReturnResponse { Data = null, Message = "User blocked.", IsSuccess = false, Status = ResponseStatusCode.NOTACCEPTABLE };
+                    }
+                    else if (user.Status == 1)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(model.email, model.password, model.rememberme, lockoutOnFailure: false);
+                        if (result.Succeeded)
                         {
-                            var locationModel = commonFun.GetIpInfo(ipAddress);
-                            var activityLog = new ActivityLog
+                            string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+                            if (ipAddress != "::1")
                             {
-                                Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
-                                IpAddress = locationModel.query,
-                                ISP = locationModel.isp,
-                                LoginDate = DateTime.Now,
-                                UserId = user.Id
+                                var locationModel = commonFun.GetIpInfo(ipAddress);
+                                var activityLog = new ActivityLog
+                                {
+                                    Address = $"{locationModel.city}/{locationModel.regionName}/{locationModel.country}/{locationModel.zip}",
+                                    IpAddress = locationModel.query,
+                                    ISP = locationModel.isp,
+                                    LoginDate = DateTime.Now,
+                                    UserId = user.Id
+                                };
+
+                                var _result = await _baseRepository.InsertAsync(activityLog);
+                                if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                            }
+
+                            var response = await GetOpeningBalance(user.Id);
+                            var userVM = new UserModel
+                            {
+                                Id = user.Id,
+                                UserName = user.UserName,
+                                FullName = user.FullName,
+                                Email = user.Email,
+                                PhoneNumber = user.PhoneNumber,
+                                RoleId = user.RoleId,
+                                CreatedDate = user.CreatedDate,
+                                RollingCommission = user.RollingCommission,
+                                AssignCoin = Convert.ToInt64(response.Data),
+                                Commision = user.Commision,
+                                ExposureLimit = user.ExposureLimit,
+                                ParentId = user.ParentId,
+                                Status = user.Status
                             };
-
-                            var _result = await _baseRepository.InsertAsync(activityLog);
-                            if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                            return new CommonReturnResponse { Data = userVM, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
                         }
-
-                        var response = await GetOpeningBalance(user.Id);
-                        var userVM = new UserModel
+                        else
                         {
-                            Id = user.Id,
-                            UserName = user.UserName,
-                            FullName = user.FullName,
-                            Email = user.Email,
-                            PhoneNumber = user.PhoneNumber,
-                            RoleId = user.RoleId,
-                            CreatedDate = user.CreatedDate,
-                            RollingCommission = user.RollingCommission,
-                            AssignCoin = Convert.ToInt64(response.Data),
-                            Commision = user.Commision,
-                            ExposureLimit = user.ExposureLimit,
-                            ParentId = user.ParentId,
-                            Status = user.Status
-                        };
-                        return new CommonReturnResponse { Data = userVM, Message = CustomMessageStatus.Loginsuccess, IsSuccess = true, Status = ResponseStatusCode.OK };
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                        return new CommonReturnResponse { Data = null, Message = CustomMessageStatus.InvliadLogin, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
+                            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                            return new CommonReturnResponse { Data = null, Message = CustomMessageStatus.InvliadLogin, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
+                        }
                     }
                 }
-                else
-                {
-                    return new CommonReturnResponse { Data = null, Message = "Inavalid UserName and Password. Please try again", IsSuccess = false, Status = ResponseStatusCode.NOTFOUND };
-                }
+
+                return new CommonReturnResponse { Data = null, Message = "Login name or password is invalid! Please try again.", IsSuccess = false, Status = ResponseStatusCode.NOTFOUND };
             }
             catch (Exception ex)
             {
