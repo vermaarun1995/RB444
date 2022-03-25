@@ -13,19 +13,14 @@ namespace RB444.Core.IServices
         /// <param name="sportsSetting"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> AddOrUpdateSportsSettingAsync(Sports sportsSetting);
-        /// <summary>
-        /// Update Status of Sports.
-        /// </summary>
-        /// <param name="sportsSetting"></param>
-        /// <returns></returns>
-        //Task<CommonReturnResponse> UpdateSportsStatusAsync(SportsSetting sportsSetting);
 
         /// <summary>
-        /// Update Limit of Sports.
+        /// Update Series Setting.
         /// </summary>
-        /// <param name="sportsSetting"></param>
+        /// <param name="SeriesId"></param>
+        /// <param name="Status"></param>
         /// <returns></returns>
-        //Task<CommonReturnResponse> UpdateSportsLimitAsync(SportsSetting sportsSetting);
+        Task<CommonReturnResponse> UpdateSeriesSettingAsync(long SeriesId, bool Status);
 
         /// <summary>
         /// Update Stake Limit.

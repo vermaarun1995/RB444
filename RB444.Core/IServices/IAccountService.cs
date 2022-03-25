@@ -31,6 +31,18 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> DepositAssignCoinAsync(long assignCoin, int parentId, int userId, int UserRoleId);
 
         /// <summary>
+        /// Deposit or Withdraw Coin.
+        /// </summary>
+        /// <param name="Amount"></param>
+        /// <param name="parentId"></param>
+        /// <param name="userId"></param>
+        /// <param name="UserRoleId"></param>
+        /// <param name="Remark"></param>
+        /// <param name="Type"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, int Type);
+
+        /// <summary>
         /// Get User Roles.
         /// </summary>
         /// <returns></returns>
@@ -64,5 +76,13 @@ namespace RB444.Core.IServices
         /// <param name="query"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> UpdateUserDetailAsync(string query);
+
+        /// <summary>
+        /// Update user Status.
+        /// </summary>
+        /// <param name="Status"></param>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> UpdateUserStatusAsync(int Status, int UserId);
     }
 }

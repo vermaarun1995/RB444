@@ -137,43 +137,28 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, int Type)
+        public async Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, int Type)
         {
             bool _result = false;
             try
             {
-                var depositCoin = new AccountStatement
+                var depositWithdrawCoin = new AccountStatement
                 {
                     CreatedDate = DateTime.Now,
                     Deposit = Type == 1 ? Amount : 0,
                     Withdraw = Type == 2 ? Amount : 0,
                     Balance = Amount,
-                    Remark = Type == 1 ? "Deposit" : "Withdraw",
+                    Remark = Remark,
                     FromUserId = parentId,
                     ToUserId = userId,
                     ToUserRoleId = UserRoleId
                 };
-                _result = await _baseRepository.InsertAsync(depositCoin) > 0;
-
-                string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
-                var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
-                var withdrawCoin = new AccountStatement
-                {
-                    CreatedDate = DateTime.Now,
-                    Deposit = 0,
-                    Withdraw = Amount,
-                    Balance = latestAccountStatement.Balance - Amount,
-                    Remark = "Assign Coin to other user",
-                    FromUserId = userId,
-                    ToUserId = userId,
-                    ToUserRoleId = UserRoleId
-                };
-
+                _result = await _baseRepository.InsertAsync(depositWithdrawCoin) > 0;
                 if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse
                 {
                     Data = _result,
-                    Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                    Message = _result ? MessageStatus.Save : MessageStatus.Error,
                     IsSuccess = _result,
                     Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
                 };
@@ -378,6 +363,34 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
             finally { if (users != null) { users = null; } }
+        }
+
+        public async Task<CommonReturnResponse> UpdateUserStatusAsync(int Status, int UserId)
+        {            
+            bool _result = false;
+            try
+            {
+                var user = await _baseRepository.GetDataByIdAsync<Users>(UserId);
+                if(user != null)
+                {
+                    user.Status = Status;
+                    _result = await _baseRepository.UpdateAsync(user) == 1;
+                    if (_result) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                }                
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = MessageStatus.Update,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }            
         }
     }
 }

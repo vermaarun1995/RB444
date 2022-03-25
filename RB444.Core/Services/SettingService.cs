@@ -22,9 +22,7 @@ namespace RB444.Core.Services
         {
             try
             {
-                //string query = string.Format(@"Update SportsSetting set Status = {0} where SportName = '{1}'", sportsSetting.Status, sportsSetting.SportName);
-                //await _baseRepository.QueryAsync<SportsSetting>(query);
-                var sports = await _baseRepository.GetDataByIdAsync<SportsSettings>(sportsSetting.Id);
+                var sports = await _baseRepository.GetDataByIdAsync<Sports>(sportsSetting.Id);
                 if (sports != null)
                 {
                     int _resultId = await _baseRepository.UpdateAsync(sportsSetting);
@@ -44,35 +42,25 @@ namespace RB444.Core.Services
             }
         }
 
-        //public async Task<CommonReturnResponse> UpdateSportsStatusAsync(SportsSetting sportsSetting)
-        //{
-        //    try
-        //    {
-        //        string query = string.Format(@"Update SportsSetting set Status = {0} where SportName = '{1}'", sportsSetting.Status, sportsSetting.SportName);
-        //        await _baseRepository.QueryAsync<SportsSetting>(query);
-        //        _baseRepository.Commit();
-        //        return new CommonReturnResponse { Data = true, Message = MessageStatus.Delete, IsSuccess = true, Status = ResponseStatusCode.OK };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
-        //    }
-        //}
-
-        //public async Task<CommonReturnResponse> UpdateSportsLimitAsync(SportsSetting sportsSetting)
-        //{
-        //    try
-        //    {
-        //        string query = string.Format(@"Update SportsSetting set MinOddLimit = {0},MaxOddLimit = {1} where SportName = '{2}'", sportsSetting.MinOddLimit, sportsSetting.MaxOddLimit, sportsSetting.SportName);
-        //        await _baseRepository.QueryAsync<SportsSetting>(query);
-        //        _baseRepository.Commit();
-        //        return new CommonReturnResponse { Data = true, Message = MessageStatus.Delete, IsSuccess = true, Status = ResponseStatusCode.OK };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
-        //    }
-        //}
+        public async Task<CommonReturnResponse> UpdateSeriesSettingAsync(long SeriesId, bool Status)
+        {
+            try
+            {
+                var series = await _baseRepository.GetDataByIdAsync<Series>(SeriesId);
+                if (series != null)
+                {
+                    series.Status = Status;
+                    int _resultId = await _baseRepository.UpdateAsync(series);
+                    if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse { Data = true, Message = MessageStatus.Update, IsSuccess = true, Status = ResponseStatusCode.OK };
+                }
+                return new CommonReturnResponse { Data = null, Message = MessageStatus.NotExist, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
 
         public async Task<CommonReturnResponse> UpdateStakeLimitAsync(List<StakeLimit> stakeLimitList)
         {

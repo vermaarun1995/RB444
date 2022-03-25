@@ -24,6 +24,12 @@ namespace RB444.Api.Controllers
             return await _settingService.AddOrUpdateSportsSettingAsync(sportsSetting);
         }
 
+        [HttpGet, Route("UpdateSeriesSetting")]
+        public async Task<CommonReturnResponse> UpdateSeriesSetting(int SeriesId, bool Status)
+        {
+            return await _settingService.UpdateSeriesSettingAsync(SeriesId, Status);
+        }
+
         [HttpPost, Route("UpdateStakeLimit")]
         public async Task<CommonReturnResponse> UpdateStakeLimit(List<StakeLimit> stakeLimitList)
         {

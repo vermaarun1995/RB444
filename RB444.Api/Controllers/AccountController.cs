@@ -160,9 +160,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("DepositWithdrawCoin")]
-        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId)
+        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, int Type)
         {
-            return await _accountService.DepositAssignCoinAsync(Amount, ParentId, UserId, UserRoleId);
+            return await _accountService.DepositWithdrawCoinAsync(Amount, ParentId, UserId, UserRoleId, Remark, Type);
         }
 
         [HttpGet, Route("GetUserRoles")]
@@ -193,6 +193,12 @@ namespace RB444.Api.Controllers
         public async Task<CommonReturnResponse> UpdateUserDetail(string query)
         {
             return await _accountService.UpdateUserDetailAsync(query);
+        }
+
+        [HttpGet, Route("UpdateUserStatus")]
+        public async Task<CommonReturnResponse> UpdateUserStatus(int Status, int UserId)
+        {
+            return await _accountService.UpdateUserStatusAsync(Status, UserId);
         }
     }
 }
