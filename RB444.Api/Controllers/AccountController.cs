@@ -160,7 +160,7 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("DepositWithdrawCoin")]
-        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, int Type)
+        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, bool Type)
         {
             return await _accountService.DepositWithdrawCoinAsync(Amount, ParentId, UserId, UserRoleId, Remark, Type);
         }

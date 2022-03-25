@@ -40,7 +40,7 @@ namespace RB444.Core.IServices
         /// <param name="Remark"></param>
         /// <param name="Type"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, int Type);
+        Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type);
 
         /// <summary>
         /// Get User Roles.

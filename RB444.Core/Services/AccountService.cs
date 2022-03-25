@@ -2,6 +2,7 @@
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
+using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
@@ -137,7 +138,7 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, int Type)
+        public async Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type)
         {
             bool _result = false;
             try
@@ -145,8 +146,8 @@ namespace RB444.Core.Services
                 var depositWithdrawCoin = new AccountStatement
                 {
                     CreatedDate = DateTime.Now,
-                    Deposit = Type == 1 ? Amount : 0,
-                    Withdraw = Type == 2 ? Amount : 0,
+                    Deposit = Type == true ? Amount : 0,
+                    Withdraw = Type == false ? Amount : 0,
                     Balance = Amount,
                     Remark = Remark,
                     FromUserId = parentId,
@@ -255,26 +256,27 @@ namespace RB444.Core.Services
         public async Task<CommonReturnResponse> GetUsersByParentIdAsync(int LoginUserId, int RoleId, int UserId)
         {
             IDictionary<string, object> _keyValues = null;
+            List<UsersVM> usersVM = new List<UsersVM>();
             try
             {
                 var userRoles = await _baseRepository.GetListAsync<UserRoles>();
                 _keyValues = new Dictionary<string, object> { { "Id", LoginUserId } };
                 var loginUser = (await _baseRepository.SelectAsync<Users>(_keyValues)).FirstOrDefault();
 
-                //_keyValues = new Dictionary<string, object> { { "ParentId", LoginUserId } };
-                //var users = (await _baseRepository.SelectAsync<Users>(_keyValues)).ToList();
-                var users = await _baseRepository.GetListAsync<Users>();
+                string query = string.Format(@"select Users.*,(select top 1 Balance from AccountStatement where ToUserId = Users.Id order by Id desc) as AvailableBalance,(select sum(AmountStake + ResultAmount) from Bets where IsSettlement = 1 and UserId = Users.Id) as ProfitAndLoss from Users");
+                var result = await _baseRepository.GetQueryMultipleAsync(query, null, gr => gr.Read<UsersVM>());
+                usersVM = (result[0] as List<UsersVM>).ToList();
 
                 var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 : false;
 
-                var u = users.Where(x => x.ParentId == LoginUserId).ToList();
+                var u = usersVM.Where(x => x.ParentId == LoginUserId).ToList();
                 var totalUser = u;
                 if (u != null && u.Count() > 0)
                 {
                     for (; ; )
                     {
                         var ids = u.Select(x => x.Id).ToList();
-                        var u1 = users.Where(x => ids.Contains(x.ParentId)).ToList();
+                        var u1 = usersVM.Where(x => ids.Contains(x.ParentId)).ToList();
                         if (u1.Count == 0)
                         {
                             break;
@@ -366,17 +368,17 @@ namespace RB444.Core.Services
         }
 
         public async Task<CommonReturnResponse> UpdateUserStatusAsync(int Status, int UserId)
-        {            
+        {
             bool _result = false;
             try
             {
                 var user = await _baseRepository.GetDataByIdAsync<Users>(UserId);
-                if(user != null)
+                if (user != null)
                 {
                     user.Status = Status;
                     _result = await _baseRepository.UpdateAsync(user) == 1;
                     if (_result) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
-                }                
+                }
                 return new CommonReturnResponse
                 {
                     Data = null,
@@ -390,7 +392,7 @@ namespace RB444.Core.Services
                 _baseRepository.Rollback();
                 //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
-            }            
+            }
         }
     }
 }

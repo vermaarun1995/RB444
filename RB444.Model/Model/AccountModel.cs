@@ -1,4 +1,5 @@
 ﻿using RB444.Data.Entities;
+using RB444.Model.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -113,7 +114,7 @@ namespace RB444.Models.Model
         public int LoginUserRole { get; set; }
         public string RoleName { get; set; }
         public bool IsAbleToChange { get; set; }
-        public List<Users> Users { get; set; }
+        public List<UsersVM> Users { get; set; }
     }
 
     public class RegisterVM
