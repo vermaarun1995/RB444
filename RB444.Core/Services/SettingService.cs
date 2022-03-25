@@ -50,13 +50,18 @@ namespace RB444.Core.Services
                 if (series != null)
                 {
                     int _resultId = await _baseRepository.UpdateAsync(series);
+                    //string sql = string.Format(@"Update Series set Status = {0} where tournamentId = {1}", seriesSetting.Status, seriesSetting.tournamentId);
+                    //var abc = await _baseRepository.QueryAsync<Series>();
                     if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                     return new CommonReturnResponse { Data = true, Message = MessageStatus.Update, IsSuccess = true, Status = ResponseStatusCode.OK };
                 }
                 else
                 {
-                    var _resultId = await _baseRepository.InsertAsync(seriesSetting);
-                    if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    string sql = string.Format(@"insert into Series values({0},{1},'{2}',{3})", seriesSetting.tournamentId, seriesSetting.SportId, seriesSetting.tournamentName, seriesSetting.Status);
+                    await _baseRepository.QueryAsync<Series>(sql);
+                    _baseRepository.Commit();
+                    //var _resultId = await _baseRepository.InsertAsync(seriesSetting);
+                    //if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                     return new CommonReturnResponse { Data = true, Message = MessageStatus.Save, IsSuccess = true, Status = ResponseStatusCode.OK };
                 }
                 return new CommonReturnResponse { Data = null, Message = MessageStatus.NotExist, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
