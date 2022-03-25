@@ -17,10 +17,9 @@ namespace RB444.Core.IServices
         /// <summary>
         /// Update Series Setting.
         /// </summary>
-        /// <param name="SeriesId"></param>
-        /// <param name="Status"></param>
+        /// <param name="seriesSetting"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> UpdateSeriesSettingAsync(long SeriesId, bool Status);
+        Task<CommonReturnResponse> UpdateSeriesSettingAsync(Series seriesSetting);
 
         /// <summary>
         /// Update Stake Limit.

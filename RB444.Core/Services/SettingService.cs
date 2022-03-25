@@ -42,17 +42,22 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> UpdateSeriesSettingAsync(long SeriesId, bool Status)
+        public async Task<CommonReturnResponse> UpdateSeriesSettingAsync(Series seriesSetting)
         {
             try
             {
-                var series = await _baseRepository.GetDataByIdAsync<Series>(SeriesId);
+                var series = await _baseRepository.GetDataByIdAsync<Series>(seriesSetting.tournamentId);
                 if (series != null)
                 {
-                    series.Status = Status;
                     int _resultId = await _baseRepository.UpdateAsync(series);
                     if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                     return new CommonReturnResponse { Data = true, Message = MessageStatus.Update, IsSuccess = true, Status = ResponseStatusCode.OK };
+                }
+                else
+                {
+                    var _resultId = await _baseRepository.InsertAsync(seriesSetting);
+                    if (_resultId > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse { Data = true, Message = MessageStatus.Save, IsSuccess = true, Status = ResponseStatusCode.OK };
                 }
                 return new CommonReturnResponse { Data = null, Message = MessageStatus.NotExist, IsSuccess = true, Status = ResponseStatusCode.NOTFOUND };
             }
