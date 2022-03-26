@@ -8,6 +8,7 @@ using RB444.Data.Entities;
 using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RB444.Admin.Controllers
@@ -51,26 +52,22 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateSports(Sports obj)
+        public async Task<ActionResult> SportsSetting(Sports model)
         {
             try
             {
-                bool isName = obj.SportName != null && obj.SportName.Trim() != null ? true : false;
-                if (isName)
-                {
-                    //SuperAdminBAL _bal = new SuperAdminBAL();
-                    //bool isUpdated = _bal.PostSportesSettings(obj);
-                    return RedirectToAction("SportsSetting", "Setting");
-                }
-                else
-                {
-                    TempData["ErrorMsg"] = "Please Fill Sports Name.";
-                    return View();
-                }
+                var commonModel = await _requestServices.PostAsync<Sports, CommonReturnResponse>(string.Format("{0}Setting/AddOrUpdateSportsSetting", _configuration["ApiKeyUrl"]), model);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
             }
         }
         #endregion
@@ -98,23 +95,70 @@ namespace RB444.Admin.Controllers
                 {
                     serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
                 }
-                ViewBag.SeriesList = serieslist;
             }
             catch (Exception ex)
             {
                 //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
-            return View();
+            return View(serieslist);
         }
 
-      
+        [HttpPost]
+        public async Task<ActionResult> FilterSeries(int status, int SportId)
+        {
+            CommonReturnResponse commonModel = null;
+            List<Series> serieslist = null;
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSeries?SportId={1}&type=2", _configuration["ApiKeyUrl"], SportId));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                    if (status > 0)
+                    {
+                        serieslist = serieslist.Where(s => s.Status == Convert.ToBoolean(status - 1)).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+            return PartialView("_serieslist", serieslist);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UpdatedSeries(Series model)
+        {
+            CommonReturnResponse commonModel = null;
+            try
+            {
+                commonModel = await _requestServices.PostAsync<Series, CommonReturnResponse>(String.Format("{0}setting/UpdateSeriesSetting", _configuration["ApiKeyUrl"]), model);
+                var data = JsonConvert.SerializeObject(commonModel);
+                return Json(data);
+
+            }
+            catch (Exception ex)
+            {
+                var data = new CommonReturnResponse()
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+                return Json(JsonConvert.SerializeObject(data));
+            }
+
+        }
+
+
         [HttpPost]
         public ActionResult CreateSeries(SeriesSetting obj)
         {
             try
             {
-               
+
             }
             catch (Exception ex)
             {

@@ -199,7 +199,7 @@
         </div>
         <div class="u-block">
             <span>Available Balance</span>
-            <label>IN @Model.LoginUser.AssignCoin</label>
+            <label>IN 0</label>
         </div>
         <div class="u-block">
             <span>Balance</span>
@@ -207,7 +207,7 @@
         </div>
         <div class="u-block">
             <span>Total Avail. bal.</span>
-            <label>IN @Model.LoginUser.AssignCoin</label>
+            <label>IN @Model.LoginUser.AvailableBalance </label>
         </div>
         <div class="u-block">
             <span>Upline P/L</span>
@@ -224,9 +224,7 @@
                 <th class="th-sm">
                     <label>Credit Ref.</label>
                 </th>
-                <th class="th-sm">
-                    <label>Balance</label>
-                </th>
+               
                 <th class="th-sm">
                     <label>Exposure</label>
                 </th>
@@ -252,8 +250,7 @@
             {
                 foreach (var user in Model.Users)
                 {
-                    var status = user.Status == 1 ? "active" : user.Status.ToString();
-                    status = user.Status != 1 ? "deleted" : status;
+                    var status = user.Status == 1 ? "Active" : user.Status == 2 ? "InActive" : "Blocked";
                     <tr data-id="@user.Id" data-name="@user.UserName" data-status="@status">
                         <td><label><span class="role-box">@Model.RoleName</span> @user.FullName</label></td>
                         <td>
@@ -264,8 +261,7 @@
                                     <i class="fas fa-edit"></i>
                                 }
                             </label>
-                        </td>
-                        <td><label>@user.AssignCoin</label></td>
+                        </td>                       
                         <td><label><span class="red">(0)</span></label></td>
                         <td>
                             <label class="edit-menu">
@@ -276,24 +272,31 @@
                                 }
                             </label>
                         </td>
-                        <td><label>@user.AssignCoin</label></td>
-                        <td><label>@user.AssignCoin</label></td>
+                        <td><label>@user.AvailableBalance</label></td>
+                        <td><label>@user.ProfitAndLoss</label></td>
                         <td><span class="@status-status-box">@status</span></td>
                         <td class="action-box">
                             @if (Model.IsAbleToChange)
                             {
-                                <i class="fas fa-comments-dollar deposit-withdraw-popup"></i>
-                                <i class="fas fa-exchange-alt fa-rotate-90"></i>
-                                <a href="/User/AccountStatement?id=@user.Id"><i class="fas fa-file-invoice-dollar"></i></a>
-                                if (status != "locked" && user.Status != 1)
+                                <i class="fas fa-comments-dollar deposit-withdraw-popup" style="color:black;"></i>
+                                <a href="/User/AccountStatement?id=@user.Id"><i class="fas fa-file-invoice-dollar" style="color:black;"></i></a>
+                                if (user.Status != 3)
                                 {
-                                    <i class="fas fa-cog change-status-popup"></i>
+                                    <i class="fas fa-cog change-status-popup" style="color:red;"></i>
                                 }
-                                <a href="/User/UserProfile?id=@user.Id"><i class="fas fa-user-alt"></i></a>
-                                if (status != "locked" && user.Status == 1)
-                                {
-                                    <i class="fas fa-trash-alt delete-user"></i>
-                                }
+                                <a href="/User/UserProfile?id=@user.Id"><i class="fas fa-user-alt" style="color:black;"></i></a>
+                                @*if (user.Status == 1)
+                                    {
+                                        <i class="fas fa-trash-alt delete-user" style="color:red;" onclick="statusChange(@user.Id,2)"></i>
+                                    }
+                                    else if (user.Status == 2)
+                                    {
+                                        <i class="fas fa-trash-alt delete-user" style="color:green;" onclick="statusChange(@user.Id,1)"></i>
+                                    }
+                                    if (user.Status == 1 || user.Status == 2)
+                                    {
+                                        <i class="fas fa-ban user-ban" style="color:black;" onclick="statusChange(@user.Id,3)"></i>
+                                    }*@
                             }
                         </td>
                     </tr>
@@ -408,43 +411,40 @@
     </form>
 
 
-<!-- Modal Update User Status-->
-<div class="modal" id="updateUserStatusModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateUserStatusModalLabel">Change Status</h5>
-                <button type="button" class="close hideModel">
-                    ×
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="login-signin">
-                    <div class="form-group">
-                        @using (Html.BeginForm("ChangeStatus", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
-                        {
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
-                        <input type="hidden" name="UserId" />
-                        <input type="hidden" name="Status" />
-                        <input type="hidden" name="LoginUserPassword" />
-                        <div class="form-group row name-block mb-50">
-                            <div class="col-6"><span class="role-box">@Model.RoleName</span><span class="user-name-box"></span></div>
-                            <div class="col-6 status-block"><span class="status-box">active</span></div>
-                        </div>
+    <!-- Modal Update User Status-->
+    <div class="modal" id="updateUserStatusModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateUserStatusModalLabel">Change Status</h5>
+                    <button type="button" class="close hideModel">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="login-signin">
+                        <div class="form-group">
+                            <form class="form-horizontal">
+                                <input type="hidden" name="UserId" />
+                                <input type="hidden" name="Status" />
+                                <div class="form-group row name-block mb-50">
+                                    <div class="col-6"><span class="role-box">@Model.RoleName</span><span class="user-name-box"></span></div>
+                                    <div class="col-6 status-block"><span class="status-box">active</span></div>
+                                </div>
 
-                        <div class="form-group row mb-50">
-                            <div class="col-4"><span class="active-status change-status-box">Active</span></div>
-                            <div class="col-4"><span class="suspend-status change-status-box">Suspend</span></div>
-                            <div class="col-4"><span class="locked-status change-status-box">Locked</span></div>
-                        </div>
-                        }
-
-                        <div class="form-group row info-box">
-                            <div class="col-6">
-                                <input id="LoginUserPassword" autocomplete="off" class="form-control h-auto text-white bg-white-o-5 border-0" placeholder="Password.." />
-                            </div>
-                            <div class="col-6">
-                                <button type="submit" class="btn btn-primary font-weight-bold">Change</button>
+                                <div class="form-group row mb-50">
+                                    <div class="col-4"><span class="active-status change-status-box">Active</span></div>
+                                    <div class="col-4"><span class="suspend-status change-status-box">Suspend</span></div>
+                                    <div class="col-4"><span class="locked-status change-status-box">Blocked</span></div>
+                                </div>
+                            </form>
+                            <div class="form-group row info-box">
+                                <div class="col-6">
+                                    @*<input id="LoginUserPassword" autocomplete="off" class="form-control h-auto text-white bg-white-o-5 border-0" placeholder="Password.." />*@
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary font-weight-bold">Change</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -452,195 +452,181 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal Deposit and Withdraw Balance-->
-<div class="modal" id="depositWithdrawModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="depositWithdrawModalLabel">Banking - Master Balance: 0</h5>
-                <button type="button" class="close hideModel">
-                    ×
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="login-signin">
-                    <div class="form-group">
-                        @using (Html.BeginForm("DepositWithdrawBalance", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
-                        {
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
-                        <input type="hidden" name="UserId" />
-                        <input type="hidden" name="IsDeposit" id="IsDeposit" />
-                        <div class="form-group row name-block mb-50">
-                            <div class="col-4"><span class="user-name-box"></span></div>
-                            <div class="col-8"><span class="role-box">@Model.RoleName</span></div>
-                        </div>
+    <!-- Modal Deposit and Withdraw Balance-->
+    <div class="modal" id="depositWithdrawModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="depositWithdrawModalLabel">Banking - Master Balance: 0</h5>
+                    <button type="button" class="close hideModel">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="login-signin">
+                        <div class="form-group">
+                            <form class="form-horizontal">
+                                <input type="hidden" name="UserId" />
+                                <input type="hidden" name="IsDeposit" id="IsDeposit" />
+                                <div class="form-group row name-block mb-50">
+                                    <div class="col-4"><span class="user-name-box"></span></div>
+                                    <div class="col-8"><span class="role-box">@Model.RoleName</span></div>
+                                </div>
 
-                        <div class="form-group row">
-                            <label class="col-4 col-form-label">Balance</label>
-                            <div class="col-8">
-                                <input type="text" name="Balance" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Balance.." autocomplete="off" />
-                            </div>
-                        </div>
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Amount</label>
+                                    <div class="col-8">
+                                        <input type="number" name="Balance" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Amount.." autocomplete="off" />
+                                    </div>
+                                </div>
 
-                        <div class="form-group row">
-                            <label class="col-4 col-form-label">Remark</label>
-                            <div class="col-8">
-                                <input type="text" name="Remark" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Remark.." autocomplete="off" />
-                            </div>
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Remark</label>
+                                    <div class="col-8">
+                                        <input type="text" name="Remark" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Remark.." autocomplete="off" />
+                                    </div>
+                                </div>
+                            </form>                           
                         </div>
-                        <div class="form-group row">
-                            <label class="col-4 col-form-label">Your Password</label>
-                            <div class="col-8">
-                                <input type="text" name="Password" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Password.." autocomplete="off" />
-                            </div>
-                        </div>
-                        }
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary font-weight-bold deposit-btn">Deposite</button>
-                <button type="submit" class="btn btn-primary font-weight-bold withdraw-btn">Withdraw</button>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary font-weight-bold deposit-btn">Deposite</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold withdraw-btn">Withdraw</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 }
 
 @section PageJs{
-<script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap.min.js"></script>
-<script type="text/javascript">
-    $(function () {
-        $(document).ready(function () {
-            $(document.body).on("click", ".editRegister", function () {
-                //var id = $(this).attr('id');
-                //$("#RoleId").val(parseInt(id) + 1);
-                $('#registerModal').modal('show');
+    <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(document).ready(function () {
+                $(document.body).on("click", ".editRegister", function () {
+                    //var id = $(this).attr('id');
+                    //$("#RoleId").val(parseInt(id) + 1);
+                    $('#registerModal').modal('show');
+                });
             });
-        });
 
-        $(".hideModel").click(function () {
-            $("#registerModal").modal('hide');
-            $("#updateUserStatusModal").modal('hide');
-            $("#depositWithdrawModalLong").modal('hide');
-        });
-
-
-        $("#dtBasicExample").DataTable();
-        $(".dataTables_length").addClass("bs-select");
-
-        $("#registerModal button[type=submit]").click(function () {
-            var form = $("#registerModal form");
-            var url = "/account/registernew";
-            var postData = form.serialize();
-            $("#registerModal .validation-summary-valid").html("").hide();
-            $(".loader-1.loading-img").show();
-
-            $.post(url, postData, function (data) {
-                $(".loader-1.loading-img").hide();
-                if (data.toLowerCase() == "ok") {
-                    toastr.success("User register successfully!");
-                    $("#registerModal").modal("hide");
-                    window.location.reload();
-                }
-                else {
-                    toastr.error(data);
-                    //$("#registerModal .validation-summary-valid").html(data).show();
-                }
+            $(".hideModel").click(function () {
+                $("#registerModal").modal('hide');
+                $("#updateUserStatusModal").modal('hide');
+                $("#depositWithdrawModalLong").modal('hide');
             });
-        });
 
-        $(".change-status-popup").click(function () {
-            const userId = $(this).closest("tr").attr("data-id");
-            const userName = $(this).closest("tr").attr("data-name");
-            const status = $(this).closest("tr").attr("data-status");
-            $("#updateUserStatusModal input[name='UserId']").val(userId);
-            $("#updateUserStatusModal .user-name-box").text(userName);//status-box
-            $("#updateUserStatusModal .status-block").html(`<span class="${status}-status-box">${status}</span>`);
-            $("#updateUserStatusModal").modal("show");
-        });
 
-        $(".change-status-box").click(function () {
-            $(".change-status-box").removeClass("active");
-            $(this).addClass("active");
-            $("#updateUserStatusModal input[name='Status']").val($(this).text().toLowerCase());
-        });
+            $("#dtBasicExample").DataTable();
+            $(".dataTables_length").addClass("bs-select");
 
-        $("#LoginUserPassword").keyup(function () {
-            $("input[name='LoginUserPassword']").val($(this).val());
-        });
+            $("#registerModal button[type=submit]").click(function () {
+                var form = $("#registerModal form");
+                var url = "/account/registernew";
+                var postData = form.serialize();
+                $("#registerModal .validation-summary-valid").html("").hide();
+                $(".loader-1.loading-img").show();
 
-        $("#updateUserStatusModal button[type=submit]").click(function () {
-            var form = $("#updateUserStatusModal form");
-            var url = "/account/ChangeStatus";
-            var postData = form.serialize();
-            $("#updateUserStatusModal .validation-summary-valid").html("").hide();
-            $(".loader-1.loading-img").show();
-
-            $.post(url, postData, function (data) {
-                $(".loader-1.loading-img").hide();
-                if (data.toLowerCase() == "ok") {
-                    toastr.success("User status change successfully!");
-                    $("#updateUserStatusModal").modal("hide");
-                    window.location.reload();
-                }
-                else {
-                    toastr.error(data);
-                    //$("#updateUserStatusModal .validation-summary-valid").html(data).show();
-                }
+                $.post(url, postData, function (data) {
+                    $(".loader-1.loading-img").hide();
+                    if (data.toLowerCase() == "ok") {
+                        toastr.success("User register successfully!");
+                        $("#registerModal").modal("hide");
+                        window.location.reload();
+                    }
+                    else {
+                        toastr.error(data);
+                        //$("#registerModal .validation-summary-valid").html(data).show();
+                    }
+                });
             });
-        });
 
-
-        $(".deposit-withdraw-popup").click(function () {
-            const userId = $(this).closest("tr").attr("data-id");
-            const userName = $(this).closest("tr").attr("data-name");
-            $("#depositWithdrawModalLong input[name='UserId']").val(userId);
-            $("#depositWithdrawModalLong .user-name-box").text(userName);
-            $("#depositWithdrawModalLong").modal("show");
-        });
-
-        $("#depositWithdrawModalLong button[type=submit]").click(function () {
-            const isDeposit = $(this).hasClass("deposit-btn");
-            $("#IsDeposit").val(isDeposit);
-            var form = $("#depositWithdrawModalLong form");
-            var url = "/account/DepositWithdrawBalance";
-            var postData = form.serialize();
-            $("#updateUserStatusModal .validation-summary-valid").html("").hide();
-            $(".loader-1.loading-img").show();
-
-            $.post(url, postData, function (data) {
-                $(".loader-1.loading-img").hide();
-                if (data.toLowerCase() == "ok") {
-                    toastr.success("Update successfully!");
-                    $("#depositWithdrawModalLong").modal("hide");
-                    window.location.reload();
-                }
-                else {
-                    toastr.error(data);
-                    //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
-                }
+            $(".change-status-popup").click(function () {
+                const userId = $(this).closest("tr").attr("data-id");
+                const userName = $(this).closest("tr").attr("data-name");
+                const status = $(this).closest("tr").attr("data-status");
+                $("#updateUserStatusModal input[name='UserId']").val(userId);
+                $("#updateUserStatusModal .user-name-box").text(userName);//status-box
+                $("#updateUserStatusModal .status-block").html(`<span class="${status}-status-box">${status}</span>`);
+                $("#updateUserStatusModal").modal("show");
             });
-        });
 
-        $(".delete-user").click(function () {
-            const userId = $(this).closest("tr").attr("data-id");
-            const url = `/user/DeleteUser?userId=${userId}`;
-            $.get(url, function (data) {
-                $(".loader-1.loading-img").hide();
-                if (data.toLowerCase() == "ok") {
-                    toastr.success("User deleted successfully!");
-                    window.location.reload();
-                }
-
-                else {
-                    toastr.error(data);
-                }
+            $(".change-status-box").click(function () {
+                $(".change-status-box").removeClass("active");
+                $(this).addClass("active");
+                $("#updateUserStatusModal input[name='Status']").val($(this).text().toLowerCase());
             });
+
+            $("#LoginUserPassword").keyup(function () {
+                $("input[name='LoginUserPassword']").val($(this).val());
+            });
+
+            $("#updateUserStatusModal button[type=submit]").click(function () {
+                var form = $("#updateUserStatusModal form");
+                var url = "/user/DeleteUser";
+                var postData = form.serialize();
+                $("#updateUserStatusModal .validation-summary-valid").html("").hide();             
+                $.post(url, postData, function (data) {
+                    if (data.toLowerCase() == "ok") {
+                        toastr.success("User status change successfully!");
+                        $("#updateUserStatusModal").modal("hide");
+                        window.location.reload();
+                    }
+                    else {
+                        toastr.error(data);
+                        //$("#updateUserStatusModal .validation-summary-valid").html(data).show();
+                    }
+                });
+            });
+
+
+            $(".deposit-withdraw-popup").click(function () {
+                const userId = $(this).closest("tr").attr("data-id");
+                const userName = $(this).closest("tr").attr("data-name");
+                $("#depositWithdrawModalLong input[name='UserId']").val(userId);
+                $("#depositWithdrawModalLong .user-name-box").text(userName);
+                $("#depositWithdrawModalLong").modal("show");
+            });
+
+            $("#depositWithdrawModalLong button[type=submit]").click(function () {
+                const isDeposit = $(this).hasClass("deposit-btn");
+                $("#IsDeposit").val(isDeposit);
+                var form = $("#depositWithdrawModalLong form");
+                var url = "/user/DepositWithdrawCoin";
+                var postData = form.serialize();
+                $("#updateUserStatusModal .validation-summary-valid").html("").hide();
+                $(".loader-1.loading-img").show();
+
+                $.post(url, postData, function (data) {
+                    $(".loader-1.loading-img").hide();
+                    if (data.toLowerCase() == "ok") {
+                        toastr.success("Update successfully!");
+                        $("#depositWithdrawModalLong").modal("hide");
+                        window.location.reload();
+                    }
+                    else {
+                        toastr.error(data);
+                        //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
+                    }
+                });
+            });
+
         });
-    });
-</script>
+        //function statusChange(uId, status) {
+        //    /* const userId = $(this).closest("tr").attr("data-id");*/
+        //    const url = `/user/DeleteUser?userId=${uId}&status=${status}`;
+        //    $.get(url, function (data) {
+        //        if (data.toLowerCase() == "ok") {
+        //            toastr.success("User deleted successfully!");
+        //            window.location.reload();
+        //        }
+        //        else {
+        //            toastr.error(data);
+        //        }
+        //    });
+        //}
+    </script>
 }

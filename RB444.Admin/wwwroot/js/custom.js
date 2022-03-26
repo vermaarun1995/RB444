@@ -196,9 +196,9 @@ function promiseAjaxPost(ct = "application/json; charset=utf-8") {
                 $("#loaderContainer").fadeIn(200);
             },
             success: function (data) {
-                if (this.dataType != "html" && typeof data != 'object' ) {
+                if (this.dataType != "html" && typeof data != 'object') {
                     data = JSON.parse(data);
-                }   
+                }
                 resolve(data)
             },
             error: function (err) {

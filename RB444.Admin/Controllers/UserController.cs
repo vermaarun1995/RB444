@@ -131,22 +131,19 @@ namespace RB444.Admin.Controllers
             return View(result);
         }
 
-        public async Task<string> DeleteUser(string userId)
+        public async Task<string> DeleteUser(int userId,string status)
         {
             try
             {
-                //// Update user delete status
-                //await _dbContext.Database.ExecuteSqlCommandAsync("UPDATE AspNetUsers SET deleted=1 WHERE Id=@id",
-                //            new SqlParameter("id", userId));
-
-                //await _dbContext.SaveChangesAsync();
-
-                return "ok";
+                int statusId = status == "active" ? 1 : status == "suspend" ? 2 : 3;
+               var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserStatus?Status={1}&UserId={2}", _configuration["ApiKeyUrl"], statusId, userId));
+                if(commonModel.IsSuccess) { return "ok"; }
             }
             catch(Exception ex)
             {
                 throw;
             }
+            return "Something went wrong.";
         }
 
         [HttpPost]
@@ -213,6 +210,23 @@ namespace RB444.Admin.Controllers
                 return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
+
+        [HttpPost]
+        public async Task<string> DepositWithdrawCoin(int UserId,bool IsDeposit,long Balance,string Remark)
+        {
+            try
+            {
+                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}", _configuration["ApiKeyUrl"], Balance, loginUser.Id,UserId, loginUser.RoleId+1, Remark, IsDeposit));
+                if (commonModel.IsSuccess) { return "ok"; }
+                return "ok";
+            }
+            catch(Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
 
     }
 }

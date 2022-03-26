@@ -1,4 +1,5 @@
-﻿@using RB444.Data.Entities;
+﻿@model IEnumerable<RB444.Data.Entities.Series>
+@using RB444.Data.Entities;
 @{
     ViewBag.Title = "Series Setting";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -16,7 +17,7 @@
                 <option value="1">Active</option>
                 <option value="2">Inactive</option>
             </select>
-            @*@Html.DropDownList("ddlStatus", TempData["sportList"] as SelectList, "Please Select status", new { @class = "form-control" })*@
+
         </div>
         <div class="col-md-3">
             <label class="control-label">Sport Name</label>
@@ -24,111 +25,78 @@
                 <option value="0">Please Select Sport</option>
                 @foreach (var item in sportsList)
                 {
-                    <option value="@item.Id">@item.SportName</option>
+                    if (item.Id == 4)
+                    {
+                        <option selected value="@item.Id">@item.SportName</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id">@item.SportName</option>
+                    }
+
                 }
             </select>
         </div>
-        <div class="col-md-3">
-            <label class="control-label">Series</label>
-            @Html.TextBox("SeriesName", null, new { placeholder = "Series Name", @class = "form-control" })
+
+        <div class="col-md-3 mt-auto">
+            <button class="btn btn-primary" type="button" onclick="Filter()">Filter</button>
         </div>
-        @*<div class="col-md-3 mt-auto">
-                <a href="~/setting/CreateSeries" class="btn btn-primary"> Manual Series</a>
-            </div>*@
     </div>
-    <table class="sportesTbl table table-striped table-dark">
-        <thead>
-            <tr>
-                <th>S NO.</th>
-                <th>SPORT NAME</th>
-                <th>Tournament Name</th>
-                <th>ACTION</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (ViewBag.SeriesList != null)
-            {
-                int i = 1;
-                foreach (var item in ViewBag.SeriesList)
-                {
-                    <tr>
-                        <th scope="row">@i</th>
-                        <td>@sportsList.Where(x=>x.Id==item.SportId).Select(s=>s.SportName).FirstOrDefault()</td>
-                        <td>
-                            @item.tournamentName
-                        </td>
-                        <td>
-                            <a data-value="@item.SportId"
-                               href="javascript:void(0)" class="btnEdit">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <span class="switch switch-success">
-                                            <label>
-                                                <input type="checkbox" checked="@item.Status" name="select" id="checkBoxAction" />
-                                                <span></span>
-                                            </label>
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        </td>
-                    </tr>
-                    i++;
-                }
-            }
-        </tbody>
-    </table>
+    <div id="filterList">
+        <partial name="_seriesList" model="Model" />
+    </div>
 </div>
+
 @section PageJs{
+    <script src="~/js/custom.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(".btnEdit").click(function () {
-                var id = $(this).attr("data-value");
-                var checkedid = $(this).find("input");
-                console.log(checkedid);
-                if (checkedid.is(":checked")) {
-                    console.log("true");
-                }
-                else {
-                    console.log("false");
-                }
+        function UpdateSeries(tId, tName, sId) {
+            const formData = new FormData();
+            formData.append("Status", $('#checkBoxAction_' + tId).prop('checked'));
+            formData.append("SportId", sId);
+            formData.append("tournamentName", tName);
+            formData.append("tournamentId", tId);
 
-            });
-            $('#ddlStatus').on('change', function () {
-                search();
-            });
-            $('#ddlSportName').on('change', function () {
-                search();
-            });
-
-        });
-        function search() {
-            const ddlStatus = $("#ddlStatus").val();
-            const ddlSportName = $("#ddlSportName").val();
-            const name = $("#SeriesName").text();
-            var data = {
-                status: ddlStatus,
-                SportName: ddlSportName,
-                Name: name
-            };
-            $.ajax({
-                type: "POST",
-                url: "/Home/SearchSeries",
-                data: JSON.stringify(data),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success: function (response) {
-                    if (response.Inserted) {
-                        window.location.href = response.Url;
-                    }
-                    else {
-                        alert("Error occured!!")
+            let uploadAttachmentJson = {
+                apiUrl: "@Url.Action("UpdatedSeries", "Setting")",
+                postData: formData
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(uploadAttachmentJson, false).then(
+                (res) => {
+                    $(".loader").hide();
+                    if (res.IsSuccess && res.Status == 200) {
+                        messagePopup.responseSuccess(res.Message);
+                    } else {
+                        messagePopup.responseError(res.Message);
                     }
                 },
-                error: function () {
-                    alert("Error occured!!")
+                (err) => {
+                    messagePopup.error(err.statusText);
                 }
-            });
+            )
+        }
+        function Filter() {
+            const formData = new FormData();
+            formData.append("status", $('#ddlStatus').val());
+            formData.append("SportId", $('#ddlSportName').val());
+
+
+            let getAircraftJson = {
+                apiUrl: "@Url.Action("FilterSeries", "Setting")",
+                postData: formData,
+                dataType: 'html'
+            }
+            $(".loader-1.loading-img").show();
+            promiseAjaxPost.call(getAircraftJson, false).then(
+                (res) => {
+                    $(".loader-1.loading-img").hide();
+                    $("#filterList").html(res);
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
         }
     </script>
 }
