@@ -86,8 +86,7 @@ namespace RB444.Core.Services.BetfairApi
                         tournamentId = Convert.ToInt64(item.SeriesId),
                         tournamentName = item.SeriesName,
                         SportId = SportId,
-                        Status = serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).Select(s => s.Status).FirstOrDefault()
-
+                        Status= serieslistByDatabase.Count > 0 ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).FirstOrDefault() != null ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).Select(s => s.Status).FirstOrDefault() : true : true
                     };
                     serieslist.Add(series);
 

@@ -68,6 +68,7 @@ namespace RB444.Core.Services
             }
             catch (Exception ex)
             {
+                _baseRepository.Rollback();
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
