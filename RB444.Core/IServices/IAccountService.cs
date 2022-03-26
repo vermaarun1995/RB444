@@ -1,4 +1,5 @@
-﻿using RB444.Models.Model;
+﻿using RB444.Data.Entities;
+using RB444.Models.Model;
 using System.Threading.Tasks;
 
 namespace RB444.Core.IServices
@@ -84,5 +85,12 @@ namespace RB444.Core.IServices
         /// <param name="UserId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> UpdateUserStatusAsync(int Status, int UserId);
+
+        /// <summary>
+        /// Add or update user login status.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> UserLoginStatusAsync(UserStatus model);
     }
 }

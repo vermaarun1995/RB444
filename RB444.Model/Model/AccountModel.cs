@@ -9,6 +9,7 @@ namespace RB444.Models.Model
     public class UserModel
     {
         public int Id { get; set; }
+        public int UserLoginId { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }

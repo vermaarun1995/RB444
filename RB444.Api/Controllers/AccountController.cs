@@ -72,9 +72,19 @@ namespace RB444.Api.Controllers
                             }
 
                             var response = await GetOpeningBalance(user.Id);
+
+                            var userStatus = new UserStatus
+                            {
+                                Id = 0,
+                                Status = true,
+                                UserId = user.Id
+                            };
+                            var commonReturnResponse = await _accountService.UserLoginStatusAsync(userStatus);
+                            int loginUserId = Convert.ToInt32(commonReturnResponse.Data);
                             var userVM = new UserModel
                             {
                                 Id = user.Id,
+                                UserLoginId = loginUserId,
                                 UserName = user.UserName,
                                 FullName = user.FullName,
                                 Email = user.Email,
@@ -150,6 +160,46 @@ namespace RB444.Api.Controllers
             }
         }
 
+        [HttpGet, Route("Logout")]
+        public async Task<CommonReturnResponse> Logout(int UserId, int UserLoginId)
+        {
+            try
+            {
+                var userStatus = new UserStatus
+                {
+                    Id = UserLoginId,
+                    UserId = UserId,
+                    Status = false
+                };
+                var commonReturnResponse = await _accountService.UserLoginStatusAsync(userStatus);
+                var loginUserId = Convert.ToInt32(commonReturnResponse.Data);
+                if(loginUserId > 0)
+                {
+                    await _signInManager.SignOutAsync();
+                    return new CommonReturnResponse
+                    {
+                        Data = null,
+                        Message = CustomMessageStatus.logout,
+                        IsSuccess = true,
+                        Status = ResponseStatusCode.OK
+                    };
+                }
+                
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = commonReturnResponse.Message,
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.EXCEPTION
+                };
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AccountController : Logout()", ex);
+                return new CommonReturnResponse { Data = false, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
         [HttpGet, Route("GetOpeningBalance")]
         public async Task<CommonReturnResponse> GetOpeningBalance(int UserId)
         {
@@ -208,6 +258,12 @@ namespace RB444.Api.Controllers
         public async Task<CommonReturnResponse> UpdateUserStatus(int Status, int UserId)
         {
             return await _accountService.UpdateUserStatusAsync(Status, UserId);
+        }
+
+        [HttpPost, Route("UserLoginStatus")]
+        public async Task<CommonReturnResponse> UserLoginStatus(UserStatus userStatus)
+        {
+            return await _accountService.UserLoginStatusAsync(userStatus);
         }
     }
 }

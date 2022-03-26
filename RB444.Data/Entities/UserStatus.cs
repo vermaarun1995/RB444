@@ -8,6 +8,6 @@ namespace RB444.Data.Entities
         public int UserId { get; set; }
         public bool Status { get; set; }
         public DateTime LoginTime { get; set; }
-        public DateTime LogoutTime { get; set; }
+        public DateTime? LogoutTime { get; set; }
     }
 }
