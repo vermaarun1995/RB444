@@ -57,7 +57,7 @@ namespace RB444.Core.Services
                 }
                 else
                 {
-                    string sql = string.Format(@"insert into Series values({0},{1},'{2}',{3})", seriesSetting.tournamentId, seriesSetting.SportId, seriesSetting.tournamentName, seriesSetting.Status);
+                    string sql = string.Format(@"insert into Series values({0},{1},'{2}',{3})", seriesSetting.tournamentId, seriesSetting.SportId, seriesSetting.tournamentName, seriesSetting.Status == true ? 1 : 0);
                     await _baseRepository.QueryAsync<Series>(sql);
                     _baseRepository.Commit();
                     //var _resultId = await _baseRepository.InsertAsync(seriesSetting);
