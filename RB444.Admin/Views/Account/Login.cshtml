@@ -111,46 +111,48 @@
        
     }
 </style>
-<section>
-    <div class="container">
-        <div class="img"></div>
-        <div class="content">
-            <div class="formbox">
-                <h2>Please Login to continue</h2>
+<body style="background: url('https://ag.starbet9.com/assets/img/bg-login.jpg');">
+    <section>
+        <div class="container">
+            <center><div class="img"></div></center>
+            <div class="content">
+                <div class="formbox">
+                    <h2>Please Login to continue</h2>
 
-                <form id="account" method="post" class="auth-login-form mt-2">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-group">
-                        <input asp-for="Email" class="form-control" type="text" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input asp-for="Password" class="form-control" type="password" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
-                    @*<div class="form-group">
-                        <div class="checkbox">
-                            <label asp-for="RememberMe">
-                                <input asp-for="RememberMe" />
-                                @Html.DisplayNameFor(m => m.RememberMe)
-                            </label>
+                    <form id="account" method="post" class="auth-login-form mt-2">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <input asp-for="Email" class="form-control" type="text" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
-                    </div>*@
-                    <button type="submit" class="btn btn-primary w-100">Log in</button>
-                </form>
+                        <div class="form-group">
+                            <input asp-for="Password" class="form-control" type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        @*<div class="form-group">
+                                <div class="checkbox">
+                                    <label asp-for="RememberMe">
+                                        <input asp-for="RememberMe" />
+                                        @Html.DisplayNameFor(m => m.RememberMe)
+                                    </label>
+                                </div>
+                            </div>*@
+                        <button type="submit" class="btn btn-primary w-100">Log in</button>
+                    </form>
 
-                @*<form id="account" method="post">
-                    <div class="formbx">
-                        <div class="input"> <input type="text"></div>
-                    </div>
-                    <div class="formbx">
-                        <div class="user"> <input type="password"></div>
-                    </div>
-                    <div class="btn">
-                        <button>Submit</button>
-                    </div>
-                </form>*@
+                    @*<form id="account" method="post">
+                            <div class="formbx">
+                                <div class="input"> <input type="text"></div>
+                            </div>
+                            <div class="formbx">
+                                <div class="user"> <input type="password"></div>
+                            </div>
+                            <div class="btn">
+                                <button>Submit</button>
+                            </div>
+                        </form>*@
+                </div>
             </div>
         </div>
-    </div>
-</section> 
+    </section>
+</body>
