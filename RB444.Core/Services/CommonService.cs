@@ -170,6 +170,7 @@ namespace RB444.Core.Services
                 var userList = await _baseRepository.GetListAsync<Users>();                
 
                 _keyValues.Add("ToUserId", UserId);
+                _keyValues.Add("IsProfitLoss", true);
                 var accountStatementList = await _baseRepository.SelectAsync<AccountStatement>(_keyValues);
                 foreach (var item in accountStatementList)
                 {
@@ -209,6 +210,7 @@ namespace RB444.Core.Services
                 var userList = await _baseRepository.GetListAsync<Users>();
 
                 _keyValues.Add("FromUserId", AdminId);
+                _keyValues.Add("IsProfitLoss", true);
                 var accountStatementList = await _baseRepository.SelectAsync<AccountStatement>(_keyValues);
                 foreach (var item in accountStatementList)
                 {

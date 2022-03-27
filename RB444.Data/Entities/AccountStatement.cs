@@ -13,5 +13,6 @@ namespace RB444.Data.Entities
         public int FromUserId { get; set; }
         public int ToUserId { get; set; }
         public int ToUserRoleId { get; set; }
+        public bool IsProfitLoss { get; set; }
     }
 }
