@@ -25,6 +25,8 @@ namespace RB444.Core.Services
         {
             try
             {
+                var sportList = await _baseRepository.GetListAsync<Sports>();
+                int betDelayTime = Convert.ToInt32(sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime)) * 1000;
                 string betId = model.UserId.ToString() + model.PlaceTime;
                 betId = cEncryption.MD5Encryption(betId);
                 model.BetId = betId;
@@ -32,6 +34,7 @@ namespace RB444.Core.Services
                 model.MatchedTime = DateTime.Now.AddSeconds(5);
                 model.SettleTime = model.MatchedTime;
                 model.ResultAmount = 0;
+                await Task.Delay(betDelayTime);
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? MessageStatus.Create : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
@@ -89,7 +92,7 @@ namespace RB444.Core.Services
             }
         }
 
-       
+
         //string query = @"select * from Vendors where id = @id and isdeleted = 0 and isactive = 1;";
         //query += @"select * from VendorServiceMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";
         //            query += @"select * from VendorMembershipMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";

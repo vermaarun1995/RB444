@@ -58,7 +58,6 @@ namespace RB444.Admin.Controllers
             }
             try
             {
-
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
@@ -158,7 +157,9 @@ namespace RB444.Admin.Controllers
                         Commision = model.Commision,
                         ExposureLimit = model.ExposureLimit,
                         ParentId = loginUser.Id,
-                        Status = 1
+                        Status = 1,
+                        City = model.City,
+                        State = model.State
                     };
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
@@ -171,14 +172,14 @@ namespace RB444.Admin.Controllers
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = true, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));
                     }
-                    commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Error, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST }; ;
+                    commonModel = new CommonReturnResponse { Data = null, Message = result.ToString(), IsSuccess = false, Status = ResponseStatusCode.BADREQUEST }; ;
                     return Json(JsonConvert.SerializeObject(commonModel));
                 }
 
                 commonModel = new CommonReturnResponse { Data = null, Message = CustomMessageStatus.InvalidModelState, IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
                 return Json(JsonConvert.SerializeObject(commonModel));
             }
-            catch
+            catch (Exception ex)
             {
                 var errorArr = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
                 var errorHtml = "<ul>";

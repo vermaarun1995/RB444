@@ -15,7 +15,7 @@ namespace RB444.Data.Repository
     public class UserStore : IUserStore<Users>, IUserEmailStore<Users>, IUserPhoneNumberStore<Users>,
         IUserTwoFactorStore<Users>, IUserPasswordStore<Users>, IUserRoleStore<Users>
     {
-        private readonly string _connectionString;        
+        private readonly string _connectionString;
 
         public UserStore(IConfiguration configuration)
         {
@@ -29,8 +29,8 @@ namespace RB444.Data.Repository
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync(cancellationToken);
-                user.Id = await connection.QuerySingleAsync<int>($@"INSERT INTO [Users] ([UserName], [NormalizedUserName], [FullName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [RoleId], [CreatedDate], [RollingCommission], [AssignCoin], [Commision], [ExposureLimit], [ParentId], [Status])
-                    VALUES (@{nameof(Users.UserName)}, @{nameof(Users.NormalizedUserName)}, @{nameof(Users.FullName)}, @{nameof(Users.Email)}, @{nameof(Users.NormalizedEmail)}, @{nameof(Users.EmailConfirmed)}, @{nameof(Users.PasswordHash)}, @{nameof(Users.PhoneNumber)}, @{nameof(Users.PhoneNumberConfirmed)}, @{nameof(Users.TwoFactorEnabled)}, @{nameof(Users.RoleId)}, @{nameof(Users.CreatedDate)}, @{nameof(Users.RollingCommission)}, @{nameof(Users.AssignCoin)}, @{nameof(Users.Commision)}, @{nameof(Users.ExposureLimit)}, @{nameof(Users.ParentId)}, @{nameof(Users.Status)});
+                user.Id = await connection.QuerySingleAsync<int>($@"INSERT INTO [Users] ([UserName], [NormalizedUserName], [FullName], [Email], [NormalizedEmail], [EmailConfirmed], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled], [RoleId], [CreatedDate], [RollingCommission], [AssignCoin], [Commision], [ExposureLimit], [ParentId], [Status], [City], [State])
+                    VALUES (@{nameof(Users.UserName)}, @{nameof(Users.NormalizedUserName)}, @{nameof(Users.FullName)}, @{nameof(Users.Email)}, @{nameof(Users.NormalizedEmail)}, @{nameof(Users.EmailConfirmed)}, @{nameof(Users.PasswordHash)}, @{nameof(Users.PhoneNumber)}, @{nameof(Users.PhoneNumberConfirmed)}, @{nameof(Users.TwoFactorEnabled)}, @{nameof(Users.RoleId)}, @{nameof(Users.CreatedDate)}, @{nameof(Users.RollingCommission)}, @{nameof(Users.AssignCoin)}, @{nameof(Users.Commision)}, @{nameof(Users.ExposureLimit)}, @{nameof(Users.ParentId)}, @{nameof(Users.Status)}, @{nameof(Users.City)}, @{nameof(Users.State)});
                     SELECT CAST(SCOPE_IDENTITY() as int)", user);
             }
 

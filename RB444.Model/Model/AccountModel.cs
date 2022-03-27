@@ -105,6 +105,8 @@ namespace RB444.Models.Model
         public long ExposureLimit { get; set; }
         public int ParentId { get; set; }
         public int Status { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
     }
 
     public class RegisterListVM: RegisterViewModel
