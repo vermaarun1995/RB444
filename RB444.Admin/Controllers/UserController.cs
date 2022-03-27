@@ -212,12 +212,12 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<string> DepositWithdrawCoin(int UserId,bool IsDeposit,long Balance,string Remark)
+        public async Task<string> DepositWithdrawCoin(int UserId,bool IsDeposit,long Balance,string Remark,string Password)
         {
             try
             {
                 var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}", _configuration["ApiKeyUrl"], Balance, loginUser.Id,UserId, loginUser.RoleId+1, Remark, IsDeposit));
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id,UserId, loginUser.RoleId+1, Remark, IsDeposit,Password));
                 if (commonModel.IsSuccess) { return "ok"; }
                 return "ok";
             }
@@ -227,6 +227,63 @@ namespace RB444.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<string> PorfitLoss(int UserId, bool IsProfit, long Balance, string Remark, string Password)
+        {
+            try
+            {
+                //var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit,Password));
+                //if (commonModel.IsSuccess) { return "ok"; }
+                return "ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreditReference(int uId)
+        {
+            CommonReturnResponse commonModel = null;
+            List<Series> serieslist = null;
+            try
+            {
+                //commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSeries?SportId={1}&type=2", _configuration["ApiKeyUrl"], SportId));
+                //if (commonModel.IsSuccess && commonModel.Data != null)
+                //{
+                //    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                //    if (status > 0)
+                //    {
+                //        serieslist = serieslist.Where(s => s.Status == Convert.ToBoolean(status - 1)).ToList();
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+            return PartialView("_CreditReference");
+        }
+
+        [HttpPost]
+        public async Task<string> ExposureLimit(int UserId, long Balance, string Remark, string Password)
+        {
+            try
+            {
+                //var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit,Password));
+                //if (commonModel.IsSuccess) { return "ok"; }
+                return "ok";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        
 
     }
 }

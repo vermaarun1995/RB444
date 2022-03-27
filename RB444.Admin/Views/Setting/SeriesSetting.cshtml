@@ -50,11 +50,12 @@
 @section PageJs{
     <script src="~/js/custom.js"></script>
     <script type="text/javascript">
-        function UpdateSeries(tId, tName, sId) {
+        function UpdateSeries(tId, sId) {
+            debugger;
             const formData = new FormData();
             formData.append("Status", $('#checkBoxAction_' + tId).prop('checked'));
             formData.append("SportId", sId);
-            formData.append("tournamentName", tName);
+            formData.append("tournamentName", $("#tournamentName_" + tId).val());
             formData.append("tournamentId", tId);
 
             let uploadAttachmentJson = {

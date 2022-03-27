@@ -224,7 +224,7 @@
                 <th class="th-sm">
                     <label>Credit Ref.</label>
                 </th>
-               
+
                 <th class="th-sm">
                     <label>Exposure</label>
                 </th>
@@ -258,17 +258,18 @@
                                 0.00
                                 @if (Model.IsAbleToChange)
                                 {
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-edit profitLossPopup" style="color:black;"></i>
                                 }
+                                <i class="fas fa-eye CreditReferencePopup" style="color:black;"></i>
                             </label>
-                        </td>                       
+                        </td>
                         <td><label><span class="red">(0)</span></label></td>
                         <td>
                             <label class="edit-menu">
                                 @user.ExposureLimit
                                 @if (Model.IsAbleToChange)
                                 {
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-edit ExposurePopup" id="ExposurePopup_@user.ExposureLimit"></i>
                                 }
                             </label>
                         </td>
@@ -487,13 +488,130 @@
                                         <input type="text" name="Remark" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Remark.." autocomplete="off" />
                                     </div>
                                 </div>
-                            </form>                           
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Password</label>
+                                    <div class="col-8">
+                                        <input type="password" name="Password" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Password" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary font-weight-bold deposit-btn">Deposite</button>
                     <button type="submit" class="btn btn-primary font-weight-bold withdraw-btn">Withdraw</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Profit and Loss Balance-->
+    <div class="modal" id="profitLossModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="depositWithdrawModalLabel">Edit Credit Reference: 0</h5>
+                    <button type="button" class="close hideModel">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="login-signin">
+                        <div class="form-group">
+                            <form class="form-horizontal">
+                                <input type="hidden" name="UserId" />
+                                <input type="hidden" name="IsProfit" id="IsProfit" />
+                                <div class="form-group row name-block mb-50">
+                                    <div class="col-4"><span class="user-name-box"></span></div>
+                                    <div class="col-8"><span class="role-box">@Model.RoleName</span></div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Amount</label>
+                                    <div class="col-8">
+                                        <input type="number" name="Balance" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Amount.." autocomplete="off" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Remark</label>
+                                    <div class="col-8">
+                                        <input type="text" name="Remark" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Remark.." autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Password</label>
+                                    <div class="col-8">
+                                        <input type="password" name="Password" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Password" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success font-weight-bold profit-btn">Profit</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold loss-btn">Loss</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Profit and Loss Balance-->
+    <div class="modal" id="profitLossModalList" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div id="profitLossList"></div>
+        </div>
+    </div>
+
+
+    <!-- Modal Profit and Loss Balance-->
+    <div class="modal" id="ExposureLimitModel" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="depositWithdrawModalLabel">Edit Exposure Limit</h5>
+                    <button type="button" class="close hideModel">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="login-signin">
+                        <div class="form-group">
+                            <form class="form-horizontal">
+                                <input type="hidden" name="UserId" />
+                                <div class="form-group row name-block mb-50">
+                                    <div class="col-4">Current:</div>
+                                    <div class="col-8"><span class="limtExposure"></span></div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Amount</label>
+                                    <div class="col-8">
+                                        <input type="number" name="Balance" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Amount.." autocomplete="off" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Remark</label>
+                                    <div class="col-8">
+                                        <input type="text" name="Remark" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Remark.." autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label">Password</label>
+                                    <div class="col-8">
+                                        <input type="password" name="Password" class="form-control h-auto text-white bg-white-o-5 rounded-pill border-0 py-4 px-8" placeholder="Password" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success font-weight-bold profit-btn">Submit</button>
+                    <button type="button" class="btn btn-primary font-weight-bold loss-btn hideModel">Cancel</button>
                 </div>
             </div>
         </div>
@@ -517,6 +635,8 @@
                 $("#registerModal").modal('hide');
                 $("#updateUserStatusModal").modal('hide');
                 $("#depositWithdrawModalLong").modal('hide');
+                $("#profitLossModalLong").modal('hide');
+                $("#ExposureLimitModel").modal('hide');                
             });
 
 
@@ -568,7 +688,7 @@
                 var form = $("#updateUserStatusModal form");
                 var url = "/user/DeleteUser";
                 var postData = form.serialize();
-                $("#updateUserStatusModal .validation-summary-valid").html("").hide();             
+                $("#updateUserStatusModal .validation-summary-valid").html("").hide();
                 $.post(url, postData, function (data) {
                     if (data.toLowerCase() == "ok") {
                         toastr.success("User status change successfully!");
@@ -597,7 +717,7 @@
                 var form = $("#depositWithdrawModalLong form");
                 var url = "/user/DepositWithdrawCoin";
                 var postData = form.serialize();
-                $("#updateUserStatusModal .validation-summary-valid").html("").hide();
+                $("#depositWithdrawModalLong .validation-summary-valid").html("").hide();
                 $(".loader-1.loading-img").show();
 
                 $.post(url, postData, function (data) {
@@ -614,19 +734,93 @@
                 });
             });
 
+
+            $(".profitLossPopup").click(function () {
+                const userId = $(this).closest("tr").attr("data-id");
+                const userName = $(this).closest("tr").attr("data-name");
+                $("#profitLossModalLong input[name='UserId']").val(userId);
+                $("#profitLossModalLong .user-name-box").text(userName);
+                $("#profitLossModalLong").modal("show");
+            });
+
+            $("#profitLossModalLong button[type=submit]").click(function () {
+                const isDeposit = $(this).hasClass("profit-btn");
+                $("#IsProfit").val(isDeposit);
+                var form = $("#profitLossModalLong form");
+                var url = "/user/PorfitLoss";
+                var postData = form.serialize();
+                $("#profitLossModalLong .validation-summary-valid").html("").hide();
+                $(".loader-1.loading-img").show();
+
+                $.post(url, postData, function (data) {
+                    $(".loader-1.loading-img").hide();
+                    if (data.toLowerCase() == "ok") {
+                        toastr.success("Update successfully!");
+                        $("#profitLossModalLong").modal("hide");
+                        window.location.reload();
+                    }
+                    else {
+                        toastr.error(data);
+                        //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
+                    }
+                });
+            });
+
+            $(".CreditReferencePopup").click(function () {
+                const userId = $(this).closest("tr").attr("data-id");
+                const formData = new FormData();
+                formData.append("uId", userId);
+
+                let getAircraftJson = {
+                    apiUrl: "@Url.Action("CreditReference", "user")",
+                    postData: formData,
+                    dataType: 'html'
+                }
+                $(".loader-1.loading-img").show();
+                promiseAjaxPost.call(getAircraftJson, false).then(
+                    (res) => {
+                        $(".loader-1.loading-img").hide();
+                        $("#profitLossList").html(res);
+                        $("#profitLossModalList").modal("show");
+                    },
+                    (err) => {
+                        messagePopup.error(err.statusText);
+                    }
+                )
+
+            });
+
+            $(".ExposurePopup").click(function () {
+                var ExposureId = $(this).attr("id");
+                const ExposureLimt = ExposureId.split("ExposurePopup_")[1];
+                const userId = $(this).closest("tr").attr("data-id");
+                const userName = $(this).closest("tr").attr("data-name");
+                $("#ExposureLimitModel input[name='UserId']").val(userId);
+                $("#ExposureLimitModel .limtExposure").text(ExposureLimt);
+                $("#ExposureLimitModel").modal("show");
+            });
+
+            $("#ExposureLimitModel button[type=submit]").click(function () {
+                var form = $("#ExposureLimitModel form");
+                var url = "/user/ExposureLimit";
+                var postData = form.serialize();
+                $("#ExposureLimitModel .validation-summary-valid").html("").hide();
+                $(".loader-1.loading-img").show();
+
+                $.post(url, postData, function (data) {
+                    $(".loader-1.loading-img").hide();
+                    if (data.toLowerCase() == "ok") {
+                        toastr.success("Update successfully!");
+                        $("#ExposureLimitModel").modal("hide");
+                        window.location.reload();
+                    }
+                    else {
+                        toastr.error(data);
+                        //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
+                    }
+                });
+            });
+            
         });
-        //function statusChange(uId, status) {
-        //    /* const userId = $(this).closest("tr").attr("data-id");*/
-        //    const url = `/user/DeleteUser?userId=${uId}&status=${status}`;
-        //    $.get(url, function (data) {
-        //        if (data.toLowerCase() == "ok") {
-        //            toastr.success("User deleted successfully!");
-        //            window.location.reload();
-        //        }
-        //        else {
-        //            toastr.error(data);
-        //        }
-        //    });
-        //}
     </script>
 }
