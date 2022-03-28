@@ -103,23 +103,24 @@ namespace RB444.Core.Services
                     Remark = "Deposit",
                     FromUserId = parentId,
                     ToUserId = userId,
-                    ToUserRoleId = UserRoleId
+                    ToUserRoleId = UserRoleId,
+                    IsAccountStatement = true
                 };
                 _result = await _baseRepository.InsertAsync(depositCoin) > 0;
 
-                string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
-                var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
-                var withdrawCoin = new AccountStatement
-                {
-                    CreatedDate = DateTime.Now,
-                    Deposit = 0,
-                    Withdraw = assignCoin,
-                    Balance = latestAccountStatement.Balance - assignCoin,
-                    Remark = "Assign Coin to other user",
-                    FromUserId = userId,
-                    ToUserId = userId,
-                    ToUserRoleId = UserRoleId
-                };
+                //string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} and IsAccountStatement = 1 order by id desc", userId);
+                //var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
+                //var withdrawCoin = new AccountStatement
+                //{
+                //    CreatedDate = DateTime.Now,
+                //    Deposit = 0,
+                //    Withdraw = assignCoin,
+                //    Balance = latestAccountStatement.Balance - assignCoin,
+                //    Remark = "Assign Coin to other user",
+                //    FromUserId = userId,
+                //    ToUserId = userId,
+                //    ToUserRoleId = UserRoleId
+                //};
 
                 if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse

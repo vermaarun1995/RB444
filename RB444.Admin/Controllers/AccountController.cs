@@ -138,7 +138,7 @@ namespace RB444.Admin.Controllers
                     //// Find users
                     var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
 
-                    if (loginUser.AssignCoin < model.AssignCoin && loginUser.RoleId != 1)
+                    if (loginUser.AssignCoin < model.AssignCoin && (loginUser.RoleId != 1 || loginUser.RoleId != 2))
                     {
                         var message = loginUser.AssignCoin == 0 ? "no coin availble" : $"only {loginUser.AssignCoin}";
                         commonModel = new CommonReturnResponse { Data = null, Message = $"You have {message} coins remaining.", IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
