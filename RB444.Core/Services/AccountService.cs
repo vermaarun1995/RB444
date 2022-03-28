@@ -103,23 +103,24 @@ namespace RB444.Core.Services
                     Remark = "Deposit",
                     FromUserId = parentId,
                     ToUserId = userId,
-                    ToUserRoleId = UserRoleId
+                    ToUserRoleId = UserRoleId,
+                    IsAccountStatement = true
                 };
                 _result = await _baseRepository.InsertAsync(depositCoin) > 0;
 
-                string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
-                var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
-                var withdrawCoin = new AccountStatement
-                {
-                    CreatedDate = DateTime.Now,
-                    Deposit = 0,
-                    Withdraw = assignCoin,
-                    Balance = latestAccountStatement.Balance - assignCoin,
-                    Remark = "Assign Coin to other user",
-                    FromUserId = userId,
-                    ToUserId = userId,
-                    ToUserRoleId = UserRoleId
-                };
+                //string sql = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} and IsAccountStatement = 1 order by id desc", userId);
+                //var latestAccountStatement = (await _baseRepository.QueryAsync<AccountStatement>(sql)).FirstOrDefault();
+                //var withdrawCoin = new AccountStatement
+                //{
+                //    CreatedDate = DateTime.Now,
+                //    Deposit = 0,
+                //    Withdraw = assignCoin,
+                //    Balance = latestAccountStatement.Balance - assignCoin,
+                //    Remark = "Assign Coin to other user",
+                //    FromUserId = userId,
+                //    ToUserId = userId,
+                //    ToUserRoleId = UserRoleId
+                //};
 
                 if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse
@@ -508,6 +509,44 @@ namespace RB444.Core.Services
                         Status = ResponseStatusCode.OK
                     };
                 }
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> AddOrUpdateRollingCommissionAsync(RollingCommision model)
+        {
+            bool _result = false;
+            try
+            {
+                if(model.Id > 0)
+                {
+                    _result = await _baseRepository.UpdateAsync(model) == 1;
+                    if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse
+                    {
+                        Data = _result,
+                        Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                        IsSuccess = _result,
+                        Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                    };
+                }
+                else
+                {
+                    _result = await _baseRepository.InsertAsync(model) > 0;
+                    if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse
+                    {
+                        Data = _result,
+                        Message = _result ? MessageStatus.Create : MessageStatus.Error,
+                        IsSuccess = _result,
+                        Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                    };
+                }                                
             }
             catch (Exception ex)
             {

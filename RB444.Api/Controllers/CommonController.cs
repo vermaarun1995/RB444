@@ -70,5 +70,23 @@ namespace RB444.Api.Controllers
         {
             return await _commonService.GetProfitAndLossAsync(UserId);
         }
+
+        [HttpGet, Route("GetRollingCommission")]
+        public async Task<CommonReturnResponse> GetRollingCommission(int PrentId, int UserId, int Type)
+        {
+            return await _commonService.GetRollingCommisionAsync(PrentId, UserId, Type);
+        }
+
+        [HttpGet, Route("GetMarketList")]
+        public async Task<CommonReturnResponse> GetMarketList(int UserId)
+        {
+            return await _commonService.GetBetMarketListAsync(UserId);
+        }
+
+        [HttpGet, Route("GetOpenBetList")]
+        public async Task<CommonReturnResponse> GetOpenBetList(int UserId, string Market)
+        {
+            return await _commonService.GetOpenBetListAsync(UserId, Market);
+        }
     }
 }

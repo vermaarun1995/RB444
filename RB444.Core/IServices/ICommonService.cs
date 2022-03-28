@@ -67,5 +67,29 @@ namespace RB444.Core.IServices
         /// <param name="UserId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetProfitAndLossAsync(int UserId);
+
+        /// <summary>
+        /// Get rolling commission.
+        /// </summary>
+        /// <param name="ParentId"></param>
+        /// <param name="UserId"></param>
+        /// <param name="Type"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetRollingCommisionAsync(int ParentId, int UserId, int Type);
+
+        /// <summary>
+        /// Get market list.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetBetMarketListAsync(int UserId);
+
+        /// <summary>
+        /// Get Open bet list.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="Market"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetOpenBetListAsync(int UserId, string Market);
     }
 }

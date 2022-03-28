@@ -295,7 +295,6 @@ namespace RB444.Api.Controllers
         {
             return await _accountService.UserLoginStatusAsync(userStatus);
         }
-
         [HttpGet, Route("ExposureLimit")]
         public async Task<CommonReturnResponse> ExposureLimit(long Amount, int UserId, string Password, int ParentId)
         {
@@ -312,6 +311,11 @@ namespace RB444.Api.Controllers
                 };
             }
             return await _accountService.ExposureLimitAsync(Amount, UserId);
+        }
+        [HttpGet, Route("SaveRollingCommission")]
+        public async Task<CommonReturnResponse> SaveRollingCommission(RollingCommision model)
+        {
+            return await _accountService.AddOrUpdateRollingCommissionAsync(model);
         }
     }
 }
