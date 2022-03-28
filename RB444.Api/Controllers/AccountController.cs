@@ -295,5 +295,11 @@ namespace RB444.Api.Controllers
         {
             return await _accountService.UserLoginStatusAsync(userStatus);
         }
+
+        [HttpGet, Route("SaveRollingCommission")]
+        public async Task<CommonReturnResponse> SaveRollingCommission(RollingCommision model)
+        {
+            return await _accountService.AddOrUpdateRollingCommissionAsync(model);
+        }
     }
 }

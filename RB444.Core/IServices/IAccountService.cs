@@ -104,5 +104,12 @@ namespace RB444.Core.IServices
         /// <param name="model"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> UserLoginStatusAsync(UserStatus model);
+
+        /// <summary>
+        /// Add or update rolling commision.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> AddOrUpdateRollingCommissionAsync(RollingCommision model);
     }
 }

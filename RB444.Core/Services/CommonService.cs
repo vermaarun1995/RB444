@@ -20,8 +20,6 @@ namespace RB444.Core.Services
             _baseRepository = baseRepository;
         }
 
-                
-
         public async Task<CommonReturnResponse> GetAllRolesAsync()
         {
             try
@@ -83,7 +81,7 @@ namespace RB444.Core.Services
         {
             try
             {
-                var logos = (await _baseRepository.GetListAsync<Logo>()).Where(s=>s.Status==true).FirstOrDefault();
+                var logos = (await _baseRepository.GetListAsync<Logo>()).Where(s => s.Status == true).FirstOrDefault();
                 return new CommonReturnResponse
                 {
                     Data = logos,
@@ -167,7 +165,7 @@ namespace RB444.Core.Services
             List<AccountStatementVM> accountStatementVMs = new List<AccountStatementVM>();
             try
             {
-                var userList = await _baseRepository.GetListAsync<Users>();                
+                var userList = await _baseRepository.GetListAsync<Users>();
 
                 _keyValues.Add("ToUserId", UserId);
                 _keyValues.Add("IsAccountStatement", true);
@@ -256,6 +254,104 @@ namespace RB444.Core.Services
                     Message = profitAndLossVMs.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = profitAndLossVMs.Count > 0,
                     Status = profitAndLossVMs.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetRollingCommisionAsync(int ParentId, int UserId, int Type)
+        {
+            List<RollingCommisionVM> rollingCommisionVMList = new List<RollingCommisionVM>();
+            RollingCommision rollingCommision = null;
+            try
+            {
+                if (Type == 1)
+                {
+                    string query = string.Format(@"Select * from RollingCommision where ToUserId = {0}", UserId);
+                    rollingCommision = (await _baseRepository.QueryAsync<RollingCommision>(query)).FirstOrDefault();
+                    return new CommonReturnResponse
+                    {
+                        Data = rollingCommision,
+                        Message = rollingCommision != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                        IsSuccess = rollingCommision != null,
+                        Status = rollingCommision != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    };
+                }
+                else
+                {
+                    var userList = await _baseRepository.GetListAsync<Users>();
+                    string query = string.Format(@"Select * from RollingCommision where FromUserId = {0}", ParentId);
+                    var rollingCommisionList = (await _baseRepository.QueryAsync<RollingCommision>(query)).ToList();
+                    foreach (var item in rollingCommisionList)
+                    {
+                        var rollingCommisionVM = new RollingCommisionVM
+                        {
+                            Id = item.Id,
+                            FromUserId = ParentId,
+                            ToUserId = UserId,
+                            FromUserName = userList.Where(x => x.Id == item.FromUserId).Select(y => y.FullName).FirstOrDefault(),
+                            ToUserName = userList.Where(x => x.Id == item.ToUserId).Select(y => y.FullName).FirstOrDefault(),
+                            Fancy = item.Fancy,
+                            Matka = item.Matka,
+                            Casino = item.Casino,
+                            Binary = item.Binary,
+                            Bookmaker = item.Bookmaker,
+                            SportBook = item.SportBook
+                        };
+                        rollingCommisionVMList.Add(rollingCommisionVM);
+                    }
+                    return new CommonReturnResponse
+                    {
+                        Data = rollingCommisionVMList,
+                        Message = rollingCommisionVMList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                        IsSuccess = rollingCommisionVMList.Count > 0,
+                        Status = rollingCommisionVMList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetBetMarketListAsync(int UserId)
+        {
+            List<string> marketList = new List<string>();
+            try
+            {
+                string query = string.Format(@"select distinct(Market) from Bets where UserId = {0} and IsSettlement = 2 and isnull(ResultType,0) = 0", UserId);
+                marketList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.Market).ToList();
+                return new CommonReturnResponse
+                {
+                    Data = marketList,
+                    Message = marketList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = marketList.Count > 0,
+                    Status = marketList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetOpenBetListAsync(int UserId, string Market)
+        {
+            List<Bets> marketList = new List<Bets>();
+            try
+            {
+                string query = string.Format(@"select * from Bets where UserId = {0} and IsSettlement = 2 and isnull(ResultType,0) = 0 and Market = '{1}'", UserId, Market);
+                marketList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                return new CommonReturnResponse
+                {
+                    Data = marketList,
+                    Message = marketList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = marketList.Count > 0,
+                    Status = marketList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
                 };
             }
             catch (Exception ex)

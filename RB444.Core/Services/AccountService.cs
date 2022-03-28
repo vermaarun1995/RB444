@@ -480,5 +480,43 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
+
+        public async Task<CommonReturnResponse> AddOrUpdateRollingCommissionAsync(RollingCommision model)
+        {
+            bool _result = false;
+            try
+            {
+                if(model.Id > 0)
+                {
+                    _result = await _baseRepository.UpdateAsync(model) == 1;
+                    if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse
+                    {
+                        Data = _result,
+                        Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                        IsSuccess = _result,
+                        Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                    };
+                }
+                else
+                {
+                    _result = await _baseRepository.InsertAsync(model) > 0;
+                    if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    return new CommonReturnResponse
+                    {
+                        Data = _result,
+                        Message = _result ? MessageStatus.Create : MessageStatus.Error,
+                        IsSuccess = _result,
+                        Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                    };
+                }                                
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
     }
 }
