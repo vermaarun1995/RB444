@@ -5,6 +5,11 @@
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    .hideDiv {
+        display: none;
+    }
+</style>
 
 <div class="container">
     <div class="row">
@@ -168,50 +173,50 @@
                         <div id="rollingCommissionShow" class="hideDiv">
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.Fancy">Fancy</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.Fancy">Fancy</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.Fancy" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.Fancy" value="0">
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.Matka">Matka</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.Matka">Matka</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.Matka" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.Matka" value="0">
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.Casino">Casino</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.Casino">Casino</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.Casino" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.Casino" value="0">
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.Binary">Binary</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.Binary">Binary</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.Binary" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.Binary" value="0">
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.SportBook">Sportbook</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.SportBook">Sportbook</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.SportBook" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.SportBook" value="0">
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="RollingCommision.Bookmaker">Bookmaker</label>
+                                    <label class="form-label" asp-for="RollingCommisionVm.Bookmaker">Bookmaker</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" asp-for="RollingCommision.Bookmaker" value="0">
+                                    <input type="number" class="form-control" asp-for="RollingCommisionVm.Bookmaker" value="0">
                                 </div>
                             </div>
 
@@ -267,12 +272,12 @@
             formData.append("ExposureLimit", $("#ExposureLimit").val());
             formData.append("RollingCommission", $("#RollingCommission").prop("checked"));
             if ($("#RollingCommission").prop("checked")) {
-                formData.append(`RollingCommisionVm.Fancy`, $("#RollingCommision_Fancy").val());
-                formData.append(`RollingCommisionVm.Matka`, $("#RollingCommision_Matka").val());
-                formData.append(`RollingCommisionVm.Casino`, $("#RollingCommision_Casino").val());
-                formData.append(`RollingCommisionVm.Binary`, $("#RollingCommision_Binary").val());
-                formData.append(`RollingCommisionVm.SportBook`, $("#RollingCommision_SportBook").val());
-                formData.append(`RollingCommisionVm.Bookmaker`, $("#RollingCommision_Bookmaker").val());
+                formData.append(`RollingCommisionVm.Fancy`, $("#RollingCommisionVm_Fancy").val());
+                formData.append(`RollingCommisionVm.Matka`, $("#RollingCommisionVm_Matka").val());
+                formData.append(`RollingCommisionVm.Casino`, $("#RollingCommisionVm_Casino").val());
+                formData.append(`RollingCommisionVm.Binary`, $("#RollingCommisionVm_Binary").val());
+                formData.append(`RollingCommisionVm.SportBook`, $("#RollingCommisionVm_SportBook").val());
+                formData.append(`RollingCommisionVm.Bookmaker`, $("#RollingCommisionVm_Bookmaker").val());
             }
             let addRequestJson = {
                 apiUrl: "@Url.Action("Register", "Account")",
