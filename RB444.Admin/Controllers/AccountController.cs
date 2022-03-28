@@ -35,18 +35,8 @@ namespace RB444.Admin.Controllers
             _baseRepository = baseRepository;
             _cookieService = cookieService;
         }
-        public async Task<ActionResult> Login(string returnUrl = null)
+        public ActionResult Login(string returnUrl = null)
         {
-            try
-            {
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetLogo", _configuration["ApiKeyUrl"]));
-                Logo logo = jsonParser.ParsJson<Logo>(Convert.ToString(commonModel.Data));
-                ViewBag.Logo = logo.FilePath;
-            }
-            catch (Exception ex)
-            {
-
-            }
             return View();
         }
 
@@ -201,9 +191,7 @@ namespace RB444.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> ChangePassword(ResetPasswordViewModel model)
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
-
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             var data = new CommonReturnResponse();
 
             if (model.OldPassword.Length > 0)
@@ -310,8 +298,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> ActivityLog()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
             CommonReturnResponse commonModel = null;
             List<Model.ViewModel.ActivityLogVM> activityLogVM = null;
@@ -333,8 +320,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> AccountStatement()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
             CommonReturnResponse commonModel = null;
             List<Model.ViewModel.AccountStatementVM> accountStatementVM = null;

@@ -19,10 +19,10 @@ namespace RB444.Admin.Controllers
             _userManager = userManager;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }
 

@@ -295,5 +295,23 @@ namespace RB444.Api.Controllers
         {
             return await _accountService.UserLoginStatusAsync(userStatus);
         }
+
+        [HttpGet, Route("ExposureLimit")]
+        public async Task<CommonReturnResponse> ExposureLimit(long Amount, int UserId, string Password, int ParentId)
+        {
+            var user = await _userManager.FindByIdAsync(ParentId.ToString());
+            var checkPassword = await _userManager.CheckPasswordAsync(user, Password);
+            if (!checkPassword)
+            {
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = "Password not match.",
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.NOTFOUND
+                };
+            }
+            return await _accountService.ExposureLimitAsync(Amount, UserId);
+        }
     }
 }

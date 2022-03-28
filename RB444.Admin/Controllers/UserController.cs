@@ -30,7 +30,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> Users()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
             CommonReturnResponse commonModel = null;
             List<UserRoles> userRoles = null;
@@ -58,13 +58,12 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> RegisterUsersList(int? id, int? userId)
         {
-            var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = loginUser;
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             CommonReturnResponse commonModel = null;
             var model = new RegisterListVM();
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUsersByParentId?ParentId={1}&RoleId={2}&UserId={3}", _configuration["ApiKeyUrl"], loginUser.Id, id, userId));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUsersByParentId?ParentId={1}&RoleId={2}&UserId={3}", _configuration["ApiKeyUrl"], user.Id, id, userId));
                 model = jsonParser.ParsJson<RegisterListVM>(Convert.ToString(commonModel.Data));
 
                 return View(model);
@@ -81,8 +80,7 @@ namespace RB444.Admin.Controllers
             List<AccountStatementVM> accountStatementVM = null;
             try
             {
-                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                ViewBag.LoginUser = loginUser;
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatement?UserId={1}", _configuration["ApiKeyUrl"], id));
                 accountStatementVM = jsonParser.ParsJson<List<AccountStatementVM>>(Convert.ToString(commonModel.Data));
@@ -102,8 +100,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 users = new Users();
-                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                ViewBag.LoginUser = loginUser;
+                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUserDetail?UserId={1}", _configuration["ApiKeyUrl"], id));
                 if (commonModel.Data != null)
@@ -269,18 +266,25 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<string> ExposureLimit(int UserId, long Balance, string Remark, string Password)
+        public async Task<JsonResult> ExposureLimit(int UserId, long Balance, string Password)
         {
+            CommonReturnResponse commonModel = null;
             try
             {
-                //var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit,Password));
-                //if (commonModel.IsSuccess) { return "ok"; }
-                return "ok";
+                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/ExposureLimit?Amount={1}&UserId={2}&Password={3}&ParentId={4}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, Password, UserId));
+                return Json(commonModel);
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                commonModel = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
 

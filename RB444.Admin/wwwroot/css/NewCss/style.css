@@ -7,15 +7,19 @@ body {
 .font-family {
     font-family: Poppins;
 }
+
 .ml-1 {
     margin-left: 10px;
 }
+
 .ml-2 {
     margin-left: 20px;
 }
+
 .mr-1 {
     margin-right: 10px;
 }
+
 .mr-2 {
     margin-right: 20px;
 }
@@ -808,34 +812,34 @@ tr {
     color: #515151;
 }
 
-    .alarmTbl > div > p:nth-child(1) {
-        padding: 1.5% 10px 3% 20px;
-        text-align: left;
-        font: normal normal 600 20px /5px Poppins;
-        letter-spacing: 0px;
-        color: #2B2B2B;
-        margin-top: 20px;
-    }
+.alarmTbl > div > p:nth-child(1) {
+    padding: 1.5% 10px 3% 20px;
+    text-align: left;
+    font: normal normal 600 20px /5px Poppins;
+    letter-spacing: 0px;
+    color: #2B2B2B;
+    margin-top: 20px;
+}
 
 .alarmTbl > div > .table-responsive {
     padding: 0px 20px 0 20px;
     height: 500px;
 }
 
-        .alarmTbl > div > .table-responsive > table > thead > tr > th {
-            background-color: #f3f2f7 !important;
-            font: normal normal normal 14px/5px Poppins;
-            letter-spacing: 0px;
-            color: #A0A6BB;
-            text-transform: capitalize;
-            text-align: center;
-        }
+    .alarmTbl > div > .table-responsive > table > thead > tr > th {
+        background-color: #f3f2f7 !important;
+        font: normal normal normal 14px/5px Poppins;
+        letter-spacing: 0px;
+        color: #A0A6BB;
+        text-transform: capitalize;
+        text-align: center;
+    }
 
-        .alarmTbl > div > .table-responsive > table > tbody > tr > td {
-            font: normal normal normal 14px/5px Poppins;
-            letter-spacing: 0px;
-            color: #373737;
-        }
+    .alarmTbl > div > .table-responsive > table > tbody > tr > td {
+        font: normal normal normal 14px/5px Poppins;
+        letter-spacing: 0px;
+        color: #373737;
+    }
 
 
 .apexcharts-legend-marker {
@@ -1157,39 +1161,48 @@ tr {
 .input-group-text, #myInput {
     background: #F5F5F5 0% 0% no-repeat padding-box;
 }
+
 .apexcharts-title-text {
     font: normal normal 600 20px /5px Poppins;
     font-size: 18px;
 }
-.table thead th, .table tfoot th { 
+
+.table thead th, .table tfoot th {
     text-transform: none;
 }
 
-    @media (max-width: 900px) {
-        .mobBlock {
-           /*display: block !important;*/
-            display: contents !important;
-        }
-        .deviderCls {
-        display:block !important;
-        }
+@media (max-width: 900px) {
+    .mobBlock {
+        /*display: block !important;*/
+        display: contents !important;
     }
-    /* ----------- iPad Pro ----------- */
-    /* Portrait and Landscape */
-    @media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
-        .mobBlock {
-            display: contents !important;
-        }
+
+    .deviderCls {
+        display: block !important;
     }
-    /* Portrait */
-    @media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1.5) {
-        .mobBlock {
-            display: contents !important;
-        }
+}
+/* ----------- iPad Pro ----------- */
+/* Portrait and Landscape */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
+    .mobBlock {
+        display: contents !important;
     }
-    /* Landscape */
-    @media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1.5) {
-        .mobBlock {
-            display: contents !important;
-        }
+}
+/* Portrait */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: portrait) and (-webkit-min-device-pixel-ratio: 1.5) {
+    .mobBlock {
+        display: contents !important;
     }
+}
+/* Landscape */
+@media only screen and (min-width: 1024px) and (max-height: 1366px) and (orientation: landscape) and (-webkit-min-device-pixel-ratio: 1.5) {
+    .mobBlock {
+        display: contents !important;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .img {
+        display: none !important;
+    }
+}

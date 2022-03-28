@@ -176,6 +176,43 @@ namespace RB444.Core.Services
             }
         }
 
+        public async Task<CommonReturnResponse> ExposureLimitAsync(long Limit, int userId)
+        {
+            bool _result = false;
+            try
+            {
+                if (userId > 0)
+                {
+                    var users = await _baseRepository.GetDataByIdAsync<Users>(userId);
+                    if (users != null)
+                    {
+                        users.ExposureLimit = Limit;
+                        _result = await _baseRepository.UpdateAsync(users) == 1;
+                        if (_result) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                    }
+                    else
+                    {
+                        return new CommonReturnResponse() { IsSuccess = false, Status = ResponseStatusCode.NOTFOUND, Message = MessageStatus.NoRecord, Data = null };
+                    }
+                    return new CommonReturnResponse
+                    {
+                        Data = _result,
+                        Message = _result ? MessageStatus.Update : MessageStatus.Error,
+                        IsSuccess = _result,
+                        Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                    };
+                }
+                return new CommonReturnResponse() { IsSuccess = false, Status = ResponseStatusCode.BADREQUEST, Message = MessageStatus.InvalidData, Data = null };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+        
+
         public async Task<CommonReturnResponse> ProfitLossUserAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type)
         {
             bool _result = false;

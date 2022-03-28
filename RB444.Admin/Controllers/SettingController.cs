@@ -29,8 +29,7 @@ namespace RB444.Admin.Controllers
         #region SportsSetting
         public async Task<ActionResult> SportsSetting()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
 
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
@@ -75,8 +74,7 @@ namespace RB444.Admin.Controllers
         #region SeriesSetting
         public async Task<ActionResult> SeriesSetting()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }   
 
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
@@ -171,8 +169,7 @@ namespace RB444.Admin.Controllers
         #region match setting
         public async Task<ActionResult> MatchSettings()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
 
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
@@ -203,8 +200,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> SliderSetting()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
 
             CommonReturnResponse commonModel = null;
             List<Slider> sliderList = null;
@@ -224,8 +220,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> LogoSetting()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }  
 
             CommonReturnResponse commonModel = null;
             List<Logo> logoList = null;
@@ -245,8 +240,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> NewsSetting()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-            ViewBag.LoginUser = user;
+           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
 
             CommonReturnResponse commonModel = null;
             List<News> newsList = null;

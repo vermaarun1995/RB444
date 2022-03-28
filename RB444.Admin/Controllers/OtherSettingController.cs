@@ -37,9 +37,8 @@ namespace RB444.Admin.Controllers
             var newsList = new List<News>();
             try
             {
-                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                ViewBag.LoginUser = user;
-
+               var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }    
+            
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllNews", _configuration["ApiKeyUrl"]));
                 if (commonModel.Data != null)
                 {
@@ -105,9 +104,8 @@ namespace RB444.Admin.Controllers
             var sliderList = new List<Slider>();
             try
             {
-                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                ViewBag.LoginUser = user;
-
+               var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }    
+               
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllSliders", _configuration["ApiKeyUrl"]));
                 if (commonModel.Data != null)
                 {
@@ -218,9 +216,8 @@ namespace RB444.Admin.Controllers
             List<Logo> logoList = new List<Logo>();
             try
             {
-                var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                ViewBag.LoginUser = user;
-
+               var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }    
+               
                 var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAllLogo", _configuration["ApiKeyUrl"]));
                 if (commonModel.Data != null)
                 {

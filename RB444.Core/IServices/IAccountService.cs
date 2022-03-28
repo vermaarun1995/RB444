@@ -44,6 +44,14 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type);
 
         /// <summary>
+        /// ExposureLimit
+        /// </summary>
+        /// <param name="Amount"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> ExposureLimitAsync(long Limit, int userId);        
+
+        /// <summary>
         /// Profit or loss.
         /// </summary>
         /// <param name="Amount"></param>
