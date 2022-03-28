@@ -312,7 +312,7 @@ namespace RB444.Api.Controllers
             }
             return await _accountService.ExposureLimitAsync(Amount, UserId);
         }
-        [HttpGet, Route("SaveRollingCommission")]
+        [HttpPost, Route("SaveRollingCommission")]
         public async Task<CommonReturnResponse> SaveRollingCommission(RollingCommision model)
         {
             return await _accountService.AddOrUpdateRollingCommissionAsync(model);

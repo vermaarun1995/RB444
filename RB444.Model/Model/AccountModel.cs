@@ -107,6 +107,7 @@ namespace RB444.Models.Model
         public int Status { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public RollingCommision RollingCommisionVm { get; set; }
     }
 
     public class RegisterListVM: RegisterViewModel
@@ -118,6 +119,7 @@ namespace RB444.Models.Model
         public string RoleName { get; set; }
         public bool IsAbleToChange { get; set; }
         public List<UsersVM> Users { get; set; }
+        public RollingCommision RollingCommision { get; set; }
     }
 
     public class RegisterVM

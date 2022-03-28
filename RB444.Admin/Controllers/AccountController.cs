@@ -159,6 +159,25 @@ namespace RB444.Admin.Controllers
 
                         await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/DepositAssignCoin?AssignCoin={1}&ParentId={2}&UserId={3}&UserRoleId={4}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId, user.Id, model.RoleId));
 
+                        if (model.RollingCommission)
+                        {
+                            var rollingCommision = new RollingCommision
+                            {
+                                FromUserId = user.ParentId,
+                                ToUserId = user.Id,
+                                Fancy = model.RollingCommisionVm.Fancy,
+                                Casino = model.RollingCommisionVm.Casino,
+                                Bookmaker = model.RollingCommisionVm.Bookmaker,
+                                Binary = model.RollingCommisionVm.Binary,
+                                Matka = model.RollingCommisionVm.Matka,
+                                SportBook = model.RollingCommisionVm.SportBook,
+                            };
+                            commonModel = await _requestServices.PostAsync<RollingCommision, CommonReturnResponse>(String.Format("{0}Account/SaveRollingCommission", _configuration["ApiUrl"]), rollingCommision);
+                            if (commonModel.IsSuccess) {
+                                return Json(JsonConvert.SerializeObject(commonModel));
+                            }
+                        }
+
                         //var data = JsonConvert.SerializeObject(commonModel);
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = true, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));
