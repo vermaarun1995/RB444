@@ -747,7 +747,7 @@
                 const isDeposit = $(this).hasClass("profit-btn");
                 $("#IsProfit").val(isDeposit);
                 var form = $("#profitLossModalLong form");
-                var url = "/user/PorfitLoss";
+                var url = "/user/PorfitLossUser";
                 var postData = form.serialize();
                 $("#profitLossModalLong .validation-summary-valid").html("").hide();
                 $(".loader-1.loading-img").show();

@@ -131,15 +131,15 @@ namespace RB444.Admin.Controllers
             return View(result);
         }
 
-        public async Task<string> DeleteUser(int userId,string status)
+        public async Task<string> DeleteUser(int userId, string status)
         {
             try
             {
                 int statusId = status == "active" ? 1 : status == "suspend" ? 2 : 3;
-               var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserStatus?Status={1}&UserId={2}", _configuration["ApiKeyUrl"], statusId, userId));
-                if(commonModel.IsSuccess) { return "ok"; }
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserStatus?Status={1}&UserId={2}", _configuration["ApiKeyUrl"], statusId, userId));
+                if (commonModel.IsSuccess) { return "ok"; }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -167,7 +167,7 @@ namespace RB444.Admin.Controllers
                         break;
                     case "MobileNumber":
                         sql = "UPDATE Users SET PhoneNumber=" + value + " WHERE Id=" + userId;
-                       commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserDetail?query={1}", _configuration["ApiKeyUrl"], sql));
+                        commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserDetail?query={1}", _configuration["ApiKeyUrl"], sql));
                         break;
                     case "Password":
                         var profileUser = await _userManager.FindByIdAsync(userId);
@@ -212,29 +212,29 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<string> DepositWithdrawCoin(int UserId,bool IsDeposit,long Balance,string Remark,string Password)
+        public async Task<string> DepositWithdrawCoin(int UserId, bool IsDeposit, long Balance, string Remark, string Password)
         {
             try
             {
                 var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id,UserId, loginUser.RoleId+1, Remark, IsDeposit,Password));
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit, Password));
                 if (commonModel.IsSuccess) { return "ok"; }
                 return "ok";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return ex.Message;
             }
         }
 
         [HttpPost]
-        public async Task<string> PorfitLoss(int UserId, bool IsProfit, long Balance, string Remark, string Password)
+        public async Task<string> PorfitLossUser(int UserId, bool IsProfit, long Balance, string Remark, string Password)
         {
             try
             {
-                //var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                //var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit,Password));
-                //if (commonModel.IsSuccess) { return "ok"; }
+                var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/PorfitLossUser?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsProfit, Password));
+                if (commonModel.IsSuccess) { return "ok"; }
                 return "ok";
             }
             catch (Exception ex)
@@ -283,7 +283,7 @@ namespace RB444.Admin.Controllers
                 return ex.Message;
             }
         }
-        
+
 
     }
 }

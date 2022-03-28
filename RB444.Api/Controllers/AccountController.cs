@@ -173,7 +173,7 @@ namespace RB444.Api.Controllers
                 };
                 var commonReturnResponse = await _accountService.UserLoginStatusAsync(userStatus);
                 var loginUserId = Convert.ToInt32(commonReturnResponse.Data);
-                if(loginUserId > 0)
+                if (loginUserId > 0)
                 {
                     await _signInManager.SignOutAsync();
                     return new CommonReturnResponse
@@ -184,7 +184,7 @@ namespace RB444.Api.Controllers
                         Status = ResponseStatusCode.OK
                     };
                 }
-                
+
                 return new CommonReturnResponse
                 {
                     Data = null,
@@ -219,9 +219,39 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("DepositWithdrawCoin")]
-        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, bool Type)
+        public async Task<CommonReturnResponse> DepositWithdrawCoin(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, bool Type, string Password)
         {
+            var user = await _userManager.FindByIdAsync(ParentId.ToString());
+            var checkPassword = await _userManager.CheckPasswordAsync(user, Password);
+            if (!checkPassword)
+            {
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = "Password not match.",
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.NOTFOUND
+                };
+            }
             return await _accountService.DepositWithdrawCoinAsync(Amount, ParentId, UserId, UserRoleId, Remark, Type);
+        }
+
+        [HttpGet, Route("PorfitLossUser")]
+        public async Task<CommonReturnResponse> PorfitLossUser(long Amount, int ParentId, int UserId, int UserRoleId, string Remark, bool Type, string Password)
+        {
+            var user = await _userManager.FindByIdAsync(ParentId.ToString());
+            var checkPassword = await _userManager.CheckPasswordAsync(user, Password);
+            if (!checkPassword)
+            {
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = "Password not match.",
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.NOTFOUND
+                };
+            }
+            return await _accountService.ProfitLossUserAsync(Amount, ParentId, UserId, UserRoleId, Remark, Type);
         }
 
         [HttpGet, Route("GetUserRoles")]

@@ -44,6 +44,18 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> DepositWithdrawCoinAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type);
 
         /// <summary>
+        /// Profit or loss.
+        /// </summary>
+        /// <param name="Amount"></param>
+        /// <param name="parentId"></param>
+        /// <param name="userId"></param>
+        /// <param name="UserRoleId"></param>
+        /// <param name="Remark"></param>
+        /// <param name="Type"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> ProfitLossUserAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type);
+
+        /// <summary>
         /// Get User Roles.
         /// </summary>
         /// <returns></returns>

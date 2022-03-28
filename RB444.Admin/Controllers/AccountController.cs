@@ -10,6 +10,7 @@ using RB444.Data.Entities;
 using RB444.Data.Repository;
 using RB444.Models.Model;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -304,6 +305,52 @@ namespace RB444.Admin.Controllers
             _cookieService.Remove("loginUserDetail");
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ActivityLog()
+        {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
+            CommonReturnResponse commonModel = null;
+            List<Model.ViewModel.ActivityLogVM> activityLogVM = null;
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetActivityLog", _configuration["ApiKeyUrl"]));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    activityLogVM = jsonParser.ParsJson<List<Model.ViewModel.ActivityLogVM>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return View(activityLogVM);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> AccountStatement()
+        {
+            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+            ViewBag.LoginUser = user;
+
+            CommonReturnResponse commonModel = null;
+            List<Model.ViewModel.AccountStatementVM> accountStatementVM = null;
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetAccountStatementForSuperAdmin?AdminId={1}", _configuration["ApiKeyUrl"], user.Id));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    accountStatementVM = jsonParser.ParsJson<List<Model.ViewModel.AccountStatementVM>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return View(accountStatementVM);
         }
     }
 }

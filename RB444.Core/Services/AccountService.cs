@@ -155,9 +155,48 @@ namespace RB444.Core.Services
                     Remark = Remark,
                     FromUserId = parentId,
                     ToUserId = userId,
-                    ToUserRoleId = UserRoleId
+                    ToUserRoleId = UserRoleId,
+                    IsAccountStatement = true
                 };
                 _result = await _baseRepository.InsertAsync(depositWithdrawCoin) > 0;
+                if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
+                return new CommonReturnResponse
+                {
+                    Data = _result,
+                    Message = _result ? MessageStatus.Save : MessageStatus.Error,
+                    IsSuccess = _result,
+                    Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> ProfitLossUserAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type)
+        {
+            bool _result = false;
+            try
+            {
+                string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", userId);
+                var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
+
+                var profitLoss = new AccountStatement
+                {
+                    CreatedDate = DateTime.Now,
+                    Deposit = Type == true ? Amount : 0,
+                    Withdraw = Type == false ? Amount : 0,
+                    Balance = Type == true ? balance + Amount : balance - Amount,
+                    Remark = Remark,
+                    FromUserId = parentId,
+                    ToUserId = userId,
+                    ToUserRoleId = UserRoleId,
+                    IsAccountStatement = false
+                };
+                _result = await _baseRepository.InsertAsync(profitLoss) > 0;
                 if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
                 return new CommonReturnResponse
                 {
@@ -270,7 +309,7 @@ namespace RB444.Core.Services
                 var result = await _baseRepository.GetQueryMultipleAsync(query, null, gr => gr.Read<UsersVM>());
                 usersVM = (result[0] as List<UsersVM>).ToList();
 
-                var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 : false;
+                var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 || loginUser.RoleId == 2 || loginUser.RoleId == 3 || loginUser.RoleId == 4 : false;
 
                 var u = usersVM.Where(x => x.ParentId == LoginUserId).ToList();
                 var totalUser = u;
@@ -291,7 +330,7 @@ namespace RB444.Core.Services
                     }
                 }
 
-                
+
                 totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
                 if (UserId > 0)
                 {
