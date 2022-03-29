@@ -2,11 +2,13 @@
 @{
     ViewData["Title"] = "RegisterUsersList";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var roleId = ViewBag.roleIdBass;
 }
 <style>
     .hideDiv {
-    display:none;
+        display: none;
     }
+
     .dataTables_wrapper {
         display: block;
         background: #fff;
@@ -276,7 +278,7 @@
                                 @user.ExposureLimit
                                 @if (Model.IsAbleToChange)
                                 {
-                                    <i class="fas fa-edit ExposurePopup" id="ExposurePopup_@user.ExposureLimit"></i>
+                                    <i class="fas fa-edit ExposurePopup" id="ExposurePopup_@user.ExposureLimit" style="color:black;"></i>
                                 }
                             </label>
                         </td>
@@ -339,6 +341,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" asp-for="Email" placeholder="Email">
+                                    <span asp-validation-for="Email" class="text-danger" id="EmailError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -347,22 +350,25 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="text" class="form-control" asp-for="FullName" placeholder="Name">
+                                    <span asp-validation-for="FullName" class="text-danger" id="FullNameError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="Password">Password</label>
+                                    <label class="form-label" for="PasswordReg">Password</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+                                    <input type="password" class="form-control" id="PasswordReg" placeholder="Password">
+                                    <span class="text-danger" id="PasswordRegError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
                                 <div class="col-md-4">
-                                    <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+                                    <label class="form-label" for="ConfirmPasswordReg">Confirm Password</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="password" class="form-control" asp-for="ConfirmPassword" placeholder="Confirm Password">
+                                    <input type="password" class="form-control" id="ConfirmPasswordReg" placeholder="Confirm Password">
+                                    <span class="text-danger" id="ConfirmPasswordRegError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -371,6 +377,25 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="number" class="form-control" asp-for="PhoneNumber" placeholder="Mobile Number">
+                                    <span class="text-danger" id="PhoneNumberError"></span>
+                                </div>
+                            </div>
+                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                                <div class="col-md-4">
+                                    <label class="form-label" asp-for="City">City</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" asp-for="City" placeholder="City">
+                                    <span class="text-danger" id="CityError"></span>
+                                </div>
+                            </div>
+                            <div class="form-group d-flex justify-content-between align-items-center mb-75">
+                                <div class="col-md-4">
+                                    <label class="form-label" asp-for="State">State</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" asp-for="State" placeholder="State">
+                                    <span class="text-danger" id="StateError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -379,6 +404,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="number" class="form-control" asp-for="AssignCoin" placeholder="Opening Balance">
+                                    <span class="text-danger" id="AssignCoinError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -387,6 +413,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="number" class="form-control" asp-for="Commision" placeholder="Commission(%)">
+                                    <span class="text-danger" id="CommisionError"></span>
                                 </div>
                             </div>
                             <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -395,6 +422,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <input type="number" class="form-control" asp-for="ExposureLimit" placeholder="Exposure Limit">
+                                    <span class="text-danger" id="ExposureLimitError"></span>
                                 </div>
                             </div>
 
@@ -403,7 +431,7 @@
                                     <label class="form-label" asp-for="RollingCommission">Rolling Commissiom</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input type="checkbox" asp-for="RollingCommission" onchange="showHideLimit()"/>
+                                    <input type="checkbox" asp-for="RollingCommission" onchange="showHideLimit()" />
                                     <label asp-for="RollingCommission"></label>
                                 </div>
                             </div>
@@ -456,7 +484,7 @@
                                         <input type="number" class="form-control" asp-for="RollingCommision.Bookmaker" value="0">
                                     </div>
                                 </div>
-                                
+
 
                             </div>
                         </div>
@@ -619,7 +647,7 @@
 
     <!-- Modal Profit and Loss Balance-->
     <div class="modal" id="profitLossModalList" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog" role="document" style="max-width: 900px;">
             <div id="profitLossList"></div>
         </div>
     </div>
@@ -677,8 +705,22 @@
         $(function () {
             $(document).ready(function () {
                 $(document.body).on("click", ".editRegister", function () {
-                    //var id = $(this).attr('id');
-                    //$("#RoleId").val(parseInt(id) + 1);
+                    $("#RoleId").val(@roleId);
+                    if (@roleId == 3) {
+                        $('#registerModalTitle').html("Add Admin");
+                    }
+                    if (@roleId == 4) {
+                         $('#registerModalTitle').html("Add SubAdmin");
+                    }
+                    if (@roleId == 5) {
+                         $('#registerModalTitle').html("Add SuperMaster");
+                    }
+                    if (@roleId == 6) {
+                         $('#registerModalTitle').html("Add Master");
+                    }
+                    if (@roleId == 7) {
+                        $('#registerModalTitle').html("Add User");
+                    }
                     $('#registerModal').modal('show');
                 });
             });
@@ -700,10 +742,9 @@
                 var url = "/account/registernew";
                 var postData = form.serialize();
                 $("#registerModal .validation-summary-valid").html("").hide();
-                $(".loader-1.loading-img").show();
-
+                $(".loader").show();
                 $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
+                    $(".loader").hide();
                     if (data.toLowerCase() == "ok") {
                         toastr.success("User register successfully!");
                         $("#registerModal").modal("hide");
@@ -740,15 +781,16 @@
                 var form = $("#updateUserStatusModal form");
                 var url = "/user/DeleteUser";
                 var postData = form.serialize();
-                $("#updateUserStatusModal .validation-summary-valid").html("").hide();
+                $(".loader").show();
                 $.post(url, postData, function (data) {
-                    if (data.toLowerCase() == "ok") {
+                    $(".loader").hide();
+                    if (data.isSuccess) {
                         toastr.success("User status change successfully!");
                         $("#updateUserStatusModal").modal("hide");
                         window.location.reload();
                     }
                     else {
-                        toastr.error(data);
+                        toastr.error(data.message);
                         //$("#updateUserStatusModal .validation-summary-valid").html(data).show();
                     }
                 });
@@ -769,18 +811,17 @@
                 var form = $("#depositWithdrawModalLong form");
                 var url = "/user/DepositWithdrawCoin";
                 var postData = form.serialize();
-                $("#depositWithdrawModalLong .validation-summary-valid").html("").hide();
-                $(".loader-1.loading-img").show();
+                $(".loader").show();
 
                 $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
-                    if (data.toLowerCase() == "ok") {
-                        toastr.success("Update successfully!");
+                    $(".loader").hide();
+                    if (data.isSuccess) {
+                        toastr.success(data.message);
                         $("#depositWithdrawModalLong").modal("hide");
                         window.location.reload();
                     }
                     else {
-                        toastr.error(data);
+                        toastr.error(data.message);
                         //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
                     }
                 });
@@ -802,18 +843,17 @@
                 var url = "/user/PorfitLossUser";
                 var postData = form.serialize();
                 $("#profitLossModalLong .validation-summary-valid").html("").hide();
-                $(".loader-1.loading-img").show();
+                $(".loader").show();
 
                 $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
-                    if (data.toLowerCase() == "ok") {
-                        toastr.success("Update successfully!");
+                    $(".loader").hide();
+                    if (data.isSuccess) {
+                        toastr.success(data.message);
                         $("#profitLossModalLong").modal("hide");
                         window.location.reload();
                     }
                     else {
-                        toastr.error(data);
-                        //$("#depositWithdrawModalLong .validation-summary-valid").html(data).show();
+                        toastr.error(data.message);
                     }
                 });
             });
@@ -828,10 +868,10 @@
                     postData: formData,
                     dataType: 'html'
                 }
-                $(".loader-1.loading-img").show();
+                $(".loader").show();
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
-                        $(".loader-1.loading-img").hide();
+                        $(".loader").hide();
                         $("#profitLossList").html(res);
                         $("#profitLossModalList").modal("show");
                     },
@@ -857,13 +897,13 @@
                 var url = "/user/ExposureLimit";
                 var postData = form.serialize();
                 $("#ExposureLimitModel .validation-summary-valid").html("").hide();
-                $(".loader-1.loading-img").show();
-
+               
                 $.post(url, postData, function (data) {
-                    $(".loader-1.loading-img").hide();
-                    if (data.issuccess) {
+                    $(".loader").hide();
+                    if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#ExposureLimitModel").modal("hide");
+                        window.location.reload();
                     }
                     else {
                         toastr.error(data.message);
@@ -881,7 +921,73 @@
             }
         }
 
-         function saveRequest() {
+        function validationCheck() {
+            var Error = false;
+
+            $('#EmailError').text('');
+            $('#FullNameError').text('');
+            $('#PasswordRegError').text('');
+            $('#ConfirmPasswordRegError').text('');
+            $('#PhoneNumberError').text('');
+            $('#CityError').text('');
+            $('#StateError').text('');
+            $('#AssignCoinError').text('');
+            $('#CommisionError').text('');
+            $('#ExposureLimitError').text('');
+
+
+            if ($("#Email").val() == null || $("#Email").val() == '' || $("#Email").val().trim() == '') {
+                $('#EmailError').text('Please enter Email');
+                Error = true;
+            }
+            if ($("#FullName").val() == null || $("#FullName").val() == '' || $("#FullName").val().trim() == '') {
+                $('#FullNameError').text('Please enter Full Name');
+                Error = true;
+            }
+            if ($("#PasswordReg").val() == null || $("#PasswordReg").val() == '' || $("#PasswordReg").val().trim() == '') {
+                $('#PasswordRegError').text('Please enter Password');
+                Error = true;
+            }
+            if ($("#ConfirmPasswordReg").val() == null || $("#ConfirmPasswordReg").val() == '' || $("#ConfirmPasswordReg").val().trim() == '') {
+                $('#ConfirmPasswordRegError').text('Please enter Confirm Password');
+                Error = true;
+            }
+            if ($("#PhoneNumber").val() == null || $("#PhoneNumber").val() == '' || $("#PhoneNumber").val().trim() == '') {
+                $('#PhoneNumberError').text('Please enter PhoneNumber');
+                Error = true;
+            }
+            if ($("#City").val() == null || $("#City").val() == '' || $("#City").val().trim() == '') {
+                $('#CityError').text('Please enter City');
+                Error = true;
+            }
+            if ($("#State").val() == null || $("#State").val() == '' || $("#State").val().trim() == '') {
+                $('#StateError').text('Please enter State');
+                Error = true;
+            }
+            if ($("#AssignCoin").val() == null || $("#AssignCoin").val() == '' || $("#AssignCoin").val().trim() == '') {
+                $('#AssignCoinError').text('Please enter Assign Coin');
+                Error = true;
+            }
+            if ($("#Commision").val() == null || $("#Commision").val() == '' || $("#Commision").val().trim() == '') {
+                $('#CommisionError').text('Please enter Commision');
+                Error = true;
+            }
+            if ($("#ExposureLimit").val() == null || $("#ExposureLimit").val() == '' || $("#ExposureLimit").val().trim() == '') {
+                $('#ExposureLimitError').text('Please enter Exposure Limit');
+                Error = true;
+            }
+            return Error;
+        }
+
+
+        function saveRequest() {
+
+            var validation = validationCheck();
+
+            if (validation == true) {
+                return false;
+            }
+
             const formData = new FormData();
             formData.append("RoleId", $("#RoleId").val());
             formData.append("Email", $("#Email").val());
@@ -907,9 +1013,10 @@
                 apiUrl: "@Url.Action("Register", "Account")",
                 postData: formData
             }
-
+            $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
+                    $(".loader").hide();
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
