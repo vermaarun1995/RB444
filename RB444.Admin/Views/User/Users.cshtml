@@ -74,14 +74,13 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Add Admin</h5>
+                    <h5 class="modal-title" id="exampleModalTitle">Add</h5>
                     <button type="button" class="close" onclick="closeModel();">
                         ×
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-horizontal">
-                        <div class="error" style="display:none;" id="error"></div>
                         <input type="hidden" class="form-control" id="idModel">
                         <input type="hidden" asp-for="RoleId" value="">
                         <div asp-validation-summary="All" class="text-danger"></div>
@@ -91,7 +90,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="Email" placeholder="Email">
-                                <span asp-validation-for="Email" class="text-danger"></span>
+                                <span asp-validation-for="Email" class="text-danger" id="EmailError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -100,7 +99,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="FullName" placeholder="Name">
-                                <span asp-validation-for="FullName" class="text-danger"></span>
+                                <span asp-validation-for="FullName" class="text-danger" id="FullNameError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -109,6 +108,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="password" class="form-control" id="PasswordReg" placeholder="Password">
+                                <span class="text-danger" id="PasswordRegError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -117,6 +117,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="password" class="form-control" id="ConfirmPasswordReg" placeholder="Confirm Password">
+                                <span class="text-danger" id="ConfirmPasswordRegError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -125,6 +126,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="number" class="form-control" asp-for="PhoneNumber" placeholder="Mobile Number">
+                                <span class="text-danger" id="PhoneNumberError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -133,6 +135,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="City" placeholder="City">
+                                <span class="text-danger" id="CityError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -141,6 +144,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="State" placeholder="State">
+                                <span class="text-danger" id="StateError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -149,6 +153,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="number" class="form-control" asp-for="AssignCoin" placeholder="Opening Balance">
+                                <span class="text-danger" id="AssignCoinError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -157,6 +162,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="number" class="form-control" asp-for="Commision" placeholder="Commission(%)">
+                                <span class="text-danger" id="CommisionError"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -165,6 +171,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="number" class="form-control" asp-for="ExposureLimit" placeholder="Exposure Limit">
+                                <span class="text-danger" id="ExposureLimitError"></span>
                             </div>
                         </div>
 
@@ -245,6 +252,8 @@
         $(document).ready(function () {
             $(document.body).on("click", ".editRegisterl", function () {
                 var id = $(this).attr('id');
+                var roleName = $(this).parent().parent().find("h3").text();
+                $('#exampleModalTitle').html("Add " + roleName);
                 $("#RoleId").val(parseInt(id) + 1);
                 $('#registerModal').modal('show');
             });
@@ -262,12 +271,74 @@
                 $("#rollingCommissionShow").addClass('hideDiv');
             }
         }
+        function validationCheck() {
+            var Error = false;
 
+            $('#EmailError').text('');
+            $('#FullNameError').text('');
+            $('#PasswordRegError').text('');
+            $('#ConfirmPasswordRegError').text('');
+            $('#PhoneNumberError').text('');
+            $('#CityError').text('');
+            $('#StateError').text('');
+            $('#AssignCoinError').text('');
+            $('#CommisionError').text('');
+            $('#ExposureLimitError').text('');
+
+
+            if ($("#Email").val() == null || $("#Email").val() == '' || $("#Email").val().trim() == '') {
+                $('#EmailError').text('Please enter Email');
+                Error = true;
+            }
+            if ($("#FullName").val() == null || $("#FullName").val() == '' || $("#FullName").val().trim() == '') {
+                $('#FullNameError').text('Please enter Full Name');
+                Error = true;
+            }
+            if ($("#PasswordReg").val() == null || $("#PasswordReg").val() == '' || $("#PasswordReg").val().trim() == '') {
+                $('#PasswordRegError').text('Please enter Password');
+                Error = true;
+            }
+            if ($("#ConfirmPasswordReg").val() == null || $("#ConfirmPasswordReg").val() == '' || $("#ConfirmPasswordReg").val().trim() == '') {
+                $('#ConfirmPasswordRegError').text('Please enter Confirm Password');
+                Error = true;
+            }
+            if ($("#PhoneNumber").val() == null || $("#PhoneNumber").val() == '' || $("#PhoneNumber").val().trim() == '') {
+                $('#PhoneNumberError').text('Please enter PhoneNumber');
+                Error = true;
+            }
+            if ($("#City").val() == null || $("#City").val() == '' || $("#City").val().trim() == '') {
+                $('#CityError').text('Please enter City');
+                Error = true;
+            }
+            if ($("#State").val() == null || $("#State").val() == '' || $("#State").val().trim() == '') {
+                $('#StateError').text('Please enter State');
+                Error = true;
+            }
+            if ($("#AssignCoin").val() == null || $("#AssignCoin").val() == '' || $("#AssignCoin").val().trim() == '') {
+                $('#AssignCoinError').text('Please enter Assign Coin');
+                Error = true;
+            }
+            if ($("#Commision").val() == null || $("#Commision").val() == '' || $("#Commision").val().trim() == '') {
+                $('#CommisionError').text('Please enter Commision');
+                Error = true;
+            }
+            if ($("#ExposureLimit").val() == null || $("#ExposureLimit").val() == '' || $("#ExposureLimit").val().trim() == '') {
+                $('#ExposureLimitError').text('Please enter Exposure Limit');
+                Error = true;
+            }
+            return Error;
+        }
 
         function saveRequest() {
+
+            var validation = validationCheck();
+
+            if (validation==true) {
+                return false;
+            }
             const formData = new FormData();
             formData.append("RoleId", $("#RoleId").val());
-            formData.append("Email", $("#Email").val());
+            formData.append("Email", $("#Email").val() );
             formData.append("FullName", $("#FullName").val());
             formData.append("Password", $("#PasswordReg").val());
             formData.append("ConfirmPassword", $("#ConfirmPasswordReg").val());
@@ -309,27 +380,6 @@
             )
             return false;
         }
-        //$(function () {
-        //    $("#registerModal button[type=submit]").click(function () {
 
-
-        //        //debugger;
-        //        //var form = $("form");
-        //        //var url = "/account/register";
-        //        //var postData = form.serialize();
-        //        //$(".loader-1.loading-img").show();
-
-        //        //$.post(url, postData, function (data) {
-        //        //    $(".loader-1.loading-img").hide();
-        //        //    if (data.toLowerCase() == "ok") {
-        //        //        toastr.success("User register successfully!");
-        //        //        $("#exampleModalLong").modal("hide");
-        //        //        window.location.reload();
-        //        //    }
-
-        //        //    toastr.error(data);
-        //        //});
-        //    });
-        //});
     </script>
 }

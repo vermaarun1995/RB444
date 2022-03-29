@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
+using RB444.Model.Model;
 using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
@@ -45,7 +46,7 @@ namespace RB444.Admin.Controllers
 
                 ViewBag.UserRoles = userRoles;
                 ViewBag.LoginUser = user;
-                ViewBag.Users = users;                
+                ViewBag.Users = users;
             }
             catch (Exception ex)
             {
@@ -65,7 +66,7 @@ namespace RB444.Admin.Controllers
             {
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetUsersByParentId?ParentId={1}&RoleId={2}&UserId={3}", _configuration["ApiKeyUrl"], user.Id, id, userId));
                 model = jsonParser.ParsJson<RegisterListVM>(Convert.ToString(commonModel.Data));
-
+                ViewBag.roleIdBass = id;
                 return View(model);
             }
             catch (Exception)
@@ -128,19 +129,26 @@ namespace RB444.Admin.Controllers
             return View(result);
         }
 
-        public async Task<string> DeleteUser(int userId, string status)
+        public async Task<JsonResult> DeleteUser(int userId, string status)
         {
+            CommonReturnResponse commonModel = null;
             try
             {
                 int statusId = status == "active" ? 1 : status == "suspend" ? 2 : 3;
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserStatus?Status={1}&UserId={2}", _configuration["ApiKeyUrl"], statusId, userId));
-                if (commonModel.IsSuccess) { return "ok"; }
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/UpdateUserStatus?Status={1}&UserId={2}", _configuration["ApiKeyUrl"], statusId, userId));
+                return Json(commonModel);
             }
             catch (Exception ex)
             {
-                throw;
+                commonModel = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(commonModel));
             }
-            return "Something went wrong.";
         }
 
         [HttpPost]
@@ -209,34 +217,48 @@ namespace RB444.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<string> DepositWithdrawCoin(int UserId, bool IsDeposit, long Balance, string Remark, string Password)
+        public async Task<JsonResult> DepositWithdrawCoin(int UserId, bool IsDeposit, long Balance, string Remark, string Password)
         {
+            CommonReturnResponse commonModel = null;
             try
             {
                 var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit, Password));
-                if (commonModel.IsSuccess) { return "ok"; }
-                return "ok";
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/DepositWithdrawCoin?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsDeposit, Password));
+                return Json(commonModel);
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                commonModel = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
 
         [HttpPost]
-        public async Task<string> PorfitLossUser(int UserId, bool IsProfit, long Balance, string Remark, string Password)
+        public async Task<JsonResult> PorfitLossUser(int UserId, bool IsProfit, long Balance, string Remark, string Password)
         {
+            CommonReturnResponse commonModel = null;
             try
             {
                 var loginUser = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
-                var commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/PorfitLossUser?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsProfit, Password));
-                if (commonModel.IsSuccess) { return "ok"; }
-                return "ok";
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/PorfitLossUser?Amount={1}&ParentId={2}&UserId={3}&UserRoleId={4}&&Remark={5}&Type={6}&Password={7}", _configuration["ApiKeyUrl"], Balance, loginUser.Id, UserId, loginUser.RoleId + 1, Remark, IsProfit, Password));
+                return Json(commonModel);
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                commonModel = new CommonReturnResponse()
+                {
+                    Data = null,
+                    IsSuccess = false,
+                    Message = ex.Message,
+                    Status = ResponseStatusCode.NOTACCEPTABLE
+                };
+                return Json(JsonConvert.SerializeObject(commonModel));
             }
         }
 
@@ -244,25 +266,21 @@ namespace RB444.Admin.Controllers
         public async Task<ActionResult> CreditReference(int uId)
         {
             CommonReturnResponse commonModel = null;
-            List<Series> serieslist = null;
+            List<CreditReferenceVM> creditReferenceVM = null;
             try
             {
-                //commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSeries?SportId={1}&type=2", _configuration["ApiKeyUrl"], SportId));
-                //if (commonModel.IsSuccess && commonModel.Data != null)
-                //{
-                //    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
-                //    if (status > 0)
-                //    {
-                //        serieslist = serieslist.Where(s => s.Status == Convert.ToBoolean(status - 1)).ToList();
-                //    }
-                //}
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Account/GetCreditReference?UserId={1}", _configuration["ApiKeyUrl"], uId));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    creditReferenceVM = jsonParser.ParsJson<List<CreditReferenceVM>>(Convert.ToString(commonModel.Data));
+                }
             }
             catch (Exception ex)
             {
                 //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
-            return PartialView("_CreditReference");
+            return PartialView("_CreditReference", creditReferenceVM);
         }
 
         [HttpPost]
