@@ -84,9 +84,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetOpenBetList")]
-        public async Task<CommonReturnResponse> GetOpenBetList(int UserId, string Market)
+        public async Task<CommonReturnResponse> GetOpenBetList(int UserId, long EventId)
         {
-            return await _commonService.GetOpenBetListAsync(UserId, Market);
+            return await _commonService.GetOpenBetListAsync(UserId, EventId);
         }
     }
 }
