@@ -2,6 +2,7 @@
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
+using RB444.Model.Model;
 using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
@@ -551,6 +552,36 @@ namespace RB444.Core.Services
             catch (Exception ex)
             {
                 _baseRepository.Rollback();
+                //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetCreditReferenceAsync(int UserId)
+        {
+            List<CreditReferenceVM> creditReferenceVM = null;
+            try
+            {
+                var userList = await _baseRepository.GetListAsync<Users>();
+
+                string query = string.Format(@"select top 1 Balance as NewBalance,(SELECT Balance FROM (SELECT ROW_NUMBER() OVER (ORDER BY Id desc) AS rownumber, Balance FROM AccountStatement where ToUserId = {0} and IsAccountStatement = 1) AS foo WHERE rownumber = 2) as OldBalance,FromUserId,ToUserId from AccountStatement where ToUserId = {0} and IsAccountStatement = 1 order by id desc", UserId);
+                var result = await _baseRepository.GetQueryMultipleAsync(query, null, gr => gr.Read<CreditReferenceVM>());
+                creditReferenceVM = (result[0] as List<CreditReferenceVM>).ToList();
+                foreach (var item in creditReferenceVM)
+                {
+                    item.FromName = userList.Where(x => x.Id == item.FromUserId).Select(y => y.FullName).FirstOrDefault();
+                    item.ToName = userList.Where(x => x.Id == item.ToUserId).Select(y => y.FullName).FirstOrDefault();
+                }
+                return new CommonReturnResponse
+                {
+                    Data = creditReferenceVM,
+                    Message = MessageStatus.Success,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
                 //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }

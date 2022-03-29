@@ -317,5 +317,11 @@ namespace RB444.Api.Controllers
         {
             return await _accountService.AddOrUpdateRollingCommissionAsync(model);
         }
+
+        [HttpGet, Route("GetCreditReference")]
+        public async Task<CommonReturnResponse> GetCreditReference(int UserId)
+        {
+            return await _accountService.GetCreditReferenceAsync(UserId);
+        }
     }
 }

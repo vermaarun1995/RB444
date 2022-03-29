@@ -119,5 +119,12 @@ namespace RB444.Core.IServices
         /// <param name="model"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> AddOrUpdateRollingCommissionAsync(RollingCommision model);
+
+        /// <summary>
+        /// Get Credit reference.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetCreditReferenceAsync(int UserId);
     }
 }
