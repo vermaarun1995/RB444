@@ -11,13 +11,17 @@
     }
 </style>
 
+@{
+    var user = ViewBag.LoginUser;
+    List<Users> usersList = ViewBag.Users;
+    List<UserRoles> userRoles = ViewBag.UserRoles;
+}
+
 <div class="container">
     <div class="row">
         @{
             int i = 0;
-            var user = ViewBag.LoginUser;
-            List<Users> usersList = ViewBag.Users;
-            foreach (var item in ViewBag.UserRoles)
+            foreach (var item in userRoles)
             {
                 @if (user.RoleId <= i && i < 7)
                 {
@@ -37,23 +41,23 @@
                             @if (usersList != null && usersList.Count() >= 0)
                             {
                                 var counter = 0;
-                        <div class="card-body pt-2">
-                            @foreach (var userData in usersList.Where(x => x.RoleId == (i + 1)).ToList())
-                            {
-                                <div class="d-flex align-items-center mb-4 @(counter++ > 4 ? "hidden" : string.Empty)">
-                                    <div class="flex-column flex-grow-1">
-                                        <a href="/User/RegisterUsersList?id=@(i+1)&userId=@(userData.Id)" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">@userData.FullName</a>
-                                        <span class="text-muted font-weight-bold" style="float: right; font-size: 12px; color: black !important;">Available Balance (@userData.AssignCoin)</span>
-                                    </div>
+                                <div class="card-body pt-2">
+                                    @foreach (var userData in usersList.Where(x => x.RoleId == (i + 1)).ToList())
+                                    {
+                                        <div class="d-flex align-items-center mb-4 @(counter++ > 4 ? "hidden" : string.Empty)">
+                                            <div class="flex-column flex-grow-1">
+                                                <a href="/User/RegisterUsersList?id=@(i+1)&userId=@(userData.Id)" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg">@userData.FullName</a>
+                                                <span class="text-muted font-weight-bold" style="float: right; font-size: 12px; color: black !important;">Available Balance (@userData.AssignCoin)</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (usersList.Where(x => x.RoleId == (i + 1)).Count() > 5)
+                                    {
+                                        <br />
+                                        <a href="/User/RegisterUsersList?id=@(i+1)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
+                                    }
+                                    <!--end::Item-->
                                 </div>
-                            }
-                            @if (usersList.Where(x => x.RoleId == (i + 1)).Count() > 5)
-                            {
-                                <br />
-                                <a href="/User/RegisterUsersList?id=@(i+1)" class="font-weight-bold font-size-lg mb-1 show-more-btn">See more...</a>
-                            }
-                            <!--end::Item-->
-                        </div>
                             }
                             <!--end::Body-->
                         </div>
@@ -80,12 +84,14 @@
                         <div class="error" style="display:none;" id="error"></div>
                         <input type="hidden" class="form-control" id="idModel">
                         <input type="hidden" asp-for="RoleId" value="">
+                        <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
                             <div class="col-md-4">
                                 <label class="form-label" asp-for="Email">Email</label>
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="Email" placeholder="Email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">
@@ -94,6 +100,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="text" class="form-control" asp-for="FullName" placeholder="Name">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-group d-flex justify-content-between align-items-center mb-75">

@@ -49,6 +49,7 @@ namespace RB444.Core.Services
                 var series = await _baseRepository.GetDataByIdAsync<Series>(seriesSetting.tournamentId);
                 if (series != null)
                 {
+                    series.Status = seriesSetting.Status;
                     int _resultId = await _baseRepository.UpdateAsync(series);
                     //string sql = string.Format(@"Update Series set Status = {0} where tournamentId = {1}", seriesSetting.Status, seriesSetting.tournamentId);
                     //var abc = await _baseRepository.QueryAsync<Series>();
@@ -57,7 +58,7 @@ namespace RB444.Core.Services
                 }
                 else
                 {
-                    string sql = string.Format(@"insert into Series values({0},{1},'{2}',{3})", seriesSetting.tournamentId, seriesSetting.SportId, seriesSetting.tournamentName, seriesSetting.Status == true ? 1 : 0);
+                    string sql = string.Format(@"insert into Series values({0},{1},'{2}',{3})", seriesSetting.tournamentId, seriesSetting.SportId, seriesSetting.tournamentName.Replace("'", "''"), seriesSetting.Status == true ? 1 : 0);
                     await _baseRepository.QueryAsync<Series>(sql);
                     _baseRepository.Commit();
                     //var _resultId = await _baseRepository.InsertAsync(seriesSetting);

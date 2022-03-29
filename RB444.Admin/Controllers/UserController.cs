@@ -45,7 +45,7 @@ namespace RB444.Admin.Controllers
 
                 ViewBag.UserRoles = userRoles;
                 ViewBag.LoginUser = user;
-                ViewBag.Users = users;
+                ViewBag.Users = users;                
             }
             catch (Exception ex)
             {
