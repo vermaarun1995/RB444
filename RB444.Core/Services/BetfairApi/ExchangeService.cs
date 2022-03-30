@@ -96,7 +96,8 @@ namespace RB444.Core.Services.BetfairApi
                         {
                             if (item.SeriesName.Equals(item2.tournamentName) && item2.Status != true)
                             {
-                                serieslist.Remove(item2);
+                                var itemToRemove = serieslist.FirstOrDefault(r => r.tournamentId == item2.tournamentId);
+                                serieslist.Remove(itemToRemove);
                             }
                         }
                     }

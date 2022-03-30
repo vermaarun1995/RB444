@@ -72,9 +72,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetRollingCommission")]
-        public async Task<CommonReturnResponse> GetRollingCommission(int PrentId, int UserId, int Type)
+        public async Task<CommonReturnResponse> GetRollingCommission(int ParentId, int UserId, int Type)
         {
-            return await _commonService.GetRollingCommisionAsync(PrentId, UserId, Type);
+            return await _commonService.GetRollingCommisionAsync(ParentId, UserId, Type);
         }
 
         [HttpGet, Route("GetMarketList")]
