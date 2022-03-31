@@ -26,7 +26,7 @@ namespace RB444.Core.Services
             try
             {
                 var sportList = await _baseRepository.GetListAsync<Sports>();
-                int betDelayTime = Convert.ToInt32(sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime)) * 1000;
+                int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
                 string betId = model.UserId.ToString() + model.PlaceTime;
                 betId = cEncryption.MD5Encryption(betId);
                 model.BetId = betId;
