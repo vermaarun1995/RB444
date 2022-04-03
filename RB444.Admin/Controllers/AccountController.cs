@@ -35,6 +35,7 @@ namespace RB444.Admin.Controllers
             _baseRepository = baseRepository;
             _cookieService = cookieService;
         }
+
         public ActionResult Login(string returnUrl = null)
         {
             return View();
@@ -50,19 +51,19 @@ namespace RB444.Admin.Controllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                if(user.RoleId == 7)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    return View(model);
+                }
+                if (user != null && user.Status == 1)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        //HttpContext.Session.SetString("loginUserId", user.Id.ToString());
-                        //HttpContext.Session.SetString("loginUserFullName", user.FullName);                        
-                        //HttpContext.Session.SetString("loginUserRoleId", user.RoleId.ToString());
-
                         _cookieService.Set("loginUserDetail", JsonConvert.SerializeObject(user), 0);
 
                         string ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-                        if (ipAddress != "::1")
+                        if (ipAddress != "::1" && user.RoleId != 1)
                         {
                             var locationModel = commonFun.GetIpInfo(ipAddress);
                             try
@@ -117,18 +118,9 @@ namespace RB444.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //// Get auth key from web.config
-                    //string authKey = WebConfigurationManager.AppSettings["AuthKey"];
-
-                    //// Encrypt password with specific key
-                    //var encryptPassword = General.EncryptString(authKey, model.Password);
-
-                    //var loginUserId = User.Identity.GetUserId();
-
-                    //// Find users
                     var loginUser = await _userManager.FindByEmailAsync(contextUser.Identity.Name);
 
-                    if (loginUser.AssignCoin < model.AssignCoin && (loginUser.RoleId != 1 || loginUser.RoleId != 2))
+                    if (loginUser.AssignCoin < model.AssignCoin && loginUser.RoleId != 1 && loginUser.RoleId != 2)
                     {
                         var message = loginUser.AssignCoin == 0 ? "no coin availble" : $"only {loginUser.AssignCoin}";
                         commonModel = new CommonReturnResponse { Data = null, Message = $"You have {message} coins remaining.", IsSuccess = false, Status = ResponseStatusCode.BADREQUEST };
@@ -155,29 +147,50 @@ namespace RB444.Admin.Controllers
                     var result = await _userManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
-                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
-
-                        await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/DepositAssignCoin?AssignCoin={1}&ParentId={2}&UserId={3}&UserRoleId={4}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId, user.Id, model.RoleId));
-
-                        if (model.RollingCommission)
+                        if (user.RoleId != 1 && user.RoleId != 2)
                         {
-                            var rollingCommision = new RollingCommision
+                            if (loginUser.RoleId != 1 && loginUser.RoleId != 2)
                             {
-                                FromUserId = user.ParentId,
-                                ToUserId = user.Id,
-                                Fancy = model.RollingCommisionVm.Fancy,
-                                Casino = model.RollingCommisionVm.Casino,
-                                Bookmaker = model.RollingCommisionVm.Bookmaker,
-                                Binary = model.RollingCommisionVm.Binary,
-                                Matka = model.RollingCommisionVm.Matka,
-                                SportBook = model.RollingCommisionVm.SportBook,
-                            };
-                            commonModel = await _requestServices.PostAsync<RollingCommision, CommonReturnResponse>(String.Format("{0}Account/SaveRollingCommission", _configuration["ApiUrl"]), rollingCommision);
-                            if (commonModel.IsSuccess) {
+                                await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/UpdateAssignCoin?AssignCoin={1}&LoginUserId={2}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId));
+                            }
+
+                            await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}Account/DepositAssignCoin?AssignCoin={1}&ParentId={2}&UserId={3}&UserRoleId={4}", _configuration["ApiKeyUrl"], model.AssignCoin, user.ParentId, user.Id, model.RoleId));
+
+                            var rollingCommision = new RollingCommision();
+                            if (model.RollingCommission)
+                            {
+                                rollingCommision = new RollingCommision
+                                {
+                                    FromUserId = user.ParentId,
+                                    ToUserId = user.Id,
+                                    Fancy = model.RollingCommisionVm.Fancy,
+                                    Casino = model.RollingCommisionVm.Casino,
+                                    Bookmaker = model.RollingCommisionVm.Bookmaker,
+                                    Binary = model.RollingCommisionVm.Binary,
+                                    Matka = model.RollingCommisionVm.Matka,
+                                    SportBook = model.RollingCommisionVm.SportBook,
+                                };                               
+                            }
+                            else
+                            {
+                                rollingCommision = new RollingCommision
+                                {
+                                    FromUserId = user.ParentId,
+                                    ToUserId = user.Id,
+                                    Fancy = 0,
+                                    Casino = 0,
+                                    Bookmaker = 0,
+                                    Binary = 0,
+                                    Matka = 0,
+                                    SportBook = 0,
+                                };
+                            }
+                            commonModel = await _requestServices.PostAsync<RollingCommision, CommonReturnResponse>(String.Format("{0}Account/SaveRollingCommission", _configuration["ApiKeyUrl"]), rollingCommision);
+                            if (commonModel.IsSuccess)
+                            {
                                 return Json(JsonConvert.SerializeObject(commonModel));
                             }
                         }
-
                         //var data = JsonConvert.SerializeObject(commonModel);
                         commonModel = new CommonReturnResponse { Data = null, Message = MessageStatus.Success, IsSuccess = true, Status = ResponseStatusCode.OK };
                         return Json(JsonConvert.SerializeObject(commonModel));

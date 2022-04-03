@@ -36,7 +36,7 @@ namespace RB444.Core.Services.BetfairApi
             var sports = new List<Sports>();
             try
             {
-                if (type == 1)
+                if (type == 2)
                 {
                     sports = await _baseRepository.GetListAsync<Sports>();
                 }
