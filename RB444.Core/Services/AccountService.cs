@@ -348,7 +348,7 @@ namespace RB444.Core.Services
                 var result = await _baseRepository.GetQueryMultipleAsync(query, null, gr => gr.Read<UsersVM>());
                 usersVM = (result[0] as List<UsersVM>).ToList();
 
-                var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 || loginUser.RoleId == 2 || loginUser.RoleId == 3 || loginUser.RoleId == 4 : false;
+                //var isAbleToChange = RoleId > 0 ? loginUser.RoleId == RoleId - 1 || loginUser.RoleId == 2 || loginUser.RoleId == 3 || loginUser.RoleId == 4 : false;
 
                 var u = usersVM.Where(x => x.ParentId == LoginUserId).ToList();
                 var totalUser = u;
@@ -369,23 +369,27 @@ namespace RB444.Core.Services
                     }
                 }
 
-
+                var model = new RegisterListVM();
                 totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
                 if (UserId > 0)
                 {
                     totalUser = totalUser.Where(x => x.Id == UserId).ToList();
                 }
+                model.Users = totalUser;
+                foreach (var item in model.Users)
+                {
+                    item.IsAbleToChange = model.Users.Where(x => x.ParentId == LoginUserId).FirstOrDefault() != null ? true : false;
+                }
                 var roleName = userRoles.Where(y => y.Id == RoleId).Select(x => x.Name).FirstOrDefault();
 
-                var model = new RegisterListVM
+                model = new RegisterListVM
                 {
                     LoginUserId = loginUser.Id,
                     LoginUserRole = loginUser.RoleId,
                     LoginUser = loginParentUser,
                     RoleName = roleName,
-                    Users = totalUser,
-                    UserRoles = userRoles,
-                    IsAbleToChange = isAbleToChange
+                    Users = model.Users,
+                    UserRoles = userRoles
                 };
 
                 return new CommonReturnResponse

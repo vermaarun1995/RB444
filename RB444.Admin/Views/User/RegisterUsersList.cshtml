@@ -189,7 +189,7 @@
 
 <div class="container">
     <div class="u-action">
-        @if (Model.IsAbleToChange)
+        @if (true)
         {
             <button type="button" class="btn btn-light btn-sm font-size-sm font-weight-bolder text-dark-75 editRegister">
                 <i class="fas fa-user-plus"></i>
@@ -265,7 +265,7 @@
                         <td>
                             <label class="edit-menu">
                                 0.00
-                                @if (Model.IsAbleToChange)
+                                @if (user.IsAbleToChange)
                                 {
                                     <i class="fas fa-edit profitLossPopup" style="color:black;"></i>
                                 }
@@ -276,7 +276,7 @@
                         <td>
                             <label class="edit-menu">
                                 @user.ExposureLimit
-                                @if (Model.IsAbleToChange)
+                                @if (user.IsAbleToChange)
                                 {
                                     <i class="fas fa-edit ExposurePopup" id="ExposurePopup_@user.ExposureLimit" style="color:black;"></i>
                                 }
@@ -286,7 +286,7 @@
                         <td><label>@user.ProfitAndLoss</label></td>
                         <td><span class="@status-status-box">@status</span></td>
                         <td class="action-box">
-                            @if (Model.IsAbleToChange)
+                            @if (user.IsAbleToChange)
                             {
                                 <i class="fas fa-comments-dollar deposit-withdraw-popup" style="color:black;"></i>
                                 <a href="/User/AccountStatement?id=@user.Id"><i class="fas fa-file-invoice-dollar" style="color:black;"></i></a>
@@ -316,7 +316,7 @@
     </table>
 </div>
 
-@if (Model.IsAbleToChange)
+@if (true)
 {
     <!-- Modal Add User-->
     <form id="request-form" autocomplete="off" class="" method="post">

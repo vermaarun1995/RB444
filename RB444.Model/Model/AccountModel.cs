@@ -132,7 +132,6 @@ namespace RB444.Models.Model
         public int LoginUserId { get; set; }
         public int LoginUserRole { get; set; }
         public string RoleName { get; set; }
-        public bool IsAbleToChange { get; set; }
         public List<UsersVM> Users { get; set; }
         public RollingCommision RollingCommision { get; set; }
     }

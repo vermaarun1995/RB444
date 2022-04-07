@@ -275,6 +275,7 @@ namespace RB444.Core.Services.BetfairApi
                     exEventId = eventId.ToString(),
                     eventName = runnerNames.eventName,
                     marketId = marketId,
+                    exMarketId = marketId,
                     isSettlement = 0,
                     isScore = false,
                     isVoid = 0,

@@ -25,5 +25,6 @@ namespace RB444.Model.ViewModel
         public int Status { get; set; } // 1 for active. 2 for inactive. 3 for blocked
         public long AvailableBalance { get; set; }
         public long ProfitAndLoss { get; set; }
+        public bool IsAbleToChange { get; set; }
     }
 }
