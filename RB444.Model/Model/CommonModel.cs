@@ -34,6 +34,48 @@ namespace RB444.Models.Model
         public long currentTime { get; set; }
     }
 
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+    public class AvailableToBack
+    {
+        public double price { get; set; }
+        public double size { get; set; }
+    }
+
+    public class AvailableToLay
+    {
+        public double price { get; set; }
+        public double size { get; set; }
+    }
+
+    public class Ex
+    {
+        public List<AvailableToBack> availableToBack { get; set; }
+        public List<AvailableToLay> availableToLay { get; set; }
+    }
+
+    public class Runner
+    {
+        public int selectionId { get; set; }
+        public int handicap { get; set; }
+        public string status { get; set; }
+        public double lastPriceTraded { get; set; }
+        public double totalMatched { get; set; }
+        public int adjustmentFactor { get; set; }
+        public Ex ex { get; set; }
+    }
+
+    public class MatchReturnResponseNew
+    {
+        public string marketId { get; set; }
+        public DateTime updateTime { get; set; }
+        public string status { get; set; }
+        public bool inplay { get; set; }
+        public double totalMatched { get; set; }
+        public List<Runner> runners { get; set; }
+    }
+
+
+
     public class EventReturnResponse
     {
         public List<List<MatchOddsVM>> t1 { get; set; }
@@ -85,7 +127,7 @@ namespace RB444.Models.Model
         public DateTime eventDate { get; set; }
         public long SeriesId { get; set; }
         public string SeriesName { get; set; }
-
+        public string marketId { get; set; }
     }
 
     public class MatchOddsVM
@@ -153,5 +195,49 @@ namespace RB444.Models.Model
         public string home_team { get; set; }
         public string away_team { get; set; }
         public List<Bookmaker> bookmakers { get; set; }
+    }
+
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+    public class Datum
+    {
+        public int srno { get; set; }
+        public string eventId { get; set; }
+        public string eventName { get; set; }
+        public DateTime eventDate { get; set; }
+        public int EventTypeId { get; set; }
+        public string EventTypeName { get; set; }
+        public string SeriesId { get; set; }
+        public string SeriesName { get; set; }
+        public string marketId { get; set; }
+        public string marketName { get; set; }
+        public string marketType { get; set; }
+        public int selectionId1 { get; set; }
+        public string runnerName1 { get; set; }
+        public int selectionId2 { get; set; }
+        public string runnerName2 { get; set; }
+        public int selectionId3 { get; set; }
+        public string runnerName3 { get; set; }
+        public string market_runner_json { get; set; }
+        public string match_type { get; set; }
+        public DateTime startDate { get; set; }
+        public string scoreboard_id { get; set; }
+        public string new_runner_json { get; set; }
+        public int market_runner_count { get; set; }
+        public object MainTvurl { get; set; }
+    }
+
+    public class TeamNameResponse
+    {
+        public string message { get; set; }
+        public int code { get; set; }
+        public bool error { get; set; }
+        public List<Datum> data { get; set; }
+        public long currentTime { get; set; }
+    }
+
+    public class TeamSelectionId
+    {
+        public long selectionId { get; set; }
+        public string teamName { get; set; }
     }
 }

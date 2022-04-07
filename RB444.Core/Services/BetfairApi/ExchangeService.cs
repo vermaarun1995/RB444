@@ -86,7 +86,7 @@ namespace RB444.Core.Services.BetfairApi
                         tournamentId = Convert.ToInt64(item.SeriesId),
                         tournamentName = item.SeriesName,
                         SportId = SportId,
-                        Status= serieslistByDatabase.Count > 0 ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).FirstOrDefault() != null ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).Select(s => s.Status).FirstOrDefault() : true : true
+                        Status = serieslistByDatabase.Count > 0 ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).FirstOrDefault() != null ? serieslistByDatabase.Where(x => x.tournamentId == item.SeriesId).Select(s => s.Status).FirstOrDefault() : true : true
                     };
                     serieslist.Add(series);
 
@@ -144,6 +144,7 @@ namespace RB444.Core.Services.BetfairApi
                         eventName = item.eventName,
                         MatchDate = item.eventDate,
                         SportId = SportId,
+                        marketId = item.marketId,
                         Status = matcheslistByDatabase.Count > 0 ? matcheslistByDatabase.Where(x => x.SeriesId == item.SeriesId && x.eventId == item.eventId).Select(s => s.Status).Count() > 0 ? matcheslistByDatabase.Where(x => x.SeriesId == item.SeriesId && x.eventId == item.eventId).Select(s => s.Status).FirstOrDefault() : true : true
 
                     };
@@ -177,118 +178,123 @@ namespace RB444.Core.Services.BetfairApi
             finally { if (matchDataByApis != null) { matchDataByApis = null; } }
         }
 
-        public async Task<CommonReturnResponse> GetMatchEventsAsync(long eventId, int SportId)
+        public async Task<CommonReturnResponse> GetMatchEventsAsync(string marketId, long eventId, int SportId)
         {
             double totalMatched;
             string eventName = "";
             bool inPlay = false;
-            var matchReturnResponse = new MatchesReturnResponse();
-            var eventReturnResponse = new EventReturnResponse();
+            var matchReturnResponse = new List<MatchReturnResponseNew>();
+            var teamNameResponse = new TeamNameResponse();
             var eventModel = new EventModel();
+            var teamSelectionIds = new List<TeamSelectionId>();
             eventModel.data = new Model.Model.Data();
             eventModel.data.matchOddsData = new List<MatchOddsData>();
             List<MatchOddsData> matchOddsDataList = new List<MatchOddsData>();
             Price price = new Price();
             try
             {
-                matchReturnResponse = await _requestServices.GetAsync<MatchesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
-                eventName = matchReturnResponse.data.Where(x => x.eventId == eventId).Select(y => y.eventName).FirstOrDefault();
+                matchReturnResponse = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], marketId));
 
-                eventReturnResponse = await _requestServices.GetAsync<EventReturnResponse>(string.Format("{0}getdata/{1}", _configuration["DiamondApiKeyUrl"], eventId));
-                if (eventReturnResponse.t1 != null)
+                teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
+                if (runnerNames != null)
                 {
-                    var eventCnt = eventReturnResponse.t1.Count;
-                    for (int i = 0; i < eventCnt; i++)
+                    teamSelectionIds.Add(new TeamSelectionId
                     {
-                        List<Runner> runnerList = new List<Runner>();
-                        totalMatched = Math.Round(Convert.ToDouble(eventReturnResponse.t1[i][0].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][0].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][0].ls3) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs1) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs2) + Convert.ToDouble(eventReturnResponse.t1[i][1].bs3) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls1) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls2) + Convert.ToDouble(eventReturnResponse.t1[i][1].ls3), 2);
-
-                        inPlay = Convert.ToBoolean(eventReturnResponse.t1[i][0].iplay);
-
-                        for (int j = 0; j < eventReturnResponse.t1[i].Count; j++)
-                        {                            
-                            List<Back> backList = new List<Back>();
-                            List<Lay> layList = new List<Lay>();
-                            backList.Add(new Back
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].b1),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs1)
-                            });
-
-                            backList.Add(new Back
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].b2),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs2)
-                            });
-
-                            backList.Add(new Back
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].b3),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].bs3)
-                            });
-                            layList.Add(new Lay
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].l1),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls1)
-                            });
-
-                            layList.Add(new Lay
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].l2),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls2)
-                            });
-
-                            layList.Add(new Lay
-                            {
-                                price = Convert.ToDouble(eventReturnResponse.t1[i][j].l3),
-                                size = Convert.ToDouble(eventReturnResponse.t1[i][j].ls3)
-                            });
-                            runnerList.Add(new Runner
-                            {
-                                selectionId = Convert.ToInt32(eventReturnResponse.t1[i][j].sid),
-                                runnerName = eventReturnResponse.t1[i][j].nat,
-                                handicap = 0,
-                                status = eventReturnResponse.t1[i][j].status,
-                                price = new Price
-                                {
-                                    back = backList,
-                                    lay = layList
-                                }
-                            });
-                        }
-                        matchOddsDataList.Add(new MatchOddsData
+                        teamName = runnerNames.runnerName1,
+                        selectionId = runnerNames.selectionId1
+                    });
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName2,
+                        selectionId = runnerNames.selectionId2
+                    });
+                    if (runnerNames.selectionId3 != 0 && runnerNames.runnerName3 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
                         {
-                            exEventId = eventId.ToString(),
-                            eventName = eventName,
-                            marketId = eventReturnResponse.t1[i][0].mid,
-                            isSettlement = 0,
-                            isScore = false,
-                            isVoid = 0,
-                            marketName = eventReturnResponse.t1[i][0].mname,
-                            marketType = eventReturnResponse.t1[i][0].gtype,
-                            max = 25000,
-                            min = 100,
-                            tableFlag = eventReturnResponse.t1[i][0].mname,
-                            oddsType = eventReturnResponse.t1[i][0].mname,
-                            oddsData = new OddsData
-                            {                                
-                                betDelay = 5,
-                                status = eventReturnResponse.t1[i][0].mstatus,
-                                totalMatched = totalMatched.ToString(),
-                                runners = runnerList
-                            },                            
+                            teamName = runnerNames.runnerName3,
+                            selectionId = runnerNames.selectionId3
                         });
                     }
-
-                    eventModel.data.matchOddsData = matchOddsDataList;
-                    eventModel.data.delayed = Convert.ToBoolean(eventReturnResponse.delayed);
-                    eventModel.data.inPlay = inPlay;
                 }
-                else
+
+                List<RunnerOld> runnerList = new List<RunnerOld>();
+                foreach (var item in matchReturnResponse[0].runners)
                 {
-                    eventModel.data.matchOddsData = null;
+                    List<Back> backList = new List<Back>();
+                    List<Lay> layList = new List<Lay>();
+                    backList.Add(new Back
+                    {
+                        price = item.ex.availableToBack[0].price,
+                        size = item.ex.availableToBack[0].size
+                    });
+                    backList.Add(new Back
+                    {
+                        price = item.ex.availableToBack[1].price,
+                        size = item.ex.availableToBack[1].size
+                    });
+                    backList.Add(new Back
+                    {
+                        price = item.ex.availableToBack[2].price,
+                        size = item.ex.availableToBack[2].size
+                    });
+
+                    layList.Add(new Lay
+                    {
+                        price = item.ex.availableToLay[0].price,
+                        size = item.ex.availableToLay[0].size
+                    });
+                    layList.Add(new Lay
+                    {
+                        price = item.ex.availableToLay[1].price,
+                        size = item.ex.availableToLay[1].size
+                    });
+                    layList.Add(new Lay
+                    {
+                        price = item.ex.availableToLay[2].price,
+                        size = item.ex.availableToLay[2].size
+                    });
+
+                    runnerList.Add(new RunnerOld
+                    {
+                        selectionId = item.selectionId,
+                        runnerName = teamSelectionIds.Where(x => x.selectionId == item.selectionId).Select(y => y.teamName).FirstOrDefault(),
+                        handicap = 0,
+                        status = item.status,
+                        price = new Price
+                        {
+                            back = backList,
+                            lay = layList
+                        }
+                    });
                 }
 
+                matchOddsDataList.Add(new MatchOddsData
+                {
+                    exEventId = eventId.ToString(),
+                    eventName = runnerNames.eventName,
+                    marketId = marketId,
+                    isSettlement = 0,
+                    isScore = false,
+                    isVoid = 0,
+                    marketName = runnerNames.marketName,
+                    marketType = runnerNames.marketType,
+                    max = 25000,
+                    min = 100,
+                    tableFlag = runnerNames.marketType,
+                    oddsType = runnerNames.marketType,
+                    oddsData = new OddsData
+                    {
+                        betDelay = 5,
+                        status = matchReturnResponse[0].status,
+                        totalMatched = matchReturnResponse[0].totalMatched,
+                        runners = runnerList
+                    },
+                });
+
+                eventModel.data.matchOddsData = matchOddsDataList;
+                eventModel.data.inPlay = matchReturnResponse[0].inplay;
 
                 return new CommonReturnResponse
                 {

@@ -50,6 +50,25 @@ namespace RB444.Core.Services
             }
         }
 
+        public async Task<string> GetAsyncnew(string uri)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+                if (accessToken != null && accessToken != "")
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+                }
+                using (HttpResponseMessage response = await client.GetAsync(uri))
+                {
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    return responseBody;
+                }
+            }
+        }
         public TOut Post<TIn, TOut>(string uri, TIn content)
         {
             using (var client = new WebClient())

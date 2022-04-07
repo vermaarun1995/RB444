@@ -29,7 +29,7 @@ namespace RB444.Model.Model
         public List<Lay> lay { get; set; }
     }
 
-    public class Runner
+    public class RunnerOld
     {
         public int selectionId { get; set; }
         public string runnerName { get; set; }
@@ -42,10 +42,10 @@ namespace RB444.Model.Model
     {
         public bool preBet { get; set; }
         public int betDelay { get; set; }
-        public string totalMatched { get; set; }
+        public double totalMatched { get; set; }
         public string status { get; set; }
         public bool crossMatching { get; set; }
-        public List<Runner> runners { get; set; }
+        public List<RunnerOld> runners { get; set; }
     }
 
     public class MatchOddsData
@@ -74,7 +74,6 @@ namespace RB444.Model.Model
         public List<object> sportsbookData { get; set; }
         public List<object> binaryData { get; set; }
         public bool isScore { get; set; }
-        public bool delayed { get; set; }
         public bool inPlay { get; set; }
     }
 
