@@ -52,94 +52,8 @@ namespace RB444.Core.ServiceHelper
             Vendors = 4,
             Customer = 5,
             Request = 6
-        }
+        }        
 
-        public async static Task<bool> UploadAtAmazonCDN(Stream FileStream, string FileName, string filepath, string AmazaonCdn_BucketName, IConfiguration configuration)
-        {
-            try
-            {
-                if (AmazaonCdn_BucketName == "")
-                {
-                    AmazaonCdn_BucketName = configuration["AmazonCdnValues:AmazaonCdn_BucketName"];
-                    filepath = AmazaonCdn_BucketName + "/" + filepath;
-                }
-                string accessKeyID = configuration["AmazonCdnValues:AmazaonCdn_KeyID"];
-                string secretAccessKeyID = configuration["AmazonCdnValues:AmazaonCdn_AccessKeyID"];
-                var credentials = new BasicAWSCredentials(accessKeyID, secretAccessKeyID);
-                using (var _S3client = new AmazonS3Client(credentials, RegionEndpoint.USEast1))
-                {
-                    var request = new PutObjectRequest()
-                    {
-                        Key = FileName,
-                        BucketName = filepath,
-                        InputStream = FileStream,
-                        CannedACL = S3CannedACL.PublicRead
-                    };
-                    PutObjectResponse response = await _S3client.PutObjectAsync(request);
-                    if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                        return true;
-                    else
-                        return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async static Task<bool> DownloadObject(int id, int formtype, string fileList, string path, IConfiguration configuration)
-        {
-            try
-            {
-                string sDirCreateDate = DateTime.Now.ToString("dd_MM_yy");
-                string[] FileNames = fileList.Split(',');
-                RegionEndpoint bucketRegion = RegionEndpoint.USEast1;
-                IAmazonS3 client = new AmazonS3Client(bucketRegion);
-
-                string accessKey = configuration["AmazonCdnValues:AmazaonCdn_KeyID"];
-                string secretKey = configuration["AmazonCdnValues:AmazaonCdn_AccessKeyID"];
-                AmazonS3Client s3Client = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey), Amazon.RegionEndpoint.USEast1);
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                }
-                path = path + "/" + sDirCreateDate;
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-                var attachmentFolder = "/Avjet/Attachment/" + GetFormDetails(formtype).formName + "/" + id;
-                foreach (var filesName in FileNames)
-                {
-                    GetObjectRequest request = new GetObjectRequest
-                    {
-                        BucketName = configuration["AmazonCdnValues:AmazaonCdn_BucketName"] + attachmentFolder,
-                        Key = filesName
-                    };
-                    using (GetObjectResponse response = await s3Client.GetObjectAsync(request))
-                    {
-                        CancellationTokenSource source = new CancellationTokenSource();
-                        CancellationToken token = source.Token;
-                        string Filedest = path + "/" + filesName;
-                        await response.WriteResponseStreamToFileAsync(Filedest, true, token);
-                    }
-                }
-                ////EMR is folder name of the image inside the bucket
-                //GetObjectRequest request = new GetObjectRequest();
-                //request.BucketName = configuration["AmazonCdnValues:AmazaonCdn_BucketName"] + "/Avjet/Attachment/country/101";
-                //request.Key = filename;
-                //using (GetObjectResponse response = await s3Client.GetObjectAsync(request))
-                //{
-                //    CancellationTokenSource source = new CancellationTokenSource();
-                //    CancellationToken token = source.Token;
-                //    string Filedest = path + "/" + filename;
-                //    await response.WriteResponseStreamToFileAsync(Filedest, true, token);
-                //}
-            }
-            catch (Exception ex) { return false; }
-            return true;
-        }
         public static string CalculateFileSize(long bytes)
         {
             string _retrunSize = string.Empty;
@@ -199,6 +113,13 @@ namespace RB444.Core.ServiceHelper
         public static DateTime GetDateTime()
         {
             return DateTime.UtcNow;
+        }
+
+        public static DateTime GetISTDateTime(DateTime date)
+        {
+            date = date.AddHours(5);
+            date = date.AddMinutes(30);
+            return date;
         }
 
         public static FormDetails GetFormDetails(int formId)

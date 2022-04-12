@@ -128,6 +128,8 @@ namespace RB444.Models.Model
         public long SeriesId { get; set; }
         public string SeriesName { get; set; }
         public string marketId { get; set; }
+        public string MainTvurl { get; set; }
+        public int market_runner_count { get; set; }
     }
 
     public class MatchOddsVM

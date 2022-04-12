@@ -90,6 +90,7 @@ namespace RB444.Model.Model
         public string marketId { get; set; }
         public string eid { get; set; }
         public string eventName { get; set; }
+        public DateTime eventDate { get; set; }
         public string inPlay { get; set; }
         public string tv { get; set; }
         public double back1 { get; set; }
