@@ -219,6 +219,24 @@ namespace RB444.Models.Model
         public string runnerName2 { get; set; }
         public int selectionId3 { get; set; }
         public string runnerName3 { get; set; }
+        public int selectionId4 { get; set; }
+        public string runnerName4 { get; set; }
+        public int selectionId5 { get; set; }
+        public string runnerName5 { get; set; }
+        public int selectionId6 { get; set; }
+        public string runnerName6 { get; set; }
+        public int selectionId7 { get; set; }
+        public string runnerName7 { get; set; }
+        public int selectionId8 { get; set; }
+        public string runnerName8 { get; set; }
+        public int selectionId9 { get; set; }
+        public string runnerName9 { get; set; }
+        public int selectionId10 { get; set; }
+        public string runnerName10 { get; set; }
+        public int selectionId11 { get; set; }
+        public string runnerName11 { get; set; }
+        public int selectionId12 { get; set; }
+        public string runnerName12 { get; set; }
         public string market_runner_json { get; set; }
         public string match_type { get; set; }
         public DateTime startDate { get; set; }

@@ -196,6 +196,7 @@ namespace RB444.Core.Services.BetfairApi
                 matchReturnResponse = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], marketId));
 
                 teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                //string abc = _requestServices.GetMarketAsync(teamNameResponse.data[0].market_runner_json);
                 var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
                 if (runnerNames != null)
                 {
@@ -215,6 +216,78 @@ namespace RB444.Core.Services.BetfairApi
                         {
                             teamName = runnerNames.runnerName3,
                             selectionId = runnerNames.selectionId3
+                        });
+                    }
+                    if (runnerNames.selectionId4 != 0 && runnerNames.runnerName4 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName4,
+                            selectionId = runnerNames.selectionId4
+                        });
+                    }
+                    if (runnerNames.selectionId5 != 0 && runnerNames.runnerName5 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName5,
+                            selectionId = runnerNames.selectionId5
+                        });
+                    }
+                    if (runnerNames.selectionId6 != 0 && runnerNames.runnerName6 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName6,
+                            selectionId = runnerNames.selectionId6
+                        });
+                    }
+                    if (runnerNames.selectionId7 != 0 && runnerNames.runnerName7 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName7,
+                            selectionId = runnerNames.selectionId7
+                        });
+                    }
+                    if (runnerNames.selectionId8 != 0 && runnerNames.runnerName8 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName8,
+                            selectionId = runnerNames.selectionId8
+                        });
+                    }
+                    if (runnerNames.selectionId9 != 0 && runnerNames.runnerName9 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName9,
+                            selectionId = runnerNames.selectionId9
+                        });
+                    }
+                    if (runnerNames.selectionId10 != 0 && runnerNames.runnerName10 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName10,
+                            selectionId = runnerNames.selectionId10
+                        });
+                    }
+                    if (runnerNames.selectionId11 != 0 && runnerNames.runnerName11 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName11,
+                            selectionId = runnerNames.selectionId11
+                        });
+                    }
+                    if (runnerNames.selectionId12 != 0 && runnerNames.runnerName12 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName12,
+                            selectionId = runnerNames.selectionId12
                         });
                     }
                 }
@@ -335,11 +408,11 @@ namespace RB444.Core.Services.BetfairApi
                             eventDate = GetISTDateTime(item.eventDate),
                             marketId = item.marketId,
                             inPlay = matchReturnResponseNew[0].inplay.ToString(),
-                            back1 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
-                            back11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
+                            back11 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
+                            back1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
                             back12 = matchReturnResponseNew[0].runners[1].ex.availableToBack[0].price,
-                            lay1 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
-                            lay11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
+                            lay11 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
+                            lay1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
                             lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
                             eid = SportId.ToString(),
                             m1 = "",
@@ -387,11 +460,11 @@ namespace RB444.Core.Services.BetfairApi
                             eventDate = GetISTDateTime(item.eventDate),
                             marketId = item.marketId,
                             inPlay = matchReturnResponseNew[0].inplay.ToString(),
-                            back1 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
-                            back11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
+                            back11 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
+                            back1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
                             back12 = matchReturnResponseNew[0].runners[1].ex.availableToBack[0].price,
-                            lay1 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
-                            lay11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
+                            lay11 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
+                            lay1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
                             lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
                             eid = "1",
                             m1 = "",
