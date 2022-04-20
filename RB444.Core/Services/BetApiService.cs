@@ -33,7 +33,7 @@ namespace RB444.Core.Services
                 model.PlaceTime = DateTime.Now;
                 model.MatchedTime = DateTime.Now.AddSeconds(5);
                 model.SettleTime = model.MatchedTime;
-                model.ResultAmount = 0;
+                model.ResultAmount = 0;                
                 await Task.Delay(betDelayTime);
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
