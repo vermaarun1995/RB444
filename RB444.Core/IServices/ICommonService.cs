@@ -85,11 +85,25 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> GetBetMarketListAsync(int UserId);
 
         /// <summary>
+        /// Get event list.
+        /// </summary>
+        /// <param name="sportId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetBetEventListAsync(int sportId);
+
+        /// <summary>
         /// Get Open bet list.
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="EventId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetOpenBetListAsync(int UserId, long EventId);
+
+        /// <summary>
+        /// Get bet data list.
+        /// </summary>
+        /// <param name="EventId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetBetDataListAsync(long EventId);
     }
 }

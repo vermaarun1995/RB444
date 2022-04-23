@@ -28,7 +28,7 @@ namespace RB444.Core.Services
             {
                 var _condition = string.Format(@"UserId = {0} and SportId = {1}", userId, sportId);
 
-                var sql = string.Format(@"select  u.FullName ,b.Event,b.OddsType,b.OddsRequest,b.AmountStake,b.ResultType,b.MatchFinishedAmount,b.Selection as Runner  from Bets b 
+                var sql = string.Format(@"select  u.FullName ,b.Event,b.OddsType,b.OddsRequest,b.AmountStake,b.ResultType,b.ResultAmount,b.Selection as Runner  from Bets b 
                             join Users u on u.Id=b.UserId 
                             where  {0}", _condition);
 

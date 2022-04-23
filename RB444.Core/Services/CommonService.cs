@@ -348,12 +348,62 @@ namespace RB444.Core.Services
             }
         }
 
+        public async Task<CommonReturnResponse> GetBetEventListAsync(int sportId)
+        {
+            List<MarketVM> marketList = new List<MarketVM>();
+            try
+            {
+                string query = string.Format(@"select distinct(Event),EventId from Bets where SportId = {0}", sportId);
+                var bets = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                foreach (var item in bets)
+                {
+                    var market = new MarketVM
+                    {
+                        EventId = item.EventId,
+                        Event = item.Event
+                    };
+                    marketList.Add(market);
+                }
+                return new CommonReturnResponse
+                {
+                    Data = marketList,
+                    Message = marketList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = marketList.Count > 0,
+                    Status = marketList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
         public async Task<CommonReturnResponse> GetOpenBetListAsync(int UserId, long EventId)
         {
             List<Bets> openBetList = new List<Bets>();
             try
             {
                 string query = string.Format(@"select * from Bets where UserId = {0} and IsSettlement = 2 and isnull(ResultType,0) = 0 and EventId = {1}", UserId, EventId);
+                openBetList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                return new CommonReturnResponse
+                {
+                    Data = openBetList,
+                    Message = openBetList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = openBetList.Count > 0,
+                    Status = openBetList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+        public async Task<CommonReturnResponse> GetBetDataListAsync(long EventId)
+        {
+            List<Bets> openBetList = new List<Bets>();
+            try
+            {
+                string query = string.Format(@"select * from Bets where EventId = {0}", EventId);
                 openBetList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
                 return new CommonReturnResponse
                 {
