@@ -31,14 +31,14 @@ namespace RB444.Admin.Controllers
         // GET: MarketWatch       
         public ActionResult MarketWatch()
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
             return View();
         }
 
         [HttpGet]
         public async Task<ActionResult> TeamMarketWatch(int SportId)
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
             CommonReturnResponse commonModel = null;
             List<MarketWatchVM> marketWatchVM = new List<MarketWatchVM>();
             try
@@ -61,28 +61,28 @@ namespace RB444.Admin.Controllers
 
         public ActionResult ManageSeries()
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
             return View();
         }
 
 
         public ActionResult IndianFancy()
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }  
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }  
             return View();
         }
 
 
         public ActionResult SessionFancy()
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
             return View();
         }
 
 
         public ActionResult BetfairMarket()
         {
-           var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
             return View();
         }
     }

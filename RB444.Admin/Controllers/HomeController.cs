@@ -21,7 +21,7 @@ namespace RB444.Admin.Controllers
 
         public ActionResult Index()
         {
-            var user = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]); if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }

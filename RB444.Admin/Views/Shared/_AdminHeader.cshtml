@@ -3,7 +3,7 @@
 
     @{
         var loginUserInfo = new Users();
-        loginUserInfo = JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]);
+        loginUserInfo = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;
         loginUserInfo = loginUserInfo;
     }*@
 <nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
