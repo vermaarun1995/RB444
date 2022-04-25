@@ -20,5 +20,13 @@ namespace RB444.Core.IServices
         /// <param name="model"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetBetHistoryAsync(UserBetsHistory model);
+
+        /// <summary>
+        /// Bet settle after match finish.
+        /// </summary>
+        /// <param name="eventId"></param>
+        /// <param name="marketId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> BetSettleAsync(long eventId, string marketId);
     }
 }

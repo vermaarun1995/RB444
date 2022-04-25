@@ -105,5 +105,13 @@ namespace RB444.Core.IServices
         /// <param name="EventId"></param>
         /// <returns></returns>
         Task<CommonReturnResponse> GetBetDataListAsync(long EventId);
+
+        /// <summary>
+        /// Get bet data list.
+        /// </summary>
+        /// <param name="EventId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetBetDataListByMarketIdAsync(string MarketId);
+        
     }
 }

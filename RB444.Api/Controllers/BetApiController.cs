@@ -28,5 +28,11 @@ namespace RB444.Api.Controllers
         {
             return await _betApiService.GetBetHistoryAsync(model);
         }
+
+        [HttpGet, Route("BetSettle")]
+        public async Task<CommonReturnResponse> BetSettle(long eventId, string marketId)
+        {
+            return await _betApiService.BetSettleAsync(eventId, marketId);
+        }
     }
 }

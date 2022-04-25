@@ -1,4 +1,6 @@
-﻿using RB444.Core.IServices;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
@@ -15,10 +17,14 @@ namespace RB444.Core.Services
     public class BetApiService : IBetApiService
     {
         private readonly IBaseRepository _baseRepository;
+        private readonly IRequestServices _requestServices;
+        private readonly IConfiguration _configuration;
 
-        public BetApiService(IBaseRepository baseRepository)
+        public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration)
         {
             _baseRepository = baseRepository;
+            _requestServices = requestServices;
+            _configuration = configuration;
         }
 
         public async Task<CommonReturnResponse> SaveBets(Bets model)
@@ -27,13 +33,13 @@ namespace RB444.Core.Services
             {
                 var sportList = await _baseRepository.GetListAsync<Sports>();
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
-                string betId = model.UserId.ToString() + model.PlaceTime;
+                string betId = model.UserId.ToString() + DateTime.Now.ToString();
                 betId = cEncryption.MD5Encryption(betId);
                 model.BetId = betId;
                 model.PlaceTime = DateTime.Now;
                 model.MatchedTime = DateTime.Now.AddSeconds(5);
                 model.SettleTime = model.MatchedTime;
-                model.ResultAmount = 0;                
+                model.ResultAmount = 0;
                 await Task.Delay(betDelayTime);
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
@@ -103,5 +109,180 @@ namespace RB444.Core.Services
         //            {
         //                vendorVM.vendorServiceMappingList = (result[1] as List<VendorServiceMapping>).ToList();
         //vendorVM.vendorMembershipMappingList = (result[2] as List<VendorMembershipMapping>).ToList();
+
+        public async Task<CommonReturnResponse> BetSettleAsync(long eventId, string marketId)
+        {
+            string sql = string.Empty;
+            string _condition = string.Empty;
+            var commonReturnResponse = new CommonReturnResponse();
+            var matchReturnResponseList = new List<MatchReturnResponseNew>();
+            var matchReturnResponse = new MatchReturnResponseNew();
+            var betList = new List<Bets>();
+            var teamSelectionIds = new List<TeamSelectionId>();
+            try
+            {
+                matchReturnResponseList = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}getresultdata/{1}", _configuration["ApiKeyUrl"], marketId));
+                matchReturnResponse = matchReturnResponseList.FirstOrDefault();
+                if (matchReturnResponse.status.ToLower() == "closed")
+                {
+                    commonReturnResponse = await _requestServices.GetAsync<CommonReturnResponse>(string.Format("{0}common/GetBetDataListByMarketId?MarketId={1}", _configuration["MyApiKeyUrl"], marketId));
+                    if (commonReturnResponse.IsSuccess && commonReturnResponse.Data != null)
+                    {
+                        betList=jsonParser.ParsJson<List<Bets>>(Convert.ToString(commonReturnResponse.Data));
+                        var teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], betList.FirstOrDefault().SportId));
+                        var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
+
+                        if (runnerNames != null)
+                        {
+                            teamSelectionIds.Add(new TeamSelectionId
+                            {
+                                teamName = runnerNames.runnerName1,
+                                selectionId = runnerNames.selectionId1
+                            });
+                            teamSelectionIds.Add(new TeamSelectionId
+                            {
+                                teamName = runnerNames.runnerName2,
+                                selectionId = runnerNames.selectionId2
+                            });
+                            if (runnerNames.selectionId3 != 0 && runnerNames.runnerName3 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName3,
+                                    selectionId = runnerNames.selectionId3
+                                });
+                            }
+                            if (runnerNames.selectionId4 != 0 && runnerNames.runnerName4 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName4,
+                                    selectionId = runnerNames.selectionId4
+                                });
+                            }
+                            if (runnerNames.selectionId5 != 0 && runnerNames.runnerName5 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName5,
+                                    selectionId = runnerNames.selectionId5
+                                });
+                            }
+                            if (runnerNames.selectionId6 != 0 && runnerNames.runnerName6 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName6,
+                                    selectionId = runnerNames.selectionId6
+                                });
+                            }
+                            if (runnerNames.selectionId7 != 0 && runnerNames.runnerName7 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName7,
+                                    selectionId = runnerNames.selectionId7
+                                });
+                            }
+                            if (runnerNames.selectionId8 != 0 && runnerNames.runnerName8 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName8,
+                                    selectionId = runnerNames.selectionId8
+                                });
+                            }
+                            if (runnerNames.selectionId9 != 0 && runnerNames.runnerName9 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName9,
+                                    selectionId = runnerNames.selectionId9
+                                });
+                            }
+                            if (runnerNames.selectionId10 != 0 && runnerNames.runnerName10 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName10,
+                                    selectionId = runnerNames.selectionId10
+                                });
+                            }
+                            if (runnerNames.selectionId11 != 0 && runnerNames.runnerName11 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName11,
+                                    selectionId = runnerNames.selectionId11
+                                });
+                            }
+                            if (runnerNames.selectionId12 != 0 && runnerNames.runnerName12 != "")
+                            {
+                                teamSelectionIds.Add(new TeamSelectionId
+                                {
+                                    teamName = runnerNames.runnerName12,
+                                    selectionId = runnerNames.selectionId12
+                                });
+                            }
+                        }
+
+                        foreach (var runner in matchReturnResponse.runners)
+                        {
+                            bool isDraw = false;
+                            foreach (var item in betList.Where(x => x.SelectionId == runner.selectionId).ToList())
+                            {
+                                var selectionName = teamSelectionIds.Where(x => x.selectionId == runner.selectionId).FirstOrDefault().teamName;
+                                if (item.Selection.ToLower().Contains("draw") && selectionName.ToLower().Contains("draw"))
+                                {
+                                    isDraw = true;
+                                }
+                                
+                                if (isDraw && runner.status.ToLower() == "winner")
+                                {
+
+                                    item.ResultType = 3;
+                                    item.UpdatedDate = DateTime.Now;
+                                    //var resultAmout = (item.AmountStake * item.OddsRequest) - item.AmountStake;
+                                    item.ResultAmount = 0;
+                                    await _baseRepository.UpdateAsync(item);
+                                   
+                                }
+                                else if (runner.status.ToLower() == "winner")
+                                {
+                                    item.IsSettlement = 1;
+                                    item.ResultType = 1;
+                                    item.UpdatedDate = DateTime.Now;
+                                    //var resultAmout = (item.AmountStake * item.OddsRequest) - item.AmountStake;
+                                    item.ResultAmount = (item.AmountStake * item.OddsRequest) - item.AmountStake;
+                                    await _baseRepository.UpdateAsync(item);
+                                }
+                                else if (runner.status.ToLower() == "loser")
+                                {
+                                    item.IsSettlement = 1;
+                                    item.ResultType = 2;
+                                    item.UpdatedDate = DateTime.Now;
+                                    item.ResultAmount = -((item.AmountStake * item.OddsRequest) - item.AmountStake);
+                                    await _baseRepository.UpdateAsync(item);
+                                }
+                            }
+                        }
+                        _baseRepository.Commit();
+                    }
+                }
+
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = MessageStatus.Success,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
+                _baseRepository.Rollback();
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
     }
 }

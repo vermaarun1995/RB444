@@ -100,5 +100,10 @@ namespace RB444.Api.Controllers
         {
             return await _commonService.GetBetDataListAsync(EventId);
         }
+        [HttpGet, Route("GetBetDataListByMarketId")]
+        public async Task<CommonReturnResponse> GetBetDataListByMarketId(string MarketId)
+        {
+            return await _commonService.GetBetDataListByMarketIdAsync(MarketId);
+        }
     }
 }

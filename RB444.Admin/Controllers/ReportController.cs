@@ -106,6 +106,6 @@ namespace RB444.Admin.Controllers
                 throw;
             }
             return PartialView("_betDataList", openBetList);
-        }
+        }       
     }
 }

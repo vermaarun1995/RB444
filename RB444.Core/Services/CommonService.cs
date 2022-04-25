@@ -400,11 +400,12 @@ namespace RB444.Core.Services
         }
         public async Task<CommonReturnResponse> GetBetDataListAsync(long EventId)
         {
+            IDictionary<string, object> _keyValues = new Dictionary<string, object>();
             List<Bets> openBetList = new List<Bets>();
             try
             {
-                string query = string.Format(@"select * from Bets where EventId = {0}", EventId);
-                openBetList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                _keyValues.Add("EventId", EventId);
+                openBetList = (await _baseRepository.SelectAsync<Bets>(_keyValues)).ToList();
                 return new CommonReturnResponse
                 {
                     Data = openBetList,
@@ -418,5 +419,30 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
+
+        public async Task<CommonReturnResponse> GetBetDataListByMarketIdAsync(string MarketId)
+        {
+            IDictionary<string, object> _keyValues = new Dictionary<string, object>();
+            List<Bets> openBetList = new List<Bets>();
+            try
+            {
+                _keyValues.Add("MarketId", MarketId);                
+                openBetList = (await _baseRepository.SelectAsync<Bets>(_keyValues)).ToList();
+                return new CommonReturnResponse
+                {
+                    Data = openBetList,
+                    Message = openBetList.Count > 0 ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = openBetList.Count > 0,
+                    Status = openBetList.Count > 0 ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+
+        
     }
 }
