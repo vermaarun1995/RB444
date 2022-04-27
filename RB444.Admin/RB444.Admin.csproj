@@ -619,10 +619,6 @@
     <None Include="wwwroot\assets\fonts\font-awesome\webfonts\fa-solid-900.ttf" />
     <None Include="wwwroot\assets\fonts\font-awesome\webfonts\fa-solid-900.woff" />
     <None Include="wwwroot\assets\fonts\font-awesome\webfonts\fa-solid-900.woff2" />
-    <None Include="wwwroot\assets\images\ico\favicon.ico" />
-    <None Include="wwwroot\assets\images\logo\favicon.ico" />
-    <None Include="wwwroot\assets\images\logo\logo.png" />
-    <None Include="wwwroot\assets\images\logo\logo.svg" />
     <None Include="wwwroot\assets\images\pages\arrow-down.png" />
     <None Include="wwwroot\assets\images\pages\auth-v1-bottom-bg.png" />
     <None Include="wwwroot\assets\images\pages\auth-v1-top-bg.png" />
@@ -720,17 +716,6 @@
     <None Include="wwwroot\assets\images\portrait\small\avatar-s-7.jpg" />
     <None Include="wwwroot\assets\images\portrait\small\avatar-s-8.jpg" />
     <None Include="wwwroot\assets\images\portrait\small\avatar-s-9.jpg" />
-    <None Include="wwwroot\assets\images\slider\01.jpg" />
-    <None Include="wwwroot\assets\images\slider\02.jpg" />
-    <None Include="wwwroot\assets\images\slider\03.jpg" />
-    <None Include="wwwroot\assets\images\slider\04.jpg" />
-    <None Include="wwwroot\assets\images\slider\05.jpg" />
-    <None Include="wwwroot\assets\images\slider\06.jpg" />
-    <None Include="wwwroot\assets\images\slider\07.jpg" />
-    <None Include="wwwroot\assets\images\slider\08.jpg" />
-    <None Include="wwwroot\assets\images\slider\09.jpg" />
-    <None Include="wwwroot\assets\images\slider\10.jpg" />
-    <None Include="wwwroot\assets\images\svg\google.svg" />
     <None Include="wwwroot\assets\Img\ajax-loader %281%29.gif" />
     <None Include="wwwroot\assets\Img\ajax-loader.gif" />
     <None Include="wwwroot\assets\Img\alarm-svgrepo-com %281%29.svg" />
@@ -742,7 +727,6 @@
     <None Include="wwwroot\assets\Img\AsideTab\electricity watermark.svg" />
     <None Include="wwwroot\assets\Img\AsideTab\Energy_tab.svg" />
     <None Include="wwwroot\assets\Img\AsideTab\home.svg" />
-    <None Include="wwwroot\assets\Img\AsideTab\logo.svg" />
     <None Include="wwwroot\assets\Img\AsideTab\Logout.svg" />
     <None Include="wwwroot\assets\Img\AsideTab\Monitoring.svg" />
     <None Include="wwwroot\assets\Img\AsideTab\Profile.svg" />
@@ -894,7 +878,6 @@
     <None Include="wwwroot\assets\js\scripts\tables\table-datatables-basic.min.js" />
     <None Include="wwwroot\assets\js\scripts\ui\ui-feather.js" />
     <None Include="wwwroot\assets\js\scripts\ui\ui-feather.min.js" />
-    <None Include="wwwroot\assets\Layer_x0020_1.png" />
     <None Include="wwwroot\assets\vendors\css\calendars\fullcalendar.min.css" />
     <None Include="wwwroot\assets\vendors\css\calendars\fullcalendar.print.css" />
     <None Include="wwwroot\assets\vendors\css\charts\apexcharts.css" />
