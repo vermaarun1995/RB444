@@ -23,10 +23,8 @@ namespace RB444.Core.IServices
 
         /// <summary>
         /// Bet settle after match finish.
-        /// </summary>
-        /// <param name="eventId"></param>
-        /// <param name="marketId"></param>
+        /// </summary>        
         /// <returns></returns>
-        Task<CommonReturnResponse> BetSettleAsync(long eventId, string marketId);
+        Task<CommonReturnResponse> BetSettleAsync();
     }
 }

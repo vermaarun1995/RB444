@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -97,6 +98,8 @@ namespace RB444.Api
                 c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
 
+            
+
             services.AddHttpContextAccessor();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IBaseRepository, BaseRepository>();
@@ -111,6 +114,14 @@ namespace RB444.Api
             services.AddTransient<ISettingService, SettingService>();
             services.AddTransient<IMarketWatchService, MarketWatchService>();
             services.AddTransient<IRequestServices, RequestServices>();
+            //services.AddTransient<IBackgroundJobServices, BackgroundJobServices>();
+
+            services.AddHangfire(x =>
+            {
+                x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -151,6 +162,8 @@ namespace RB444.Api
             );
                 await next();
             });
+
+            app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {

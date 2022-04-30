@@ -30,9 +30,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("BetSettle")]
-        public async Task<CommonReturnResponse> BetSettle(long eventId, string marketId)
+        public async Task<CommonReturnResponse> BetSettle()
         {
-            return await _betApiService.BetSettleAsync(eventId, marketId);
+            return await _betApiService.BetSettleAsync();
         }
     }
 }
