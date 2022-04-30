@@ -7,9 +7,11 @@ using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Model.Model;
+using RB444.Model.ViewModel;
 using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RB444.Admin.Controllers
@@ -29,59 +31,125 @@ namespace RB444.Admin.Controllers
         }
 
         // GET: MarketWatch       
-        public ActionResult MarketWatch()
+        public async Task<ActionResult> MarketWatch()
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
-            return View();
+            CommonReturnResponse commonModel = null;
+            List<Sports> sportsDatalist = null;
+            List<Matches> matcheslist = new List<Matches>();
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSports?type=2", _configuration["ApiKeyUrl"]));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    sportsDatalist = jsonParser.ParsJson<List<Sports>>(Convert.ToString(commonModel.Data));
+                }
+                ViewBag.SportsList = sportsDatalist;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return View(matcheslist);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetBetEventData(int SportId)
+        {
+            CommonReturnResponse commonModel = null;
+            List<Series> serieslist = new List<Series>();
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetSeries?SportId={1}&type=2", _configuration["ApiKeyUrl"], SportId));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    serieslist = jsonParser.ParsJson<List<Series>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+            return Json(serieslist);
+        }
+        [HttpPost]
+        public async Task<ActionResult> GetSeriesMatchList(int SportId, long SeriesId)
+        {
+            CommonReturnResponse commonModel = null;
+            List<Matches> matcheslist = new List<Matches>();
+            try
+            {
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetMatches?SportId={1}&type=2&SeriesId={2}", _configuration["ApiKeyUrl"], SportId, SeriesId));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    matcheslist = jsonParser.ParsJson<List<Matches>>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+            return PartialView("_matchList", matcheslist);
         }
 
         [HttpGet]
-        public async Task<ActionResult> TeamMarketWatch(int SportId)
+        public async Task<ActionResult> TeamMarketWatch(string MarketId, long eventId, int SportId)
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             CommonReturnResponse commonModel = null;
-            List<MarketWatchVM> marketWatchVM = new List<MarketWatchVM>();
+            List<Bets> betsList = new List<Bets>();
+            var eventModel = new EventModel();
             try
             {
-                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}MarketWatch/GetBetHistory?SportId={1}&UserId={2}", _configuration["ApiKeyUrl"], SportId, 13));
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetBetDataListByMarketId?MarketId={1}", _configuration["ApiKeyUrl"], MarketId));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    marketWatchVM = jsonParser.ParsJson<List<MarketWatchVM>>(Convert.ToString(commonModel.Data));
+                    betsList = jsonParser.ParsJson<List<Bets>>(Convert.ToString(commonModel.Data));
                 }
-                ViewBag.MarketWatchVM = marketWatchVM;
+                ViewBag.BetList = betsList;
+
+                commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}exchange/GetMatchOdds?MarketId={1}&eventId={2}&SportId={3}", _configuration["ApiKeyUrl"], MarketId, eventId, SportId));
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    eventModel = jsonParser.ParsJson<EventModel>(Convert.ToString(commonModel.Data));
+                }
+                ViewBag.MatchOdds = eventModel.data.matchOddsData;
             }
             catch (Exception ex)
             {
                 throw;
             }
-          
+
             return View();
         }
 
         public ActionResult ManageSeries()
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }
 
 
         public ActionResult IndianFancy()
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); }  
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }
 
 
         public ActionResult SessionFancy()
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }
 
 
         public ActionResult BetfairMarket()
         {
-           var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;if (user != null) { ViewBag.LoginUser = user; }else { return RedirectToAction("Login", "Account"); } 
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             return View();
         }
     }
