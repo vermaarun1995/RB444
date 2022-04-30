@@ -120,7 +120,6 @@ namespace RB444.Admin.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
 
