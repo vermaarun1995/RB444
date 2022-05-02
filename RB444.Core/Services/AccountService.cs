@@ -23,20 +23,21 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> GetOpeningBalanceAsync(int UserId)
         {
-            float totalBetAmount = 0;
             double openingBalance = 0;
             try
             {
                 string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", UserId);
                 var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
 
-                query = string.Format(@"select * from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
-                var betAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).ToList();
-                foreach (var item in betAmountList)
-                {
-                    totalBetAmount = totalBetAmount + item;
-                }
-                openingBalance = balance - totalBetAmount;
+                query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
+                var betAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                //totalBetAmount = totalBetAmount + betAmountList;
+                openingBalance = balance - betAmountList;
+
+                query = string.Format(@"select sum(ResultAmount) as ResultAmount from Bets where IsSettlement = 1 and UserId = {0}", UserId);
+                var settleBetAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.ResultAmount).FirstOrDefault();                
+                openingBalance = (double)(openingBalance + settleBetAmountList);
+
                 return new CommonReturnResponse
                 {
                     Data = openingBalance,
@@ -48,6 +49,26 @@ namespace RB444.Core.Services
             catch (Exception ex)
             {
                 //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<CommonReturnResponse> GetBetExposureStackAsync(int UserId)
+        {
+            try
+            {
+                string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
+                var exposureStack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                return new CommonReturnResponse
+                {
+                    Data = exposureStack,
+                    Message = MessageStatus.Success,
+                    IsSuccess = true,
+                    Status = ResponseStatusCode.OK
+                };
+            }
+            catch (Exception ex)
+            {
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
@@ -213,7 +234,7 @@ namespace RB444.Core.Services
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
         }
-        
+
 
         public async Task<CommonReturnResponse> ProfitLossUserAsync(long Amount, int parentId, int userId, int UserRoleId, string Remark, bool Type)
         {
@@ -528,7 +549,7 @@ namespace RB444.Core.Services
             bool _result = false;
             try
             {
-                if(model.Id > 0)
+                if (model.Id > 0)
                 {
                     _result = await _baseRepository.UpdateAsync(model) == 1;
                     if (_result == true) { _baseRepository.Commit(); } else { _baseRepository.Rollback(); }
@@ -551,7 +572,7 @@ namespace RB444.Core.Services
                         IsSuccess = _result,
                         Status = _result ? ResponseStatusCode.OK : ResponseStatusCode.ERROR
                     };
-                }                                
+                }
             }
             catch (Exception ex)
             {

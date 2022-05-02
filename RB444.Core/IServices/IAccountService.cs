@@ -14,6 +14,13 @@ namespace RB444.Core.IServices
         Task<CommonReturnResponse> GetOpeningBalanceAsync(int UserId);
 
         /// <summary>
+        /// Get Bet Exposure.
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        Task<CommonReturnResponse> GetBetExposureStackAsync(int UserId);
+
+        /// <summary>
         /// Update Assign Coin
         /// </summary>
         /// <param name="AssignCoin"></param>

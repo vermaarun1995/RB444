@@ -116,12 +116,12 @@ namespace RB444.Api
             services.AddTransient<IRequestServices, RequestServices>();
             //services.AddTransient<IBackgroundJobServices, BackgroundJobServices>();
 
-            services.AddHangfire(x =>
-            {
-                x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            //services.AddHangfire(x =>
+            //{
+            //    x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            //});
 
-            services.AddHangfireServer();
+            //services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -163,7 +163,7 @@ namespace RB444.Api
                 await next();
             });
 
-            app.UseHangfireDashboard();
+            //app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {

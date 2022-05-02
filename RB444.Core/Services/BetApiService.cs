@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
@@ -10,7 +9,6 @@ using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RB444.Core.Services
@@ -20,20 +18,23 @@ namespace RB444.Core.Services
         private readonly IBaseRepository _baseRepository;
         private readonly IRequestServices _requestServices;
         private readonly IConfiguration _configuration;
-        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration, IBackgroundJobClient backgroundJobClient)
+        public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration)
         {
             _baseRepository = baseRepository;
             _requestServices = requestServices;
             _configuration = configuration;
-            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<CommonReturnResponse> SaveBets(Bets model)
-        {
+        {            
             try
             {
+                bool IsProperBet = await CheckProperBet(model);
+                if(IsProperBet == false)
+                {
+                    return new CommonReturnResponse { Data = null, Message = "Odds not match", IsSuccess = false, Status = ResponseStatusCode.OK };
+                }
                 var sportList = await _baseRepository.GetListAsync<Sports>();
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
                 string betId = model.UserId.ToString() + DateTime.Now.ToString();
@@ -43,24 +44,18 @@ namespace RB444.Core.Services
                 model.MatchedTime = DateTime.Now.AddSeconds(5);
                 model.SettleTime = model.MatchedTime;
                 model.ResultAmount = 0;
+                model.Status = true;
                 await Task.Delay(betDelayTime);
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0)
                 {
-                    _baseRepository.Commit();
-                    //string sql = string.Format(@"select * from Bets where MarketId = {0} and Id <> {1}", model.MarketId, _result);
-                    //var isBetExistsForSheduledJobs = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
-                    //if (isBetExistsForSheduledJobs.Count <= 0)
-                    //{
-                    //    await BetSettleAsync(model.EventId, model.MarketId);
-                    //}
+                    _baseRepository.Commit();                  
                 }
                 else
                 {
                     _baseRepository.Rollback();
                 }
-                return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? MessageStatus.Create : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
-
+                return new CommonReturnResponse { Data = _result > 0, Message = _result > 0 ? "Bet Placed successfully." : MessageStatus.Error, IsSuccess = _result > 0, Status = _result > 0 ? ResponseStatusCode.OK : ResponseStatusCode.ERROR };
             }
             catch (Exception ex)
             {
@@ -310,6 +305,63 @@ namespace RB444.Core.Services
                 _baseRepository.Rollback();
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
-        }       
+        }   
+        
+        private async Task<bool> CheckProperBet(Bets model)
+        {
+            bool flg = false;
+            var matchReturnResponse = new List<MatchReturnResponseNew>();
+            try
+            {
+                matchReturnResponse = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], model.MarketId));
+                foreach (var item in matchReturnResponse[0].runners)
+                {
+                    if (model.SelectionId == item.selectionId)
+                    {
+                        if (model.Type == "back")
+                        {
+                            if (model.OddsRequest == item.ex.availableToBack[0].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                            else if (model.OddsRequest == item.ex.availableToBack[1].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                            else if (model.OddsRequest == item.ex.availableToBack[2].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                        }
+                        if (model.Type == "lay")
+                        {
+                            if (model.OddsRequest == item.ex.availableToLay[0].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                            else if (model.OddsRequest == item.ex.availableToLay[1].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                            else if (model.OddsRequest == item.ex.availableToLay[2].price)
+                            {
+                                flg = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                flg = false;
+            }
+            return flg;
+        }
     }
 }

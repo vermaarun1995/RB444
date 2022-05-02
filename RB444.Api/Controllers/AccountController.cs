@@ -206,6 +206,12 @@ namespace RB444.Api.Controllers
             return await _accountService.GetOpeningBalanceAsync(UserId);
         }
 
+        [HttpGet, Route("GetBetExposureStack")]
+        public async Task<CommonReturnResponse> GetBetExposureStack(int UserId)
+        {
+            return await _accountService.GetBetExposureStackAsync(UserId);
+        }
+
         [HttpGet, Route("UpdateAssignCoin")]
         public async Task<CommonReturnResponse> UpdateAssignCoin(long AssignCoin, int LoginUserId)
         {
