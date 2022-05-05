@@ -15,7 +15,7 @@ namespace RB444.Data.Entities
         public string Selection { get; set; }
         public int OddsType { get; set; }  // 1 for Match Odds. 2 for Bookmaker. 3 for Fancy Odds.
         public string Type { get; set; }  // Back or Lay
-        public float OddsRequest { get; set; }
+        public double OddsRequest { get; set; }
         public float AmountStake { get; set; }
         public int BetType { get; set; }  // Back 1,2,3 and Lay 1,2,3
         public DateTime PlaceTime { get; set; }

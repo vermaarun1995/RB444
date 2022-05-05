@@ -299,8 +299,8 @@ namespace RB444.Core.Services.BetfairApi
                     List<Lay> layList = new List<Lay>();
                     backList.Add(new Back
                     {
-                        price = item.ex.availableToBack[0].price,
-                        size = item.ex.availableToBack[0].size
+                        price = item.ex.availableToBack[2].price,
+                        size = item.ex.availableToBack[2].size
                     });
                     backList.Add(new Back
                     {
@@ -309,8 +309,8 @@ namespace RB444.Core.Services.BetfairApi
                     });
                     backList.Add(new Back
                     {
-                        price = item.ex.availableToBack[2].price,
-                        size = item.ex.availableToBack[2].size
+                        price = item.ex.availableToBack[0].price,
+                        size = item.ex.availableToBack[0].size
                     });
 
                     layList.Add(new Lay

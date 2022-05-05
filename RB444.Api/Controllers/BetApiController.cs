@@ -34,5 +34,11 @@ namespace RB444.Api.Controllers
         {
             return await _betApiService.BetSettleAsync();
         }
+
+        [HttpGet, Route("GetBackAndLayBetAmount")]
+        public async Task<CommonReturnResponse> GetBackAndLayBetAmount(int UserId, string marketId)
+        {
+            return await _betApiService.GetBackAndLayAmountAsync(UserId, marketId);
+        }
     }
 }

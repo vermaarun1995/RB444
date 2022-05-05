@@ -18,22 +18,29 @@ namespace RB444.Core.Services
         private readonly IBaseRepository _baseRepository;
         private readonly IRequestServices _requestServices;
         private readonly IConfiguration _configuration;
+        private readonly IAccountService _accountService;
 
-        public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration)
+        public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration, IAccountService accountService)
         {
             _baseRepository = baseRepository;
             _requestServices = requestServices;
             _configuration = configuration;
+            _accountService = accountService;
         }
 
         public async Task<CommonReturnResponse> SaveBets(Bets model)
-        {            
+        {
             try
             {
                 bool IsProperBet = await CheckProperBet(model);
-                if(IsProperBet == false)
+                if (IsProperBet == false)
                 {
                     return new CommonReturnResponse { Data = null, Message = "Odds not match", IsSuccess = false, Status = ResponseStatusCode.OK };
+                }
+                var getBalance = await _accountService.GetOpeningBalanceAsync(model.UserId);
+                if (getBalance.Data < model.AmountStake)
+                {
+                    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
                 var sportList = await _baseRepository.GetListAsync<Sports>();
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
@@ -49,7 +56,7 @@ namespace RB444.Core.Services
                 var _result = await _baseRepository.InsertAsync(model);
                 if (_result > 0)
                 {
-                    _baseRepository.Commit();                  
+                    _baseRepository.Commit();
                 }
                 else
                 {
@@ -109,17 +116,188 @@ namespace RB444.Core.Services
             }
         }
 
+        public async Task<CommonReturnResponse> GetBackAndLayAmountAsync(int UserId, string marketId)
+        {
+            double[] arr = new double[0];
+            string sql = string.Empty;
+            string _condition = string.Empty;
+            UserBetPagination userBetPagination = new UserBetPagination();
+            var teamSelectionIds = new List<TeamSelectionId>();
+            string oddsStr = "", responseStr = "";
+            try
+            {
+                sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
+                var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
 
-        //string query = @"select * from Vendors where id = @id and isdeleted = 0 and isactive = 1;";
-        //query += @"select * from VendorServiceMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";
-        //            query += @"select * from VendorMembershipMapping where vendor_id = @id and isdeleted = 0 and isactive = 1;";
+                var teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], betList.FirstOrDefault().SportId));
+                var runnerNames = teamNameResponse.data.Where(x => x.marketId == betList.FirstOrDefault().MarketId).FirstOrDefault();
 
-        //            var result = await _baseRepository.GetQueryMultipleAsync(query, new { id = id }, gr => gr.Read<VendorVM>(), gr => gr.Read<VendorServiceMapping>(), gr => gr.Read<VendorMembershipMapping>());
-        //vendorVM = (result[0] as List<VendorVM>).FirstOrDefault();
-        //            if (vendorVM != null)
-        //            {
-        //                vendorVM.vendorServiceMappingList = (result[1] as List<VendorServiceMapping>).ToList();
-        //vendorVM.vendorMembershipMappingList = (result[2] as List<VendorMembershipMapping>).ToList();
+                if (runnerNames != null)
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName1,
+                        selectionId = runnerNames.selectionId1
+                    });
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName2,
+                        selectionId = runnerNames.selectionId2
+                    });
+                    if (runnerNames.selectionId3 != 0 && runnerNames.runnerName3 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName3,
+                            selectionId = runnerNames.selectionId3
+                        });
+                    }
+                    if (runnerNames.selectionId4 != 0 && runnerNames.runnerName4 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName4,
+                            selectionId = runnerNames.selectionId4
+                        });
+                    }
+                    if (runnerNames.selectionId5 != 0 && runnerNames.runnerName5 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName5,
+                            selectionId = runnerNames.selectionId5
+                        });
+                    }
+                    if (runnerNames.selectionId6 != 0 && runnerNames.runnerName6 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName6,
+                            selectionId = runnerNames.selectionId6
+                        });
+                    }
+                    if (runnerNames.selectionId7 != 0 && runnerNames.runnerName7 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName7,
+                            selectionId = runnerNames.selectionId7
+                        });
+                    }
+                    if (runnerNames.selectionId8 != 0 && runnerNames.runnerName8 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName8,
+                            selectionId = runnerNames.selectionId8
+                        });
+                    }
+                    if (runnerNames.selectionId9 != 0 && runnerNames.runnerName9 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName9,
+                            selectionId = runnerNames.selectionId9
+                        });
+                    }
+                    if (runnerNames.selectionId10 != 0 && runnerNames.runnerName10 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName10,
+                            selectionId = runnerNames.selectionId10
+                        });
+                    }
+                    if (runnerNames.selectionId11 != 0 && runnerNames.runnerName11 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName11,
+                            selectionId = runnerNames.selectionId11
+                        });
+                    }
+                    if (runnerNames.selectionId12 != 0 && runnerNames.runnerName12 != "")
+                    {
+                        teamSelectionIds.Add(new TeamSelectionId
+                        {
+                            teamName = runnerNames.runnerName12,
+                            selectionId = runnerNames.selectionId12
+                        });
+                    }
+                }
+
+                if (teamSelectionIds.Count > 0)
+                {
+                    for (int i = 0; i < betList.Count; i++)
+                    {
+                        if (betList[i].Type == "back")
+                        {
+                            for (int j = 0; j < teamSelectionIds.Count; j++)
+                            {
+                                if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                {
+                                    oddsStr = oddsStr + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                }
+                                else
+                                {
+                                    oddsStr = oddsStr + (-betList[i].AmountStake).ToString() + "| ";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < teamSelectionIds.Count; j++)
+                            {
+                                if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                {
+                                    oddsStr = oddsStr + "-" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                }
+                                else
+                                {
+                                    oddsStr = oddsStr + (betList[i].AmountStake).ToString() + "| ";
+                                }
+                            }
+                        }
+
+                        oddsStr = oddsStr.Substring(0, oddsStr.Length - 2);
+                        responseStr = responseStr + oddsStr + "@";
+                        oddsStr = "";
+                    }
+
+                    responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                    var responseArr = responseStr.Split('@');
+                    arr = new double[responseArr[0].Split('|').Count()];
+
+                    for (int k = 0; k < responseArr.Length; k++)
+                    {
+                        var z = responseArr[k].Split('|');
+                        for (int q = 0; q < z.Length; q++)
+                        {
+                            arr[q] = arr[q] + Convert.ToDouble(z[q]);
+                        }
+                    }
+                }
+
+                responseStr = "";
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    responseStr = responseStr + arr[i] + "|";
+                }
+
+                responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                return new CommonReturnResponse
+                {
+                    Data = responseStr,
+                    Message = userBetPagination != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                    IsSuccess = userBetPagination != null,
+                    Status = userBetPagination != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
 
         public async Task<CommonReturnResponse> BetSettleAsync()
         {
@@ -140,7 +318,7 @@ namespace RB444.Core.Services
                     marketId = unsettleBetMarketIdList[i];
                     matchReturnResponseList = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}getresultdata/{1}", _configuration["ApiKeyUrl"], marketId));
                     matchReturnResponse = matchReturnResponseList.FirstOrDefault();
-                    if(matchReturnResponse != null)
+                    if (matchReturnResponse != null)
                     {
                         if (matchReturnResponse.status.ToLower() == "closed")
                         {
@@ -273,7 +451,7 @@ namespace RB444.Core.Services
                                             item.ResultType = 1;
                                             item.UpdatedDate = DateTime.Now;
                                             //var resultAmout = (item.AmountStake * item.OddsRequest) - item.AmountStake;
-                                            item.ResultAmount = (item.AmountStake * item.OddsRequest) - item.AmountStake;
+                                            item.ResultAmount = (float?)((item.AmountStake * item.OddsRequest) - item.AmountStake);
                                             await _baseRepository.UpdateAsync(item);
                                         }
                                         else if (runner.status.ToLower() == "loser")
@@ -281,7 +459,7 @@ namespace RB444.Core.Services
                                             item.IsSettlement = 1;
                                             item.ResultType = 2;
                                             item.UpdatedDate = DateTime.Now;
-                                            item.ResultAmount = -((item.AmountStake * item.OddsRequest) - item.AmountStake);
+                                            item.ResultAmount = (float?)-((item.AmountStake * item.OddsRequest) - item.AmountStake);
                                             await _baseRepository.UpdateAsync(item);
                                         }
                                     }
@@ -305,8 +483,8 @@ namespace RB444.Core.Services
                 _baseRepository.Rollback();
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
             }
-        }   
-        
+        }
+
         private async Task<bool> CheckProperBet(Bets model)
         {
             bool flg = false;
