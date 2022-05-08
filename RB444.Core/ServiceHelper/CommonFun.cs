@@ -4,6 +4,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
 using RB444.Model.Model;
+using RB444.Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -245,37 +246,117 @@ namespace RB444.Core.ServiceHelper
         {
             // Get IP
             string HostName = Dns.GetHostName();
-            var ipaddress = Dns.GetHostAddresses(HostName);
-            //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).FirstOrDefault().ToString();
-
-            //var ip = ipaddress.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6 && x.IsIPv6LinkLocal == false).FirstOrDefault().ToString();
-
-            //string ip = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            //if (string.IsNullOrEmpty(ip))
-            //{
-            //    ip = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            //}
-
-            //string ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            //if (string.IsNullOrEmpty(ip))
-            //{
-            //    //ip = "14.99.119.84";
-            //    ip = Request.ServerVariables["REMOTE_ADDR"];
-            //}
-
             // IP API URL
             var Ip_Api_Url = $"http://ip-api.com/json/{ip}";
 
             LocationModel location = new LocationModel();
-            //string url = "https://freegeoip.app/json/{ip}"; // string.Format("https://ipapi.co/{0}/json/", ipAddress);
             using (WebClient client = new WebClient())
             {
                 string json = client.DownloadString(Ip_Api_Url);
-                //location = new JavaScriptSerializer().Deserialize<LocationModel>(json);
                 location = jsonParser.ParsJson<LocationModel>(Convert.ToString(json));
             }
 
             return location;
+        }
+
+        public List<TeamSelectionId> GetTeamName(Datum runnerNames)
+        {
+            var teamSelectionIds = new List<TeamSelectionId>();
+            if (runnerNames != null)
+            {
+                teamSelectionIds.Add(new TeamSelectionId
+                {
+                    teamName = runnerNames.runnerName1,
+                    selectionId = runnerNames.selectionId1
+                });
+                teamSelectionIds.Add(new TeamSelectionId
+                {
+                    teamName = runnerNames.runnerName2,
+                    selectionId = runnerNames.selectionId2
+                });
+                if (runnerNames.selectionId3 != 0 && runnerNames.runnerName3 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName3,
+                        selectionId = runnerNames.selectionId3
+                    });
+                }
+                if (runnerNames.selectionId4 != 0 && runnerNames.runnerName4 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName4,
+                        selectionId = runnerNames.selectionId4
+                    });
+                }
+                if (runnerNames.selectionId5 != 0 && runnerNames.runnerName5 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName5,
+                        selectionId = runnerNames.selectionId5
+                    });
+                }
+                if (runnerNames.selectionId6 != 0 && runnerNames.runnerName6 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName6,
+                        selectionId = runnerNames.selectionId6
+                    });
+                }
+                if (runnerNames.selectionId7 != 0 && runnerNames.runnerName7 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName7,
+                        selectionId = runnerNames.selectionId7
+                    });
+                }
+                if (runnerNames.selectionId8 != 0 && runnerNames.runnerName8 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName8,
+                        selectionId = runnerNames.selectionId8
+                    });
+                }
+                if (runnerNames.selectionId9 != 0 && runnerNames.runnerName9 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName9,
+                        selectionId = runnerNames.selectionId9
+                    });
+                }
+                if (runnerNames.selectionId10 != 0 && runnerNames.runnerName10 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName10,
+                        selectionId = runnerNames.selectionId10
+                    });
+                }
+                if (runnerNames.selectionId11 != 0 && runnerNames.runnerName11 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName11,
+                        selectionId = runnerNames.selectionId11
+                    });
+                }
+                if (runnerNames.selectionId12 != 0 && runnerNames.runnerName12 != "")
+                {
+                    teamSelectionIds.Add(new TeamSelectionId
+                    {
+                        teamName = runnerNames.runnerName12,
+                        selectionId = runnerNames.selectionId12
+                    });
+                }
+            }
+
+            return teamSelectionIds;
         }
     }
 }

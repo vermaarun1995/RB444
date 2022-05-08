@@ -180,9 +180,6 @@ namespace RB444.Core.Services.BetfairApi
 
         public async Task<CommonReturnResponse> GetMatchEventsAsync(string marketId, long eventId, int SportId)
         {
-            double totalMatched;
-            string eventName = "";
-            bool inPlay = false;
             var matchReturnResponse = new List<MatchReturnResponseNew>();
             var teamNameResponse = new TeamNameResponse();
             var eventModel = new EventModel();
@@ -194,103 +191,22 @@ namespace RB444.Core.Services.BetfairApi
             try
             {
                 matchReturnResponse = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], marketId));
+                if(matchReturnResponse == null)
+                {
+                    eventModel.data.matchOddsData = null;
+                    return new CommonReturnResponse
+                    {
+                        Data = eventModel,
+                        Message = MessageStatus.NoRecord,
+                        IsSuccess = false,
+                        Status = ResponseStatusCode.NOTFOUND
+                    };
+                }
 
                 teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
-                //string abc = _requestServices.GetMarketAsync(teamNameResponse.data[0].market_runner_json);
                 var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
-                if (runnerNames != null)
-                {
-                    teamSelectionIds.Add(new TeamSelectionId
-                    {
-                        teamName = runnerNames.runnerName1,
-                        selectionId = runnerNames.selectionId1
-                    });
-                    teamSelectionIds.Add(new TeamSelectionId
-                    {
-                        teamName = runnerNames.runnerName2,
-                        selectionId = runnerNames.selectionId2
-                    });
-                    if (runnerNames.selectionId3 != 0 && runnerNames.runnerName3 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName3,
-                            selectionId = runnerNames.selectionId3
-                        });
-                    }
-                    if (runnerNames.selectionId4 != 0 && runnerNames.runnerName4 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName4,
-                            selectionId = runnerNames.selectionId4
-                        });
-                    }
-                    if (runnerNames.selectionId5 != 0 && runnerNames.runnerName5 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName5,
-                            selectionId = runnerNames.selectionId5
-                        });
-                    }
-                    if (runnerNames.selectionId6 != 0 && runnerNames.runnerName6 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName6,
-                            selectionId = runnerNames.selectionId6
-                        });
-                    }
-                    if (runnerNames.selectionId7 != 0 && runnerNames.runnerName7 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName7,
-                            selectionId = runnerNames.selectionId7
-                        });
-                    }
-                    if (runnerNames.selectionId8 != 0 && runnerNames.runnerName8 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName8,
-                            selectionId = runnerNames.selectionId8
-                        });
-                    }
-                    if (runnerNames.selectionId9 != 0 && runnerNames.runnerName9 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName9,
-                            selectionId = runnerNames.selectionId9
-                        });
-                    }
-                    if (runnerNames.selectionId10 != 0 && runnerNames.runnerName10 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName10,
-                            selectionId = runnerNames.selectionId10
-                        });
-                    }
-                    if (runnerNames.selectionId11 != 0 && runnerNames.runnerName11 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName11,
-                            selectionId = runnerNames.selectionId11
-                        });
-                    }
-                    if (runnerNames.selectionId12 != 0 && runnerNames.runnerName12 != "")
-                    {
-                        teamSelectionIds.Add(new TeamSelectionId
-                        {
-                            teamName = runnerNames.runnerName12,
-                            selectionId = runnerNames.selectionId12
-                        });
-                    }
-                }
+
+                teamSelectionIds = commonFun.GetTeamName(runnerNames);
 
                 List<RunnerOld> runnerList = new List<RunnerOld>();
                 foreach (var item in matchReturnResponse[0].runners)
