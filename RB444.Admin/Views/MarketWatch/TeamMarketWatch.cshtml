@@ -133,11 +133,12 @@
 <div class="container">
     <h2>Market Watch Details</h2>
     <div class="row">
-        <div class="col-sm-6 tableHeight">
-            @if (ViewBag.MatchOdds != null)
+        @if (ViewBag.MatchOdds != null)
+        {
+            foreach (var matchOdds in ViewBag.MatchOdds)
             {
-                foreach (var matchOdds in ViewBag.MatchOdds)
-                {
+                <div class="col-sm-6 tableHeight">
+
                     <div class="title">@matchOdds.marketName</div>
                     <div class="table-responsive">
                         <table class="table tbl-bets betfair-tbl p-rltv">
@@ -174,9 +175,10 @@
                             </tbody>
                         </table>
                     </div>
-                }
+
+                </div>
             }
-        </div>
+        }
         <div class="col-sm-6 tableHeight">
             <div class="title">User Online</div>
             <table class="table">

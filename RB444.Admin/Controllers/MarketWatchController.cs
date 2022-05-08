@@ -115,8 +115,13 @@ namespace RB444.Admin.Controllers
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
                     eventModel = jsonParser.ParsJson<EventModel>(Convert.ToString(commonModel.Data));
+                    ViewBag.MatchOdds = eventModel.data.matchOddsData;
                 }
-                ViewBag.MatchOdds = eventModel.data.matchOddsData;
+                else
+                {
+                    ViewBag.MatchOdds = new List<MatchOddsData>();
+                }
+
             }
             catch (Exception ex)
             {
