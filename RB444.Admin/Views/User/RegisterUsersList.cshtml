@@ -747,7 +747,7 @@
                 var url = "/account/registernew";
                 var postData = form.serialize();
                 $("#registerModal .validation-summary-valid").html("").hide();
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
                 $.post(url, postData, function (data) {
                     $("#loaderContainer").fadeOut(500);
                     if (data.toLowerCase() == "ok") {
@@ -786,7 +786,7 @@
                 var form = $("#updateUserStatusModal form");
                 var url = "/user/DeleteUser";
                 var postData = form.serialize();
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
                 $.post(url, postData, function (data) {
                     $("#loaderContainer").fadeOut(500);
                     if (data.isSuccess) {
@@ -816,7 +816,7 @@
                 var form = $("#depositWithdrawModalLong form");
                 var url = "/user/DepositWithdrawCoin";
                 var postData = form.serialize();
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
 
                 $.post(url, postData, function (data) {
                     $("#loaderContainer").fadeOut(500);
@@ -848,7 +848,7 @@
                 var url = "/user/PorfitLossUser";
                 var postData = form.serialize();
                 $("#profitLossModalLong .validation-summary-valid").html("").hide();
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
 
                 $.post(url, postData, function (data) {
                     $("#loaderContainer").fadeOut(500);
@@ -873,7 +873,7 @@
                     postData: formData,
                     dataType: 'html'
                 }
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
                         $("#loaderContainer").fadeOut(500);
@@ -926,7 +926,7 @@
                     postData: formData,
                     dataType: 'html'
                 }
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
                         $("#loaderContainer").fadeOut(500);
@@ -1041,7 +1041,7 @@
                 apiUrl: "@Url.Action("Register", "Account")",
                 postData: formData
             }
-            $("#loaderContainer").fadeIn(200);
+            $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
                     $("#loaderContainer").fadeOut(500);

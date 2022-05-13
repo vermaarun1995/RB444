@@ -158,7 +158,7 @@ function promiseAjaxGet() {
                 'Access-Control-Allow-Origin': '*',
             },
             beforeSend: function () {
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
             },
             success: function (data) {
                 if (typeof data == 'string' && this.dataType != 'html') {
@@ -193,7 +193,7 @@ function promiseAjaxPost(ct = "application/json; charset=utf-8") {
                 'Access-Control-Allow-Origin': '*',
             },
             beforeSend: function () {
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
             },
             success: function (data) {
                 if (this.dataType != "html" && typeof data != 'object') {

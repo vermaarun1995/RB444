@@ -114,10 +114,10 @@
     <script>
         $(document).ready(function () {
             $(".menu-content > li > a ,.showLoaderCls").click(function () {
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
             });
             $("button[type='submit']").on("click", function () {
-                $("#loaderContainer").fadeIn(200);
+                $(".loader").show();
             });
             $(".customeDdl li > a").click(function () {
                   var dId = $(this).attr("id");
@@ -172,9 +172,10 @@
     @*<svg id="SvgjsSvg1001" width="2" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" style="overflow: hidden; top: -100%; left: -100%; position: absolute; opacity: 0;"><defs id="SvgjsDefs1002"></defs><polyline id="SvgjsPolyline1003" points="0,0"></polyline><path id="SvgjsPath1004" d="M-1 160L-1 160C-1 160 56.5 160 56.5 160C56.5 160 113 160 113 160C113 160 169.5 160 169.5 160C169.5 160 226 160 226 160C226 160 282.5 160 282.5 160C282.5 160 339 160 339 160C339 160 339 160 339 160 "></path></svg>*@
 
     <!-- BEGIN: Page Loader-->
-    <div class="loader" style="display:none;">
-        <img src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" />
-    </div>
+<div class="loader" style="display:none;">
+    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" />
+    <div class="position-fixed w-100 h-100" style="z-index:9999; display:none;" id="loaderContainer"> <div class="loader">Loading...</div> <div class="position-fixed w-100 h-100 bg-dark" style="left:0; top:0; z-index:-1; opacity:0.3"></div> </div>
+</div>
     <!-- END: Page Loader-->
 </body>
 </html>

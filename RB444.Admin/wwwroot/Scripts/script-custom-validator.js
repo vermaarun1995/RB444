@@ -15,7 +15,7 @@ function isValidate() {
     }
     else {
         $("#errorMsg").html('');
-        $("#loaderContainer").fadeIn(200);
+        $(".loader").show();
     }
 }
 
@@ -28,7 +28,7 @@ function isValidateForgotForm() {
     }
     else {
         $("#errorMsg").html('');
-        $("#loaderContainer").fadeIn(200);
+        $(".loader").show();
     }
 }
 
@@ -58,7 +58,7 @@ function isValidateResetForm() {
     }
     else {
         $("#errorMsg").html('');
-        $("#loaderContainer").fadeIn(200);
+        $(".loader").show();
         var pwdModel = {};
         pwdModel.OldPassword = oldPassword;
         pwdModel.NewPassword = newPassword;
@@ -71,7 +71,7 @@ function isValidateResetForm() {
             contentType: "application/json; charset=utf-8",
             success: function (responce) {
                 if (responce.isUpdated) {
-                    $("#loaderContainer").fadeOut(200);
+                    $(".loader").hide();
                     $("#oldPassword").val('');
                     $("#newPassword").val('');
                     $("#confirmPassword").val('');
@@ -82,7 +82,7 @@ function isValidateResetForm() {
                     window.location.href = '../account/login?Message=' + responce.Message;
                 }
                 else {
-                    $("#loaderContainer").fadeOut(200);
+                    $(".loader").hide();
                     toastr.error(responce.Message);
                 }
             }
@@ -133,6 +133,6 @@ function isRegisterUserForm() {
     }
     else {
         $("#errorMsg").html('');
-        $("#loaderContainer").fadeIn(200);
+        $(".loader").show();
     }
 }

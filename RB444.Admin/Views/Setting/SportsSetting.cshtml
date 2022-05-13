@@ -169,10 +169,10 @@
                 apiUrl: "@Url.Action("SportsSetting", "Setting")",
                 postData: formData
             }
-            $("#loaderContainer").fadeIn(200);
+            $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $("#loaderContainer").fadeOut(200);
+                    $(".loader").hide();
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
