@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<RB444.Model.Model.CreditReferenceVM>
 <style>
     #CreditReferenceTbl_length {
-    float:left;
+        float: left;
     }
+
     #CreditReferenceTbl_filter {
-    float:right;
+        float: right;
     }
 </style>
 <div class="modal-content">
@@ -70,7 +71,7 @@
         $(function () {
 
             $(".hideModel1").click(function () {
-                $("#profitLossModalList").modal("hide");
+                $("#CreditModelPopup").modal("hide");
             });
             $("#CreditReferenceTbl").DataTable();
             $(".dataTables_length").addClass("bs-select");

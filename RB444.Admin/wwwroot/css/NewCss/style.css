@@ -53,22 +53,6 @@ body {
     display: none !important;
 }
 
-.loader {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    z-index: 9999;
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgba(255,255,255,0.7);
-}
-
-    .loader img {
-        margin: auto;
-    }
 
 .auth-reset-password-form {
     width: 30%;

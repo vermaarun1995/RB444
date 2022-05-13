@@ -114,10 +114,10 @@
     <script>
         $(document).ready(function () {
             $(".menu-content > li > a ,.showLoaderCls").click(function () {
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
             });
             $("button[type='submit']").on("click", function () {
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
             });
             $(".customeDdl li > a").click(function () {
                   var dId = $(this).attr("id");

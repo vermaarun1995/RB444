@@ -124,10 +124,10 @@
                 apiUrl: "@Url.Action("AddUpdatedCreateNews", "OtherSetting")",
                 postData: formData
             }
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(200);
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
@@ -153,10 +153,10 @@
                 apiUrl: "@Url.Action("DeleteNews", "OtherSetting")",
                 postData: formData
             }
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(200);
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }

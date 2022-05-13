@@ -294,6 +294,7 @@
                                     <i class="fas fa-cog change-status-popup" style="color:red;"></i>
                                 }
                                 <a href="/User/UserProfile?id=@user.Id"><i class="fas fa-user-alt" style="color:black;"></i></a>
+                                <i class="fas fa-list PLPopup" style="color:black;"></i>
                                 @*if (user.Status == 1)
                                     {
                                         <i class="fas fa-trash-alt delete-user" style="color:red;" onclick="statusChange(@user.Id,2)"></i>
@@ -592,7 +593,7 @@
         </div>
     </div>
 
-    <!-- Modal Profit and Loss Balance-->
+    <!-- Modal CreditModelPopup Profit and Loss Balance-->
     <div class="modal" id="profitLossModalLong" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -644,15 +645,13 @@
         </div>
     </div>
 
-    <!-- Modal Profit and Loss Balance-->
-    <div class="modal" id="profitLossModalList" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+    <!-- Modal CreditModelPopup-->
+    <div class="modal" id="CreditModelPopup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width: 900px;">
-            <div id="profitLossList"></div>
+            <div id="CreditModelList"></div>
         </div>
     </div>
 
-
-    <!-- Modal Profit and Loss Balance-->
     <div class="modal" id="ExposureLimitModel" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -693,6 +692,13 @@
                     <button type="button" class="btn btn-primary font-weight-bold loss-btn hideModel">Cancel</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Profit and Loss Balance-->
+    <div class="modal" id="PLModelPopup" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width: 900px;">
+            <div id="PLList"></div>
         </div>
     </div>
 }
@@ -741,9 +747,9 @@
                 var url = "/account/registernew";
                 var postData = form.serialize();
                 $("#registerModal .validation-summary-valid").html("").hide();
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
                 $.post(url, postData, function (data) {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (data.toLowerCase() == "ok") {
                         toastr.success("User register successfully!");
                         $("#registerModal").modal("hide");
@@ -780,9 +786,9 @@
                 var form = $("#updateUserStatusModal form");
                 var url = "/user/DeleteUser";
                 var postData = form.serialize();
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
                 $.post(url, postData, function (data) {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (data.isSuccess) {
                         toastr.success("User status change successfully!");
                         $("#updateUserStatusModal").modal("hide");
@@ -810,10 +816,10 @@
                 var form = $("#depositWithdrawModalLong form");
                 var url = "/user/DepositWithdrawCoin";
                 var postData = form.serialize();
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
 
                 $.post(url, postData, function (data) {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#depositWithdrawModalLong").modal("hide");
@@ -842,10 +848,10 @@
                 var url = "/user/PorfitLossUser";
                 var postData = form.serialize();
                 $("#profitLossModalLong .validation-summary-valid").html("").hide();
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
 
                 $.post(url, postData, function (data) {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#profitLossModalLong").modal("hide");
@@ -867,12 +873,12 @@
                     postData: formData,
                     dataType: 'html'
                 }
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
-                        $(".loader").hide();
-                        $("#profitLossList").html(res);
-                        $("#profitLossModalList").modal("show");
+                        $("#loaderContainer").fadeOut(500);
+                        $("#CreditModelList").html(res);
+                        $("#CreditModelPopup").modal("show");
                     },
                     (err) => {
                         messagePopup.error(err.statusText);
@@ -896,9 +902,9 @@
                 var url = "/user/ExposureLimit";
                 var postData = form.serialize();
                 $("#ExposureLimitModel .validation-summary-valid").html("").hide();
-               
+
                 $.post(url, postData, function (data) {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#ExposureLimitModel").modal("hide");
@@ -908,6 +914,30 @@
                         toastr.error(data.message);
                     }
                 });
+            });
+
+             $(".PLPopup").click(function () {
+                const userId = $(this).closest("tr").attr("data-id");
+                const formData = new FormData();
+                formData.append("uId", userId);
+
+                let getAircraftJson = {
+                    apiUrl: "@Url.Action("ProfitLoss", "user")",
+                    postData: formData,
+                    dataType: 'html'
+                }
+                $("#loaderContainer").fadeIn(200);
+                promiseAjaxPost.call(getAircraftJson, false).then(
+                    (res) => {
+                        $("#loaderContainer").fadeOut(500);
+                        $("#PLList").html(res);
+                        $("#PLModelPopup").modal("show");
+                    },
+                    (err) => {
+                        messagePopup.error(err.statusText);
+                    }
+                )
+
             });
 
         });
@@ -978,7 +1008,6 @@
             return Error;
         }
 
-
         function saveRequest() {
 
             var validation = validationCheck();
@@ -1012,10 +1041,10 @@
                 apiUrl: "@Url.Action("Register", "Account")",
                 postData: formData
             }
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(500);
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }

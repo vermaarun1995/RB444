@@ -45,10 +45,10 @@
                 apiUrl: "@Url.Action("GetBetEventData", "marketwatch")",
                 postData: formData
             }
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(getEventJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(200);
                     $('#ddlSeries').find('option').remove().end();
                     if (res.length>0) {
                         $.each(res, function (key, value) {

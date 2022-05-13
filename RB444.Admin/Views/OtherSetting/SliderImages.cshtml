@@ -142,10 +142,10 @@
                     apiUrl: "@Url.Action("AddUpdatedSliderImages", "OtherSetting")",
                     postData: formdata
                 }
-                $(".loader").show();
+                $("#loaderContainer").fadeIn(200);
                 promiseAjaxPost.call(uploadAttachmentJson, false).then(
                     (res) => {
-                        $(".loader").hide();
+                        $("#loaderContainer").fadeOut(200);
                         if (res.IsSuccess && res.Status == 200) {
                             messagePopup.responseSuccess(res.Message).then(
                                 (r) => { if (r == true) { location.reload() } }
@@ -173,10 +173,10 @@
                 apiUrl: "@Url.Action("DeleteSlider", "OtherSetting")",
                 postData: formData
             }
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(200);
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
@@ -208,10 +208,10 @@
                 postData: formData
             }
 
-            $(".loader").show();
+            $("#loaderContainer").fadeIn(200);
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $("#loaderContainer").fadeOut(200);
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
