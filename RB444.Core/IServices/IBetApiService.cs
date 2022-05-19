@@ -33,6 +33,6 @@ namespace RB444.Core.IServices
         /// <param name="UserId"></param>
         /// <param name="marketId"></param>
         /// <returns></returns>
-        Task<CommonReturnResponse> GetBackAndLayAmountAsync(int UserId, string marketId);
+        Task<CommonReturnResponse> GetBackAndLayAmountAsync(int UserId, string marketId, int SportId);
     }
 }

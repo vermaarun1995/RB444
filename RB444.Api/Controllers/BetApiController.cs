@@ -36,9 +36,9 @@ namespace RB444.Api.Controllers
         }
 
         [HttpGet, Route("GetBackAndLayBetAmount")]
-        public async Task<CommonReturnResponse> GetBackAndLayBetAmount(int UserId, string marketId)
+        public async Task<CommonReturnResponse> GetBackAndLayBetAmount(int UserId, string marketId, int SportId)
         {
-            return await _betApiService.GetBackAndLayAmountAsync(UserId, marketId);
+            return await _betApiService.GetBackAndLayAmountAsync(UserId, marketId, SportId);
         }
     }
 }

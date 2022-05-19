@@ -260,4 +260,10 @@ namespace RB444.Models.Model
         public long selectionId { get; set; }
         public string teamName { get; set; }
     }
+
+    public class TeamAmount
+    {
+        public long selectionId { get; set; }
+        public double amount { get; set; }
+    }
 }

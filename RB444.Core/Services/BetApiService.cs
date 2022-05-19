@@ -117,23 +117,46 @@ namespace RB444.Core.Services
             }
         }
 
-        public async Task<CommonReturnResponse> GetBackAndLayAmountAsync(int UserId, string marketId)
+        public async Task<CommonReturnResponse> GetBackAndLayAmountAsync(int UserId, string marketId, int SportId)
         {
-            double[] arr = new double[0];
+            string[] arr = new string[0];
             string sql = string.Empty;
             string _condition = string.Empty;
             UserBetPagination userBetPagination = new UserBetPagination();
             var teamSelectionIds = new List<TeamSelectionId>();
+            var teamAmount = new List<TeamAmount>();
             string oddsStr = "", responseStr = "";
             try
             {
-                sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
-                var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
-
-                var teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], betList.FirstOrDefault().SportId));
-                var runnerNames = teamNameResponse.data.Where(x => x.marketId == betList.FirstOrDefault().MarketId).FirstOrDefault();
+                var teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
 
                 teamSelectionIds = commonFun.GetTeamName(runnerNames);
+
+                sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
+                var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
+                if (betList.Count <= 0)
+                {
+                    if (teamSelectionIds.Count > 0)
+                    {
+                        for (int i = 0; i < teamSelectionIds.Count; i++)
+                        {
+                            teamAmount.Add(new TeamAmount
+                            {
+                                selectionId = Convert.ToInt64(teamSelectionIds[i].selectionId),
+                                amount = 0
+                            });
+                        }
+                    }
+
+                    return new CommonReturnResponse
+                    {
+                        Data = teamAmount,
+                        Message = userBetPagination != null ? MessageStatus.Success : MessageStatus.NoRecord,
+                        IsSuccess = userBetPagination != null,
+                        Status = userBetPagination != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
+                    };
+                }
 
                 if (teamSelectionIds.Count > 0)
                 {
@@ -145,11 +168,11 @@ namespace RB444.Core.Services
                             {
                                 if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
                                 {
-                                    oddsStr = oddsStr + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
                                 }
                                 else
                                 {
-                                    oddsStr = oddsStr + (-betList[i].AmountStake).ToString() + "| ";
+                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-betList[i].AmountStake).ToString() + "| ";
                                 }
                             }
                         }
@@ -175,14 +198,19 @@ namespace RB444.Core.Services
 
                     responseStr = responseStr.Substring(0, responseStr.Length - 1);
                     var responseArr = responseStr.Split('@');
-                    arr = new double[responseArr[0].Split('|').Count()];
+                    arr = new string[responseArr[0].Split('|').Count()];
 
                     for (int k = 0; k < responseArr.Length; k++)
                     {
                         var z = responseArr[k].Split('|');
                         for (int q = 0; q < z.Length; q++)
                         {
-                            arr[q] = arr[q] + Convert.ToDouble(z[q]);
+                            arr[q] = arr[q] + z[q];
+                            teamAmount.Add(new TeamAmount
+                            {
+                                selectionId = Convert.ToInt64(z[q].Split(':')[0]),
+                                amount = Convert.ToDouble(z[q].Split(':')[1])
+                            });
                         }
                     }
                 }
@@ -196,7 +224,7 @@ namespace RB444.Core.Services
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
                 return new CommonReturnResponse
                 {
-                    Data = responseStr,
+                    Data = teamAmount,
                     Message = userBetPagination != null ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = userBetPagination != null,
                     Status = userBetPagination != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
