@@ -127,7 +127,7 @@
             $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }
@@ -156,7 +156,7 @@
             $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }

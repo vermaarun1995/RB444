@@ -71,7 +71,7 @@ function isValidateResetForm() {
             contentType: "application/json; charset=utf-8",
             success: function (responce) {
                 if (responce.isUpdated) {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     $("#oldPassword").val('');
                     $("#newPassword").val('');
                     $("#confirmPassword").val('');
@@ -82,7 +82,7 @@ function isValidateResetForm() {
                     window.location.href = '../account/login?Message=' + responce.Message;
                 }
                 else {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     toastr.error(responce.Message);
                 }
             }

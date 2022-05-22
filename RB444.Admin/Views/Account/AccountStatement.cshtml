@@ -8,14 +8,15 @@
     <div class="card-header flex-wrap py-5">
         <div class="card-title">
             <h3 class="card-label">
+                Account Statement
             </h3>
         </div>
 
     </div>
     <div class="card-body">
         <!--begin: Datatable-->
-        <table class="table table-striped table-hover table-bordered table-head-custom" id="kt_datatable">
-            <thead style="background-color: #1e1e2d;">
+        <table class="table table-striped table-bordered" id="Ac_datatable">
+            <thead >
                 <tr>
                     <th>
                         Date/Time
@@ -56,4 +57,15 @@
         </table>
     </div>
 </div>
+
+@section PageJs{
+    <script src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.0/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#Ac_datatable").DataTable();
+            $(".dataTables_length").addClass("bs-select");
+        });
+    </script>
+}
 

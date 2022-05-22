@@ -50,7 +50,7 @@
             $(".loader").show();
             promiseAjaxPost.call(getEventJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     $('#ddlSeries').find('option').remove().end();
                     if (res.length>0) {
                         $.each(res, function (key, value) {
@@ -80,7 +80,7 @@
             $(".loader").show();
             promiseAjaxPost.call(betListJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     $("#searchList").html(res);
                 },
                 (err) => {

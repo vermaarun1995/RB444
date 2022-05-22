@@ -51,7 +51,7 @@ namespace RB444.Admin.Controllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if(user.RoleId == 7)
+                if (user.RoleId == 7)
                 {
                     return View(model);
                 }
@@ -100,6 +100,7 @@ namespace RB444.Admin.Controllers
                         return Redirect("/Home/Index");
                     }
                 }
+                TempData["ErrorMsg"] = "User name and password not matched";
                 return View(model);
             }
             catch (Exception ex)
@@ -169,7 +170,7 @@ namespace RB444.Admin.Controllers
                                     Binary = model.RollingCommisionVm.Binary,
                                     Matka = model.RollingCommisionVm.Matka,
                                     SportBook = model.RollingCommisionVm.SportBook,
-                                };                               
+                                };
                             }
                             else
                             {
@@ -223,7 +224,7 @@ namespace RB444.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> ChangePassword(ResetPasswordViewModel model)
         {
-            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             var data = new CommonReturnResponse();
 
             if (model.OldPassword.Length > 0)
@@ -330,7 +331,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> ActivityLog()
         {
-            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
             CommonReturnResponse commonModel = null;
             List<Model.ViewModel.ActivityLogVM> activityLogVM = null;
@@ -352,7 +353,7 @@ namespace RB444.Admin.Controllers
         [HttpGet]
         public async Task<ActionResult> AccountStatement()
         {
-            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
 
             CommonReturnResponse commonModel = null;
             List<Model.ViewModel.AccountStatementVM> accountStatementVM = null;

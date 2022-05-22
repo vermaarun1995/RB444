@@ -64,7 +64,7 @@
             $(".loader").show();
             promiseAjaxPost.call(uploadAttachmentJson, false).then(
                 (res) => {
-                    $(".loader").hide();
+                    $(".loader").hide();;
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message);
                     } else {

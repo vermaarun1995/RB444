@@ -749,7 +749,7 @@
                 $("#registerModal .validation-summary-valid").html("").hide();
                 $(".loader").show();
                 $.post(url, postData, function (data) {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (data.toLowerCase() == "ok") {
                         toastr.success("User register successfully!");
                         $("#registerModal").modal("hide");
@@ -788,7 +788,7 @@
                 var postData = form.serialize();
                 $(".loader").show();
                 $.post(url, postData, function (data) {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (data.isSuccess) {
                         toastr.success("User status change successfully!");
                         $("#updateUserStatusModal").modal("hide");
@@ -819,7 +819,7 @@
                 $(".loader").show();
 
                 $.post(url, postData, function (data) {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#depositWithdrawModalLong").modal("hide");
@@ -851,7 +851,7 @@
                 $(".loader").show();
 
                 $.post(url, postData, function (data) {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#profitLossModalLong").modal("hide");
@@ -876,7 +876,7 @@
                 $(".loader").show();
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
-                        $("#loaderContainer").fadeOut(500);
+                        $(".loader").hide();
                         $("#CreditModelList").html(res);
                         $("#CreditModelPopup").modal("show");
                     },
@@ -904,7 +904,7 @@
                 $("#ExposureLimitModel .validation-summary-valid").html("").hide();
 
                 $.post(url, postData, function (data) {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (data.isSuccess) {
                         toastr.success(data.message);
                         $("#ExposureLimitModel").modal("hide");
@@ -929,7 +929,7 @@
                 $(".loader").show();
                 promiseAjaxPost.call(getAircraftJson, false).then(
                     (res) => {
-                        $("#loaderContainer").fadeOut(500);
+                        $(".loader").hide();
                         $("#PLList").html(res);
                         $("#PLModelPopup").modal("show");
                     },
@@ -1044,7 +1044,7 @@
             $(".loader").show();
             promiseAjaxPost.call(addRequestJson, false).then(
                 (res) => {
-                    $("#loaderContainer").fadeOut(500);
+                    $(".loader").hide();
                     if (res.IsSuccess && res.Status == 200) {
                         messagePopup.responseSuccess(res.Message).then(
                             (r) => { if (r == true) { location.reload(); } }

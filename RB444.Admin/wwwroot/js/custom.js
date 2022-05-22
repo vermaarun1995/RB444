@@ -170,7 +170,7 @@ function promiseAjaxGet() {
                 reject(err)
             },
             complete: function () {
-                $("#loaderContainer").fadeOut(500);
+                $(".loader").hide();
             }
         })
     })
@@ -205,7 +205,7 @@ function promiseAjaxPost(ct = "application/json; charset=utf-8") {
                 reject(err)
             },
             complete: function () {
-                $("#loaderContainer").fadeOut(500);
+                $(".loader").hide();
             }
         })
     })
