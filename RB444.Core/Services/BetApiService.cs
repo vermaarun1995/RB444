@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
@@ -20,6 +21,7 @@ namespace RB444.Core.Services
         private readonly IConfiguration _configuration;
         private readonly IAccountService _accountService;
         CommonFun commonFun = new CommonFun();
+        string teamAmountStr = "";
 
         public BetApiService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration, IAccountService accountService)
         {
@@ -148,10 +150,13 @@ namespace RB444.Core.Services
                             });
                         }
                     }
-
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                    teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
                     return new CommonReturnResponse
                     {
-                        Data = teamAmount,
+                        Data = teamAmountStr,
                         Message = userBetPagination != null ? MessageStatus.Success : MessageStatus.NoRecord,
                         IsSuccess = userBetPagination != null,
                         Status = userBetPagination != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND
@@ -222,9 +227,12 @@ namespace RB444.Core.Services
                 }
 
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "");
+                teamAmountStr = teamAmountStr.Replace(",\"amount\"", "");
                 return new CommonReturnResponse
                 {
-                    Data = teamAmount,
+                    Data = teamAmountStr,
                     Message = userBetPagination != null ? MessageStatus.Success : MessageStatus.NoRecord,
                     IsSuccess = userBetPagination != null,
                     Status = userBetPagination != null ? ResponseStatusCode.OK : ResponseStatusCode.NOTFOUND

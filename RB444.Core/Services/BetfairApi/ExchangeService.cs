@@ -191,7 +191,7 @@ namespace RB444.Core.Services.BetfairApi
             try
             {
                 matchReturnResponse = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], marketId));
-                if(matchReturnResponse == null)
+                if (matchReturnResponse == null)
                 {
                     eventModel.data.matchOddsData = null;
                     return new CommonReturnResponse
@@ -205,7 +205,17 @@ namespace RB444.Core.Services.BetfairApi
 
                 teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
                 var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
-
+                if (runnerNames == null)
+                {
+                    eventModel.data.matchOddsData = null;
+                    return new CommonReturnResponse
+                    {
+                        Data = eventModel,
+                        Message = MessageStatus.NoRecord,
+                        IsSuccess = false,
+                        Status = ResponseStatusCode.NOTFOUND
+                    };
+                }
                 teamSelectionIds = commonFun.GetTeamName(runnerNames);
 
                 List<RunnerOld> runnerList = new List<RunnerOld>();
@@ -304,41 +314,84 @@ namespace RB444.Core.Services.BetfairApi
 
         public async Task<CommonReturnResponse> GetSportsEventsAsync(int SportId)
         {
-            string sportNameForApi = "";
+            //string sportNameForApi = "";
             var matchReturnResponse = new MatchesReturnResponse();
             var matchReturnResponseNew = new List<MatchReturnResponseNew>();
 
             var sportsEventModelList = new List<SportsEventModel>();
+            IDictionary<string, object> _keyValues = null;
+            var sportList = new List<Sports>();
             try
             {
-                matchReturnResponse = await _requestServices.GetAsync<MatchesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
-                foreach (var item in matchReturnResponse.data)
+                _keyValues = new Dictionary<string, object> { { "Status", 1 } };
+                sportList = (await _baseRepository.SelectAsync<Sports>(_keyValues)).ToList();
+                for (int i = 0; i < sportList.Count; i++)
                 {
-                    matchReturnResponseNew = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], item.marketId));
-                    if (matchReturnResponseNew != null)
+                    if (SportId <= 0)
                     {
-                        var sportsEventModel = new SportsEventModel
+                        matchReturnResponse = await _requestServices.GetAsync<MatchesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], sportList[i].Id));
+                        foreach (var item in matchReturnResponse.data)
                         {
-                            gameId = item.eventId.ToString(),
-                            eventName = item.eventName,
-                            eventDate = GetISTDateTime(item.eventDate),
-                            marketId = item.marketId,
-                            inPlay = matchReturnResponseNew[0].inplay.ToString(),
-                            back11 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
-                            back1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
-                            back12 = matchReturnResponseNew[0].runners[1].ex.availableToBack[0].price,
-                            lay11 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
-                            lay1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
-                            lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
-                            eid = SportId.ToString(),
-                            m1 = "",
-                            f = "",
-                            tv = item.MainTvurl,
-                            vir = 0
-                        };
-                        sportsEventModelList.Add(sportsEventModel);
+                            matchReturnResponseNew = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], item.marketId));
+                            if (matchReturnResponseNew != null)
+                            {
+                                var sportsEventModel = new SportsEventModel
+                                {
+                                    gameId = item.eventId.ToString(),
+                                    eventName = item.eventName,
+                                    eventDate = GetISTDateTime(item.eventDate),
+                                    marketId = item.marketId,
+                                    inPlay = matchReturnResponseNew[0].inplay.ToString(),
+                                    back11 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
+                                    back1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
+                                    back12 = matchReturnResponseNew[0].runners[1].ex.availableToBack[0].price,
+                                    lay11 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
+                                    lay1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
+                                    lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
+                                    eid = sportList[i].Id.ToString(),
+                                    m1 = "",
+                                    f = "",
+                                    tv = item.MainTvurl,
+                                    vir = 0
+                                };
+                                sportsEventModelList.Add(sportsEventModel);
+                            }
+                        }
+                    }
+                    else if (sportList[i].Id == SportId)
+                    {
+                        matchReturnResponse = await _requestServices.GetAsync<MatchesReturnResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                        foreach (var item in matchReturnResponse.data)
+                        {
+                            matchReturnResponseNew = await _requestServices.GetAsync<List<MatchReturnResponseNew>>(string.Format("{0}{1}", _configuration["ApiMatchOddsUrl"], item.marketId));
+                            if (matchReturnResponseNew != null)
+                            {
+                                var sportsEventModel = new SportsEventModel
+                                {
+                                    gameId = item.eventId.ToString(),
+                                    eventName = item.eventName,
+                                    eventDate = GetISTDateTime(item.eventDate),
+                                    marketId = item.marketId,
+                                    inPlay = matchReturnResponseNew[0].inplay.ToString(),
+                                    back11 = matchReturnResponseNew[0].runners[0].ex.availableToBack[0].price,
+                                    back1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToBack[0].price : 0,
+                                    back12 = matchReturnResponseNew[0].runners[1].ex.availableToBack[0].price,
+                                    lay11 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
+                                    lay1 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
+                                    lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
+                                    eid = SportId.ToString(),
+                                    m1 = "",
+                                    f = "",
+                                    tv = item.MainTvurl,
+                                    vir = 0
+                                };
+                                sportsEventModelList.Add(sportsEventModel);
+                            }
+                        }
                     }
                 }
+
+
                 return new CommonReturnResponse
                 {
                     Data = sportsEventModelList.OrderByDescending(y => y.inPlay).ToList(),
@@ -350,7 +403,13 @@ namespace RB444.Core.Services.BetfairApi
             catch (Exception ex)
             {
                 //_logger.LogException("Exception : AircraftService : GetAircarftDetailsAsync()", ex);
-                return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+                return new CommonReturnResponse
+                {
+                    Data = null,
+                    Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message,
+                    IsSuccess = false,
+                    Status = ResponseStatusCode.EXCEPTION
+                };
             }
             finally { if (sportsEventModelList != null) { sportsEventModelList = null; } }
         }
@@ -411,7 +470,7 @@ namespace RB444.Core.Services.BetfairApi
                             lay1 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
                             lay11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
                             lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
-                            eid = "1",
+                            eid = "2",
                             m1 = "",
                             f = "",
                             tv = item.MainTvurl,
@@ -440,7 +499,7 @@ namespace RB444.Core.Services.BetfairApi
                             lay1 = matchReturnResponseNew[0].runners[0].ex.availableToLay[0].price,
                             lay11 = item.market_runner_count == 3 ? matchReturnResponseNew[0].runners[2].ex.availableToLay[0].price : 0,
                             lay12 = matchReturnResponseNew[0].runners[1].ex.availableToLay[0].price,
-                            eid = "1",
+                            eid = "4",
                             m1 = "",
                             f = "",
                             tv = item.MainTvurl,
