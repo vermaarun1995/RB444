@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RB444.Data\RB444.Data.csproj" />
     <ProjectReference Include="..\RB444.Model\RB444.Model.csproj" />
   </ItemGroup>
 
