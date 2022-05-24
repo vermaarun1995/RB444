@@ -35,7 +35,13 @@ namespace RB444.Core.Services
                 openingBalance = balance - betAmountList;
 
                 query = string.Format(@"select sum(ResultAmount) as ResultAmount from Bets where IsSettlement = 1 and UserId = {0}", UserId);
-                var settleBetAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.ResultAmount).FirstOrDefault();                
+                var settleBetAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.ResultAmount).FirstOrDefault();
+
+                if (settleBetAmountList == null)
+                {
+                    settleBetAmountList = 0;
+                }
+
                 openingBalance = (double)(openingBalance + settleBetAmountList);
 
                 return new CommonReturnResponse
@@ -320,6 +326,11 @@ namespace RB444.Core.Services
                 }
 
                 //totalUser = totalUser != null && totalUser.Count() > 0 ? totalUser.Where(x => x.RoleId == RoleId).ToList() : totalUser;
+                foreach (var item in totalUser)
+                {
+                    var abc = await GetOpeningBalanceAsync(item.Id);
+                    item.AssignCoin = Convert.ToInt64(abc.Data);
+                }
                 return new CommonReturnResponse
                 {
                     Data = totalUser,
