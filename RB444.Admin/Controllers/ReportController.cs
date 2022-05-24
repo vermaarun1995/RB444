@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
+using RB444.Model.Model;
 using RB444.Model.ViewModel;
 using RB444.Models.Model;
 
@@ -25,8 +26,8 @@ namespace RB444.Admin.Controllers
         }
         public async Task<IActionResult> RollingCommision()
         {
-            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;
-            ViewBag.LoginUser = user;
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
+            if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             CommonReturnResponse commonModel = null;
             List<Model.ViewModel.RollingCommisionVM> rollingCommisionVMs = null;
             try
@@ -46,8 +47,8 @@ namespace RB444.Admin.Controllers
 
         public async Task<IActionResult> SettlementData()
         {
-            var user = Request.Cookies["loginUserDetail"]!=null? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]):null;
-            ViewBag.LoginUser = user;
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
+            if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
             CommonReturnResponse commonModel = null;
             List<Sports> sportsDatalist = null;
             List<Bets> openBetList = new List<Bets>();
@@ -77,7 +78,7 @@ namespace RB444.Admin.Controllers
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetEventList?SportId={1}", _configuration["ApiKeyUrl"], SportId));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    eventList = jsonParser.ParsJson<List<MarketVM>>(Convert.ToString(commonModel.Data));                   
+                    eventList = jsonParser.ParsJson<List<MarketVM>>(Convert.ToString(commonModel.Data));
                 }
             }
             catch (Exception ex)
@@ -88,7 +89,7 @@ namespace RB444.Admin.Controllers
             return Json(eventList);
         }
         [HttpPost]
-        public async Task<ActionResult> GetBetDataList(long EventId)
+        public async Task<ActionResult> GetSettlementDataList(long EventId)
         {
             CommonReturnResponse commonModel = null;
             List<Bets> openBetList = new List<Bets>();
@@ -97,7 +98,7 @@ namespace RB444.Admin.Controllers
                 commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}Common/GetBetDataList?EventId={1}", _configuration["ApiKeyUrl"], EventId));
                 if (commonModel.IsSuccess && commonModel.Data != null)
                 {
-                    openBetList = jsonParser.ParsJson<List<Bets>>(Convert.ToString(commonModel.Data));                    
+                    openBetList = jsonParser.ParsJson<List<Bets>>(Convert.ToString(commonModel.Data));
                 }
             }
             catch (Exception ex)
@@ -105,7 +106,38 @@ namespace RB444.Admin.Controllers
                 //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
                 throw;
             }
-            return PartialView("_betDataList", openBetList);
-        }       
+            return PartialView("_SettlementList", openBetList);
+        }
+
+        public IActionResult BetDataList()
+        {
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
+            if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
+            UserBetPagination userBetPagination = new UserBetPagination();
+            userBetPagination.betList = new List<Bets>();
+            return View(userBetPagination);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetBetDataList(UserBetsHistory model)
+        {
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
+            if (user != null) { model.UserId = user.Id == 3 ? 8 : user.Id; } else { return RedirectToAction("Login", "Account"); }
+            CommonReturnResponse commonModel = new CommonReturnResponse();
+            UserBetPagination userBetPagination = new UserBetPagination();
+            try
+            {
+                commonModel = await _requestServices.PostAsync<UserBetsHistory, CommonReturnResponse>(String.Format("{0}BetApi/GetBetHistory", _configuration["ApiKeyUrl"]), model);
+                if (commonModel.IsSuccess && commonModel.Data != null)
+                {
+                    userBetPagination = jsonParser.ParsJson<UserBetPagination>(Convert.ToString(commonModel.Data));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return PartialView("_BetList", userBetPagination);
+        }
     }
 }

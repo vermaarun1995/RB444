@@ -32,7 +32,7 @@
         </div>
     </div>
     <div id="searchList">
-        <partial name="_betDataList" model="Model" />
+        <partial name="_SettlementList" model="Model" />
     </div>
 </div>
 
@@ -73,7 +73,7 @@
             formData.append("EventId", $('#ddlSeries').val());
 
             let betListJson = {
-                apiUrl: "@Url.Action("GetBetDataList", "Report")",
+                apiUrl: "@Url.Action("GetSettlementDataList", "Report")",
                 postData: formData,
                 dataType: 'html'
             }
