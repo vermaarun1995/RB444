@@ -46,7 +46,7 @@ namespace RB444.Core.Services
 
                 return new CommonReturnResponse
                 {
-                    Data = openingBalance,
+                    Data = Math.Round(openingBalance, 2),
                     Message = MessageStatus.Success,
                     IsSuccess = true,
                     Status = ResponseStatusCode.OK

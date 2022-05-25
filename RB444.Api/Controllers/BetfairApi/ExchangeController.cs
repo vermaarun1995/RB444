@@ -50,6 +50,12 @@ namespace RB444.Api.Controllers.BetfairApi
             return await _exchangeService.GetSportsEventsAsync(SportId);
         }
 
+        [HttpGet, Route("GetSportsEventsForWindowService")]
+        public async Task<CommonReturnResponse> GetSportsEventsForWindowService()
+        {
+            return await _exchangeService.GetSportsEventsForWindowServiceAsync();
+        }
+
         [HttpGet, Route("GetInPlaySportEvents")]
         public async Task<CommonReturnResponse> GetInPlaySportEvents()
         {
