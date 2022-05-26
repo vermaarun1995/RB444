@@ -40,12 +40,22 @@ namespace RB444.Core.Services
                 {
                     return new CommonReturnResponse { Data = null, Message = "Odds not match", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
+                var sportList = await _baseRepository.GetListAsync<Sports>();
+                var minAmt = sportList.Where(x => x.Id == model.SportId).Select(y => y.MinOddLimit).FirstOrDefault();
+                if (Convert.ToInt64(model.AmountStake) < minAmt)
+                {
+                    return new CommonReturnResponse { Data = null, Message = $"Minimum amount for bet is {minAmt}. Please select Amount greater than {minAmt}", IsSuccess = false, Status = ResponseStatusCode.OK };
+                }
+                var maxAmt = sportList.Where(x => x.Id == model.SportId).Select(y => y.MaxOddLimit).FirstOrDefault();
+                if (Convert.ToInt64(model.AmountStake) > maxAmt)
+                {
+                    return new CommonReturnResponse { Data = null, Message = $"Maximum amount for bet is {minAmt}. Please select Amount less than {maxAmt}", IsSuccess = false, Status = ResponseStatusCode.OK };
+                }
                 var getBalance = await _accountService.GetOpeningBalanceAsync(model.UserId);
                 if (getBalance.Data < model.AmountStake)
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
-                }
-                var sportList = await _baseRepository.GetListAsync<Sports>();
+                }                
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
                 string betId = model.UserId.ToString() + DateTime.Now.ToString();
                 betId = cEncryption.MD5Encryption(betId);
@@ -150,9 +160,10 @@ namespace RB444.Core.Services
                             });
                         }
                     }
-                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);                    
                     teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
                     teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
                     teamAmountStr = teamAmountStr.Replace("amount\"", "");
                     return new CommonReturnResponse
                     {
@@ -228,8 +239,9 @@ namespace RB444.Core.Services
 
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
                 teamAmountStr = JsonConvert.SerializeObject(teamAmount);
-                teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "");
-                teamAmountStr = teamAmountStr.Replace(",\"amount\"", "");
+                teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                teamAmountStr = teamAmountStr.Replace("amount\"", "");
                 return new CommonReturnResponse
                 {
                     Data = teamAmountStr,
