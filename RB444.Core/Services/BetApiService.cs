@@ -55,7 +55,7 @@ namespace RB444.Core.Services
                 if (getBalance.Data < model.AmountStake)
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
-                }                
+                }
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
                 string betId = model.UserId.ToString() + DateTime.Now.ToString();
                 betId = cEncryption.MD5Encryption(betId);
@@ -137,6 +137,7 @@ namespace RB444.Core.Services
             UserBetPagination userBetPagination = new UserBetPagination();
             var teamSelectionIds = new List<TeamSelectionId>();
             var teamAmount = new List<TeamAmount>();
+            var teamAmountFinal = new List<TeamAmount>();
             string oddsStr = "", responseStr = "";
             try
             {
@@ -160,7 +161,7 @@ namespace RB444.Core.Services
                             });
                         }
                     }
-                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);                    
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
                     teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
                     teamAmountStr = teamAmountStr.Replace(",\"", "\"");
                     teamAmountStr = teamAmountStr.Replace("amount\"", "");
@@ -198,11 +199,11 @@ namespace RB444.Core.Services
                             {
                                 if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
                                 {
-                                    oddsStr = oddsStr + "-" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
                                 }
                                 else
                                 {
-                                    oddsStr = oddsStr + (betList[i].AmountStake).ToString() + "| ";
+                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-betList[i].AmountStake).ToString() + "| ";
                                 }
                             }
                         }
@@ -220,8 +221,7 @@ namespace RB444.Core.Services
                     {
                         var z = responseArr[k].Split('|');
                         for (int q = 0; q < z.Length; q++)
-                        {
-                            arr[q] = arr[q] + z[q];
+                        {                            
                             teamAmount.Add(new TeamAmount
                             {
                                 selectionId = Convert.ToInt64(z[q].Split(':')[0]),
@@ -231,14 +231,17 @@ namespace RB444.Core.Services
                     }
                 }
 
-                responseStr = "";
-                for (int i = 0; i < arr.Length; i++)
+                for (int kk = 0; kk < teamSelectionIds.Count; kk++)
                 {
-                    responseStr = responseStr + arr[i] + "|";
+                    teamAmountFinal.Add(new TeamAmount
+                    {
+                        selectionId = teamSelectionIds[kk].selectionId,
+                        amount = teamAmount.Where(x => x.selectionId == teamSelectionIds[kk].selectionId).Sum(y => y.amount)
+                    });
                 }
-
+               
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
-                teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
                 teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
                 teamAmountStr = teamAmountStr.Replace(",\"", "\"");
                 teamAmountStr = teamAmountStr.Replace("amount\"", "");
