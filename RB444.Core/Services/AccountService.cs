@@ -29,10 +29,15 @@ namespace RB444.Core.Services
                 string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", UserId);
                 var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
 
-                query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
-                var betAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
+                var betBackAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
                 //totalBetAmount = totalBetAmount + betAmountList;
-                openingBalance = balance - betAmountList;
+                //openingBalance = balance - betBackAmountList;
+
+                query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
+                var betlayAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+
+                openingBalance = balance - (betlayAmountList+ betBackAmountList);
 
                 query = string.Format(@"select sum(ResultAmount) as ResultAmount from Bets where IsSettlement = 1 and UserId = {0}", UserId);
                 var settleBetAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.ResultAmount).FirstOrDefault();
@@ -63,8 +68,12 @@ namespace RB444.Core.Services
         {
             try
             {
-                string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
-                var exposureStack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
+                var exposureStackBack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+
+                query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
+                var exposureStackLay = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                var exposureStack = exposureStackBack + exposureStackLay;
                 return new CommonReturnResponse
                 {
                     Data = exposureStack,
