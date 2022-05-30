@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RB444.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -109,5 +110,12 @@ namespace RB444.Model.Model
         public List<SportsEventModel> sportsEventModelInPlay { get; set; }
         public List<SportsEventModel> sportsEventModelToday { get; set; }
         public List<SportsEventModel> sportsEventModelTommorow { get; set; }
+    }
+
+    public class SportInPlayEventModelNew
+    {
+        public List<SportsEvent> sportsEventModelInPlay { get; set; }
+        public List<SportsEvent> sportsEventModelToday { get; set; }
+        public List<SportsEvent> sportsEventModelTommorow { get; set; }
     }
 }
