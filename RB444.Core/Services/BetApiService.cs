@@ -35,13 +35,18 @@ namespace RB444.Core.Services
         {
             try
             {
-                bool IsProperBet = await CheckProperBet(model);
-                if (IsProperBet == false)
+                var IsProperBet = await CheckProperBet(model);
+                if (IsProperBet.Item1 == false)
                 {
                     return new CommonReturnResponse { Data = null, Message = "Odds not match", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
+                else
+                {
+                    model.OddsRequest = IsProperBet.Item2;
+                }
                 var sportList = await _baseRepository.GetListAsync<Sports>();
                 var minAmt = sportList.Where(x => x.Id == model.SportId).Select(y => y.MinOddLimit).FirstOrDefault();
+
                 if (Convert.ToInt64(model.AmountStake) < minAmt)
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Minimum amount for bet is {minAmt}. Please select Amount greater than {minAmt}", IsSuccess = false, Status = ResponseStatusCode.OK };
@@ -221,7 +226,7 @@ namespace RB444.Core.Services
                     {
                         var z = responseArr[k].Split('|');
                         for (int q = 0; q < z.Length; q++)
-                        {                            
+                        {
                             teamAmount.Add(new TeamAmount
                             {
                                 selectionId = Convert.ToInt64(z[q].Split(':')[0]),
@@ -239,7 +244,7 @@ namespace RB444.Core.Services
                         amount = teamAmount.Where(x => x.selectionId == teamSelectionIds[kk].selectionId).Sum(y => y.amount)
                     });
                 }
-               
+
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
                 teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
                 teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
@@ -351,9 +356,8 @@ namespace RB444.Core.Services
             }
         }
 
-        private async Task<bool> CheckProperBet(Bets model)
+        private async Task<Tuple<bool, double>> CheckProperBet(Bets model)
         {
-            bool flg = false;
             var matchReturnResponse = new List<MatchReturnResponseNew>();
             try
             {
@@ -364,48 +368,54 @@ namespace RB444.Core.Services
                     {
                         if (model.Type == "back")
                         {
-                            if (model.OddsRequest == item.ex.availableToBack[0].price)
+                            if (model.OddsRequest <= item.ex.availableToBack[0].price)
                             {
-                                flg = true;
-                                break;
+                                return new Tuple<bool, double>(true, item.ex.availableToBack[0].price);
                             }
-                            else if (model.OddsRequest == item.ex.availableToBack[1].price)
+                            else
                             {
-                                flg = true;
-                                break;
+                                return new Tuple<bool, double>(false, 0);
                             }
-                            else if (model.OddsRequest == item.ex.availableToBack[2].price)
-                            {
-                                flg = true;
-                                break;
-                            }
+                            //else if (model.OddsRequest == item.ex.availableToBack[1].price)
+                            //{
+                            //    flg = true;
+                            //    break;
+                            //}
+                            //else if (model.OddsRequest == item.ex.availableToBack[2].price)
+                            //{
+                            //    flg = true;
+                            //    break;
+                            //}
                         }
                         if (model.Type == "lay")
                         {
-                            if (model.OddsRequest == item.ex.availableToLay[0].price)
+                            if (model.OddsRequest >= item.ex.availableToLay[0].price)
                             {
-                                flg = true;
-                                break;
+                                return new Tuple<bool, double>(true, item.ex.availableToLay[0].price);
                             }
-                            else if (model.OddsRequest == item.ex.availableToLay[1].price)
+                            else
                             {
-                                flg = true;
-                                break;
+                                return new Tuple<bool, double>(false, 0);
                             }
-                            else if (model.OddsRequest == item.ex.availableToLay[2].price)
-                            {
-                                flg = true;
-                                break;
-                            }
+                            //else if (model.OddsRequest == item.ex.availableToLay[1].price)
+                            //{
+                            //    flg = true;
+                            //    break;
+                            //}
+                            //else if (model.OddsRequest == item.ex.availableToLay[2].price)
+                            //{
+                            //    flg = true;
+                            //    break;
+                            //}
                         }
                     }
                 }
             }
             catch (Exception)
             {
-                flg = false;
+                return new Tuple<bool, double>(false, 0);
             }
-            return flg;
+            return new Tuple<bool, double>(false, 0);
         }
     }
 }
