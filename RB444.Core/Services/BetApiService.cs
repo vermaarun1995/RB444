@@ -151,7 +151,15 @@ namespace RB444.Core.Services
 
                 teamSelectionIds = commonFun.GetTeamName(runnerNames);
 
-                sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
+                if(UserId > 0)
+                {
+                    sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
+                }
+                else
+                {
+                    sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}'";
+                }
+                
                 var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
                 if (betList.Count <= 0)
                 {
@@ -166,11 +174,18 @@ namespace RB444.Core.Services
                             });
                         }
                     }
-                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
-                    teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
-                    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
-                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
-                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                    if (UserId > 0)
+                    {
+                        teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                        teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                        teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                    }
+                    else
+                    {
+                        teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                    }
                     return new CommonReturnResponse
                     {
                         Data = teamAmountStr,
@@ -246,10 +261,17 @@ namespace RB444.Core.Services
                 }
 
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
-                teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
-                teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
-                teamAmountStr = teamAmountStr.Replace(",\"", "\"");
-                teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                if (UserId > 0)
+                {
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
+                    teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                }
+                else
+                {
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                }
                 return new CommonReturnResponse
                 {
                     Data = teamAmountStr,
