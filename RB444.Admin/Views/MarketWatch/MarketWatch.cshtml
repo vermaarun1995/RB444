@@ -75,10 +75,10 @@
                 postData: formData,
                 dataType: 'html'
             }
-            $(".loader-1.loading-img").show();
+            $(".loader").show();
             promiseAjaxPost.call(getAircraftJson, false).then(
                 (res) => {
-                    $(".loader-1.loading-img").hide();
+                    $(".loader").hide();
                     $("#filterList").html(res);
                 },
                 (err) => {
@@ -86,5 +86,41 @@
                 }
             )
         }
+
+
+        function showModel(marketId, SportId) {
+            const formData = new FormData();
+            formData.append("MarketId", marketId);
+            formData.append("SportId", SportId);
+
+            let betListJson = {
+                apiUrl: "@Url.Action("GetBackAndLayBetAmount", "marketwatch")",
+                postData: formData,
+                dataType: 'html'
+            }
+            $(".loader").show();
+            promiseAjaxPost.call(betListJson, false).then(
+                (res) => {
+                    $(".loader").hide();;
+                    $("#backLayAmount").html(res);
+                    $("#marketPositionModal").modal('show');
+                },
+                (err) => {
+                    messagePopup.error(err.statusText);
+                }
+            )
+        }
+
+        $(document).ready(function () {
+
+            //$(".showModel").click(function () {
+            //    debugger;
+            //    $("#marketPositionModal").modal('show');
+            //});
+
+            $(".hideModel").click(function () {
+                $("#marketPositionModal").modal('hide');
+            });
+        });
     </script>
 }

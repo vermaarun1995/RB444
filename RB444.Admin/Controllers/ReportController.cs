@@ -17,6 +17,7 @@ namespace RB444.Admin.Controllers
     public class ReportController : Controller
     {
         private readonly IRequestServices _requestServices;
+
         private readonly IConfiguration _configuration;
 
         public ReportController(IRequestServices requestServices, IConfiguration configuration)
@@ -24,6 +25,7 @@ namespace RB444.Admin.Controllers
             _requestServices = requestServices;
             _configuration = configuration;
         }
+
         public async Task<IActionResult> RollingCommision()
         {
             var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
@@ -88,6 +90,7 @@ namespace RB444.Admin.Controllers
             }
             return Json(eventList);
         }
+
         [HttpPost]
         public async Task<ActionResult> GetSettlementDataList(long EventId)
         {

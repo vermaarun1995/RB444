@@ -131,6 +131,29 @@ namespace RB444.Admin.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<ActionResult> GetBackAndLayBetAmount(int SportId, double MarketId)
+        {
+            CommonReturnResponse commonModel = null;
+            var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null;
+            if (user == null) { return RedirectToAction("Login", "Account"); }
+            try
+            {
+                //commonModel = await _requestServices.GetAsync<CommonReturnResponse>(String.Format("{0}/BetApi/GetBackAndLayBetAmount?UserId={1}&marketId={2}&SportId={3}", _configuration["ApiKeyUrl"], user.Id, MarketId, SportId));
+                //if (commonModel.IsSuccess && commonModel.Data != null)
+                //{
+                //    matcheslist = jsonParser.ParsJson<List<Matches>>(Convert.ToString(commonModel.Data));
+                //}
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogException("Exception : AddServiceController : deleteService()", ex);
+                throw;
+            }
+            return PartialView("_BackAndLayBetAmount");
+        }
+
+
         public ActionResult ManageSeries()
         {
             var user = Request.Cookies["loginUserDetail"] != null ? JsonConvert.DeserializeObject<Users>(Request.Cookies["loginUserDetail"]) : null; if (user != null) { ViewBag.LoginUser = user; } else { return RedirectToAction("Login", "Account"); }
