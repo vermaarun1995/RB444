@@ -142,7 +142,9 @@ namespace RB444.Core.Services
             UserBetPagination userBetPagination = new UserBetPagination();
             var teamSelectionIds = new List<TeamSelectionId>();
             var teamAmount = new List<TeamAmount>();
+            var teamNameAmount = new List<TeamNameAmount>();
             var teamAmountFinal = new List<TeamAmount>();
+            var teamNameAmountFinal = new List<TeamNameAmount>();
             string oddsStr = "", responseStr = "";
             try
             {
@@ -151,7 +153,7 @@ namespace RB444.Core.Services
 
                 teamSelectionIds = commonFun.GetTeamName(runnerNames);
 
-                if(UserId > 0)
+                if (UserId > 0)
                 {
                     sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
                 }
@@ -159,7 +161,7 @@ namespace RB444.Core.Services
                 {
                     sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}'";
                 }
-                
+
                 var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
                 if (betList.Count <= 0)
                 {
@@ -167,11 +169,22 @@ namespace RB444.Core.Services
                     {
                         for (int i = 0; i < teamSelectionIds.Count; i++)
                         {
-                            teamAmount.Add(new TeamAmount
+                            if (UserId > 0)
                             {
-                                selectionId = Convert.ToInt64(teamSelectionIds[i].selectionId),
-                                amount = 0
-                            });
+                                teamAmount.Add(new TeamAmount
+                                {
+                                    selectionId = Convert.ToInt64(teamSelectionIds[i].selectionId),
+                                    amount = 0
+                                });
+                            }
+                            else
+                            {
+                                teamNameAmount.Add(new TeamNameAmount
+                                {
+                                    selectionName = teamSelectionIds[i].teamName,
+                                    amount = 0
+                                });
+                            }
                         }
                     }
                     if (UserId > 0)
@@ -184,7 +197,11 @@ namespace RB444.Core.Services
                     }
                     else
                     {
-                        teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                        teamAmountStr = JsonConvert.SerializeObject(teamNameAmount);
+                        teamAmountStr = teamAmountStr.Replace("\"selectionName\":", "\"");
+                        teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
                     }
                     return new CommonReturnResponse
                     {
@@ -203,13 +220,27 @@ namespace RB444.Core.Services
                         {
                             for (int j = 0; j < teamSelectionIds.Count; j++)
                             {
-                                if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                if (UserId > 0)
                                 {
-                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-betList[i].AmountStake).ToString() + "| ";
+                                    }
                                 }
                                 else
                                 {
-                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-betList[i].AmountStake).ToString() + "| ";
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (-betList[i].AmountStake).ToString() + "| ";
+                                    }
                                 }
                             }
                         }
@@ -217,13 +248,27 @@ namespace RB444.Core.Services
                         {
                             for (int j = 0; j < teamSelectionIds.Count; j++)
                             {
-                                if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                if (UserId > 0)
                                 {
-                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake)).ToString() + "| ";
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake)).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (betList[i].AmountStake).ToString() + "| ";
+                                    }
                                 }
                                 else
                                 {
-                                    oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (betList[i].AmountStake).ToString() + "| ";
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (-((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake)).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (betList[i].AmountStake).ToString() + "| ";
+                                    }
                                 }
                             }
                         }
@@ -242,11 +287,22 @@ namespace RB444.Core.Services
                         var z = responseArr[k].Split('|');
                         for (int q = 0; q < z.Length; q++)
                         {
-                            teamAmount.Add(new TeamAmount
+                            if (UserId > 0)
                             {
-                                selectionId = Convert.ToInt64(z[q].Split(':')[0]),
-                                amount = Convert.ToDouble(z[q].Split(':')[1])
-                            });
+                                teamAmount.Add(new TeamAmount
+                                {
+                                    selectionId = Convert.ToInt64(z[q].Split(':')[0]),
+                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                });
+                            }
+                            else
+                            {
+                                teamNameAmount.Add(new TeamNameAmount
+                                {
+                                    selectionName = z[q].Split(':')[0],
+                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                });
+                            }
                         }
                     }
                 }
@@ -270,7 +326,10 @@ namespace RB444.Core.Services
                 }
                 else
                 {
-                    teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                    teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
+                    teamAmountStr = teamAmountStr.Replace("\"selectionName\":", "\"");
+                    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                    teamAmountStr = teamAmountStr.Replace("amount\"", "");
                 }
                 return new CommonReturnResponse
                 {
