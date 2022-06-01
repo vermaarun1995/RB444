@@ -37,3 +37,12 @@ C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.cspro
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.dll
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.pdb
 C:\Arun\Projects\RB444\rb444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.csproj.AssemblyReference.cache
+D:\Projects\RB444\RB444.Data\bin\Debug\netcoreapp3.1\RB444.Data.deps.json
+D:\Projects\RB444\RB444.Data\bin\Debug\netcoreapp3.1\RB444.Data.dll
+D:\Projects\RB444\RB444.Data\bin\Debug\netcoreapp3.1\RB444.Data.pdb
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.AssemblyInfoInputs.cache
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.AssemblyInfo.cs
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.csproj.CoreCompileInputs.cache
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.dll
+D:\Projects\RB444\RB444.Data\obj\Debug\netcoreapp3.1\RB444.Data.pdb

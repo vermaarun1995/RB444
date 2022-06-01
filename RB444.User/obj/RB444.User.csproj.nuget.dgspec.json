@@ -1,25 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.User\\RB444.User.csproj": {}
+    "D:\\Projects\\RB444\\RB444.User\\RB444.User.csproj": {}
   },
   "projects": {
-    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj": {
+    "D:\\Projects\\RB444\\RB444.Core\\RB444.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj",
+        "projectUniqueName": "D:\\Projects\\RB444\\RB444.Core\\RB444.Core.csproj",
         "projectName": "RB444.Core",
-        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj",
-        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
-        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\obj\\",
+        "projectPath": "D:\\Projects\\RB444\\RB444.Core\\RB444.Core.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\RB444\\RB444.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -32,8 +32,11 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj": {
-                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj"
+              "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj": {
+                "projectPath": "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj"
+              },
+              "D:\\Projects\\RB444\\RB444.Model\\RB444.Model.csproj": {
+                "projectPath": "D:\\Projects\\RB444\\RB444.Model\\RB444.Model.csproj"
               }
             }
           }
@@ -59,6 +62,10 @@
             "AutoMapper": {
               "target": "Package",
               "version": "[10.1.1, )"
+            },
+            "Hangfire": {
+              "target": "Package",
+              "version": "[1.7.28, )"
             },
             "Microsoft.AspNetCore.Mvc.Formatters.Json": {
               "target": "Package",
@@ -88,26 +95,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj": {
+    "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj",
+        "projectUniqueName": "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj",
         "projectName": "RB444.Data",
-        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj",
-        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
-        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\obj\\",
+        "projectPath": "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\RB444\\RB444.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -196,26 +203,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj": {
+    "D:\\Projects\\RB444\\RB444.Model\\RB444.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj",
+        "projectUniqueName": "D:\\Projects\\RB444\\RB444.Model\\RB444.Model.csproj",
         "projectName": "RB444.Model",
-        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\RB444.Model.csproj",
-        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
-        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Model\\obj\\",
+        "projectPath": "D:\\Projects\\RB444\\RB444.Model\\RB444.Model.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\RB444\\RB444.Model\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -228,8 +235,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj": {
-                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj"
+              "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj": {
+                "projectPath": "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj"
               }
             }
           }
@@ -268,26 +275,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Arun\\Projects\\RB444\\rb444\\RB444.User\\RB444.User.csproj": {
+    "D:\\Projects\\RB444\\RB444.User\\RB444.User.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.User\\RB444.User.csproj",
+        "projectUniqueName": "D:\\Projects\\RB444\\RB444.User\\RB444.User.csproj",
         "projectName": "RB444.User",
-        "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.User\\RB444.User.csproj",
-        "packagesPath": "C:\\Users\\Arun Verma\\.nuget\\packages\\",
-        "outputPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.User\\obj\\",
+        "projectPath": "D:\\Projects\\RB444\\RB444.User\\RB444.User.csproj",
+        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\RB444\\RB444.User\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Arun Verma\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -300,11 +307,11 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj": {
-                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Core\\RB444.Core.csproj"
+              "D:\\Projects\\RB444\\RB444.Core\\RB444.Core.csproj": {
+                "projectPath": "D:\\Projects\\RB444\\RB444.Core\\RB444.Core.csproj"
               },
-              "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj": {
-                "projectPath": "C:\\Arun\\Projects\\RB444\\rb444\\RB444.Data\\RB444.Data.csproj"
+              "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj": {
+                "projectPath": "D:\\Projects\\RB444\\RB444.Data\\RB444.Data.csproj"
               }
             }
           }
@@ -358,7 +365,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }
