@@ -3,6 +3,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
+using RB444.Data.Entities;
 using RB444.Model.Model;
 using RB444.Models.Model;
 using System;

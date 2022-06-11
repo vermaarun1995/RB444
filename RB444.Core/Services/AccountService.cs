@@ -1,4 +1,6 @@
-﻿using RB444.Core.IServices;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using RB444.Core.IServices;
 using RB444.Core.ServiceHelper;
 using RB444.Data.Entities;
 using RB444.Data.Repository;
@@ -15,29 +17,51 @@ namespace RB444.Core.Services
     public class AccountService : IAccountService
     {
         private readonly IBaseRepository _baseRepository;
+        private readonly IRequestServices _requestServices;
+        private readonly IConfiguration _configuration;
+        CommonFun commonFun = new CommonFun();
+        string teamAmountStr = "";
 
-        public AccountService(IBaseRepository baseRepository)
+        public AccountService(IBaseRepository baseRepository, IRequestServices requestServices, IConfiguration configuration)
         {
             _baseRepository = baseRepository;
+            _requestServices = requestServices;
+            _configuration = configuration;
         }
 
         public async Task<CommonReturnResponse> GetOpeningBalanceAsync(int UserId)
         {
             double openingBalance = 0;
+            double unsettleBetOpening = 0;
             try
             {
                 string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", UserId);
                 var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
 
-                query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
-                var betBackAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
-                //totalBetAmount = totalBetAmount + betAmountList;
-                //openingBalance = balance - betBackAmountList;
+                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = 12";
+                var betMarketList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                for (int i = 0; i < betMarketList.Count; i++)
+                {
+                    unsettleBetOpening = unsettleBetOpening + await GetBackAndLayOpeningAndExposureAmountAsync(UserId, betMarketList[i].MarketId, betMarketList[i].SportId);
+                }
+                //query = string.Format(@"select * from Bets where IsSettlement <> 1 and UserId = {0}", UserId);
+                //var betBackAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
 
-                query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
-                var betlayAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                //query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
+                //var betBackAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                ////totalBetAmount = totalBetAmount + betAmountList;
+                ////openingBalance = balance - betBackAmountList;
 
-                openingBalance = balance - (betlayAmountList+ betBackAmountList);
+                //query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
+                //var betlayAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+
+                //query = "select distinct marketid,AmountStake,selectionid, ((AmountStake * OddsRequest) - AmountStake) as AmountStake from Bets where Type = 'back' and IsSettlement = 2 and UserId = 12 order by SelectionId";
+                //var betBackAmountList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+
+                //query = "select distinct marketid,AmountStake,selectionid, ((AmountStake * OddsRequest) - AmountStake) as AmountStake from Bets where Type = 'lay' and IsSettlement = 2 and UserId = 12 order by SelectionId";
+                //var betlayAmountList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+
+                openingBalance = balance - Math.Abs(unsettleBetOpening);
 
                 query = string.Format(@"select sum(ResultAmount) as ResultAmount from Bets where IsSettlement = 1 and UserId = {0}", UserId);
                 var settleBetAmountList = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.ResultAmount).FirstOrDefault();
@@ -66,14 +90,22 @@ namespace RB444.Core.Services
 
         public async Task<CommonReturnResponse> GetBetExposureStackAsync(int UserId)
         {
+            double unsettleBetExposure = 0;
+            string query = string.Empty;
             try
             {
-                string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
-                var exposureStackBack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                //string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
+                //var exposureStackBack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
 
-                query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
-                var exposureStackLay = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
-                var exposureStack = exposureStackBack + exposureStackLay;
+                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = 12";
+                var betMarketList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
+                for (int i = 0; i < betMarketList.Count; i++)
+                {
+                    unsettleBetExposure = unsettleBetExposure + await GetBackAndLayOpeningAndExposureAmountAsync(UserId, betMarketList[i].MarketId, betMarketList[i].SportId);
+                }
+                //query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
+                //var exposureStackLay = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
+                var exposureStack = Math.Abs(unsettleBetExposure);
                 return new CommonReturnResponse
                 {
                     Data = exposureStack,
@@ -629,6 +661,215 @@ namespace RB444.Core.Services
             {
                 //_logger.LogException("Exception : AccountService : DeleteUserVisaInfoAsync()", ex);
                 return new CommonReturnResponse { Data = null, Message = ex.InnerException != null ? ex.InnerException.Message : ex.Message, IsSuccess = false, Status = ResponseStatusCode.EXCEPTION };
+            }
+        }
+
+        public async Task<double> GetBackAndLayOpeningAndExposureAmountAsync(int UserId, string marketId, int SportId)
+        {
+            string[] arr = new string[0];
+            string sql = string.Empty;
+            string _condition = string.Empty;
+            UserBetPagination userBetPagination = new UserBetPagination();
+            var teamSelectionIds = new List<TeamSelectionId>();
+            var teamAmount = new List<TeamAmount>();
+            var teamNameAmount = new List<TeamNameAmount>();
+            var teamAmountFinal = new List<TeamAmount>();
+            var teamNameAmountFinal = new List<TeamNameAmount>();
+            string oddsStr = "", responseStr = "";
+            double amount = 0;
+            try
+            {
+                var teamNameResponse = await _requestServices.GetAsync<TeamNameResponse>(string.Format("{0}getmatches/{1}", _configuration["ApiKeyUrl"], SportId));
+                var runnerNames = teamNameResponse.data.Where(x => x.marketId == marketId).FirstOrDefault();
+
+                teamSelectionIds = commonFun.GetTeamName(runnerNames);
+
+                if (UserId > 0)
+                {
+                    sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}' and userid = {UserId}";
+                }
+                else
+                {
+                    sql = $"select * from Bets where IsSettlement = 2 and MarketId='{marketId}'";
+                }
+
+                var betList = (await _baseRepository.QueryAsync<Bets>(sql)).ToList();
+                if (betList.Count <= 0)
+                {
+                    if (teamSelectionIds.Count > 0)
+                    {
+                        for (int i = 0; i < teamSelectionIds.Count; i++)
+                        {
+                            if (UserId > 0)
+                            {
+                                teamAmount.Add(new TeamAmount
+                                {
+                                    selectionId = Convert.ToInt64(teamSelectionIds[i].selectionId),
+                                    amount = 0
+                                });
+                            }
+                            else
+                            {
+                                teamNameAmount.Add(new TeamNameAmount
+                                {
+                                    selectionName = teamSelectionIds[i].teamName,
+                                    amount = 0
+                                });
+                            }
+                        }
+                    }
+                    if (UserId > 0)
+                    {
+                        teamAmountStr = JsonConvert.SerializeObject(teamAmount);
+                        teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                        teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                    }
+                    else
+                    {
+                        teamAmountStr = JsonConvert.SerializeObject(teamNameAmount);
+                        teamAmountStr = teamAmountStr.Replace("\"selectionName\":", "\"");
+                        teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                        teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                    }
+                    return 0;
+                }
+
+                if (teamSelectionIds.Count > 0)
+                {
+                    for (int i = 0; i < betList.Count; i++)
+                    {
+                        if (betList[i].Type == "back")
+                        {
+                            for (int j = 0; j < teamSelectionIds.Count; j++)
+                            {
+                                if (UserId > 0)
+                                {
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                }
+                                else
+                                {
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + ((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (-betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < teamSelectionIds.Count; j++)
+                            {
+                                if (UserId > 0)
+                                {
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (-((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake)).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].selectionId + ":" + (betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                }
+                                else
+                                {
+                                    if (betList[i].SelectionId == teamSelectionIds[j].selectionId)
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (-((betList[i].AmountStake * betList[i].OddsRequest) - betList[i].AmountStake)).ToString() + "| ";
+                                    }
+                                    else
+                                    {
+                                        oddsStr = oddsStr + teamSelectionIds[j].teamName + ":" + (betList[i].AmountStake).ToString() + "| ";
+                                    }
+                                }
+                            }
+                        }
+
+                        oddsStr = oddsStr.Substring(0, oddsStr.Length - 2);
+                        responseStr = responseStr + oddsStr + "@";
+                        oddsStr = "";
+                    }
+
+                    responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                    var responseArr = responseStr.Split('@');
+                    arr = new string[responseArr[0].Split('|').Count()];
+
+                    for (int k = 0; k < responseArr.Length; k++)
+                    {
+                        var z = responseArr[k].Split('|');
+                        for (int q = 0; q < z.Length; q++)
+                        {
+                            if (UserId > 0)
+                            {
+                                teamAmount.Add(new TeamAmount
+                                {
+                                    selectionId = Convert.ToInt64(z[q].Split(':')[0]),
+                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                });
+                            }
+                            else
+                            {
+                                teamNameAmount.Add(new TeamNameAmount
+                                {
+                                    selectionName = z[q].Split(':')[0],
+                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                });
+                            }
+                        }
+                    }
+                }
+
+                for (int kk = 0; kk < teamSelectionIds.Count; kk++)
+                {
+                    teamAmountFinal.Add(new TeamAmount
+                    {
+                        selectionId = teamSelectionIds[kk].selectionId,
+                        amount = teamAmount.Where(x => x.selectionId == teamSelectionIds[kk].selectionId).Sum(y => y.amount)
+                    });
+                }
+
+                responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                //if (UserId > 0)
+                //{
+                //    teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
+                //    teamAmountStr = teamAmountStr.Replace("\"selectionId\":", "\"");
+                //    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                //    teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                //}
+                //else
+                //{
+                //    teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
+                //    teamAmountStr = teamAmountStr.Replace("\"selectionName\":", "\"");
+                //    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
+                //    teamAmountStr = teamAmountStr.Replace("amount\"", "");
+                //}
+
+                for (int iii = 0; iii < teamAmountFinal.Count; iii++)
+                {
+                    if (teamAmountFinal[iii].amount < 0)
+                    {
+                        amount = teamAmountFinal[iii].amount;
+                    }
+                }
+
+                return amount;
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
     }
