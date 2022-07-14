@@ -57,6 +57,14 @@ namespace RB444.Core.Services
                     return new CommonReturnResponse { Data = null, Message = $"Maximum amount for bet is {minAmt}. Please select Amount less than {maxAmt}", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
                 var getBalance = await _accountService.GetOpeningBalanceAsync(model.UserId);
+                var commonModel = await GetBackAndLayAmountAsync(model.UserId, model.MarketId, model.SportId);
+                string backandlayAmount = Convert.ToString(commonModel.Data);
+                var IsProperAmt = CheckBalanceForPlaceBet(model, backandlayAmount, getBalance.Data);
+                if(IsProperAmt.Item1 == false)
+                {
+                    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}. You have {Math.Abs(IsProperAmt.Item2)} rupees less.", IsSuccess = false, Status = ResponseStatusCode.OK };
+                }
+
                 if (getBalance.Data < model.AmountStake)
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
@@ -331,6 +339,7 @@ namespace RB444.Core.Services
                     teamAmountStr = teamAmountStr.Replace(",\"", "\"");
                     teamAmountStr = teamAmountStr.Replace("amount\"", "");
                 }
+
                 return new CommonReturnResponse
                 {
                     Data = teamAmountStr,
@@ -457,16 +466,6 @@ namespace RB444.Core.Services
                             {
                                 return new Tuple<bool, double>(false, 0);
                             }
-                            //else if (model.OddsRequest == item.ex.availableToBack[1].price)
-                            //{
-                            //    flg = true;
-                            //    break;
-                            //}
-                            //else if (model.OddsRequest == item.ex.availableToBack[2].price)
-                            //{
-                            //    flg = true;
-                            //    break;
-                            //}
                         }
                         if (model.Type == "lay")
                         {
@@ -478,16 +477,6 @@ namespace RB444.Core.Services
                             {
                                 return new Tuple<bool, double>(false, 0);
                             }
-                            //else if (model.OddsRequest == item.ex.availableToLay[1].price)
-                            //{
-                            //    flg = true;
-                            //    break;
-                            //}
-                            //else if (model.OddsRequest == item.ex.availableToLay[2].price)
-                            //{
-                            //    flg = true;
-                            //    break;
-                            //}
                         }
                     }
                 }
@@ -497,6 +486,69 @@ namespace RB444.Core.Services
                 return new Tuple<bool, double>(false, 0);
             }
             return new Tuple<bool, double>(false, 0);
+        }
+
+        private Tuple<bool, double> CheckBalanceForPlaceBet(Bets model, string backandlayAmount, double remainingBalance)
+        {
+            double betBeforeSaveAmount = (model.AmountStake * model.OddsRequest) - model.AmountStake;
+            double teamAmt = 0;
+            backandlayAmount = teamAmountStr.Replace("{\"", "");
+            backandlayAmount = backandlayAmount.Replace("}", "");
+            backandlayAmount = backandlayAmount.Replace("\"", "");
+            backandlayAmount = backandlayAmount.Replace("[", "");
+            backandlayAmount = backandlayAmount.Replace("]", "");
+
+            var teamSelArr = backandlayAmount.Split(',');
+            for (int i = 0; i < teamSelArr.Length; i++)
+            {
+                var teamSelAmtArr = teamSelArr[i].Split(':');
+                if (model.Type == "back")
+                {
+                    if (teamSelAmtArr[0] == model.SelectionId.ToString())
+                    {
+                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) + betBeforeSaveAmount;
+                    }
+                    else
+                    {
+                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) - betBeforeSaveAmount;
+                    }
+                    if (teamAmt < 0)
+                    {
+                        if (Math.Abs(teamAmt) > remainingBalance)
+                        {
+                            return new Tuple<bool, double>(false, remainingBalance - Math.Abs(teamAmt));
+                        }
+                        else
+                        {
+                            return new Tuple<bool, double>(true, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    if (teamSelAmtArr[0] == model.SelectionId.ToString())
+                    {
+                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) - betBeforeSaveAmount;
+                    }
+                    else
+                    {
+                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) + betBeforeSaveAmount;
+                    }
+                    if(teamAmt < 0)
+                    {
+                        if (Math.Abs(teamAmt) > remainingBalance)
+                        {
+                            return new Tuple<bool, double>(false, remainingBalance - Math.Abs(teamAmt));
+                        }
+                        else
+                        {
+                            return new Tuple<bool, double>(true, 0);
+                        }
+                    }                    
+                }
+            }
+
+            return new Tuple<bool, double>(true, 0);
         }
     }
 }
