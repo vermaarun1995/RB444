@@ -838,7 +838,7 @@ namespace RB444.Core.Services
                     {
                         selectionId = teamSelectionIds[kk].selectionId,
                         amount = teamAmount.Where(x => x.selectionId == teamSelectionIds[kk].selectionId).Sum(y => y.amount)
-                    });
+                    });                    
                 }
 
                 responseStr = responseStr.Substring(0, responseStr.Length - 1);
@@ -856,12 +856,16 @@ namespace RB444.Core.Services
                 //    teamAmountStr = teamAmountStr.Replace(",\"", "\"");
                 //    teamAmountStr = teamAmountStr.Replace("amount\"", "");
                 //}
-
+                double returnAmt = 0;
                 for (int iii = 0; iii < teamAmountFinal.Count; iii++)
                 {
                     if (teamAmountFinal[iii].amount < 0)
                     {
-                        amount = teamAmountFinal[iii].amount;
+                        if (returnAmt < teamAmountFinal[iii].amount)
+                            amount = teamAmountFinal[iii].amount;
+                        else
+                            returnAmt = teamAmountFinal[iii].amount;
+                            amount = returnAmt;
                     }
                 }
 

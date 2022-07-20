@@ -518,10 +518,6 @@ namespace RB444.Core.Services
                         {
                             return new Tuple<bool, double>(false, remainingBalance - Math.Abs(teamAmt));
                         }
-                        else
-                        {
-                            return new Tuple<bool, double>(true, 0);
-                        }
                     }
                 }
                 else
@@ -539,10 +535,6 @@ namespace RB444.Core.Services
                         if (Math.Abs(teamAmt) > remainingBalance)
                         {
                             return new Tuple<bool, double>(false, remainingBalance - Math.Abs(teamAmt));
-                        }
-                        else
-                        {
-                            return new Tuple<bool, double>(true, 0);
                         }
                     }                    
                 }
