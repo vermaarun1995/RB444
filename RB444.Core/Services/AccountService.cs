@@ -38,7 +38,7 @@ namespace RB444.Core.Services
                 string query = string.Format(@"select top 1 *  from AccountStatement where ToUserId = {0} order by id desc", UserId);
                 var balance = (await _baseRepository.QueryAsync<AccountStatement>(query)).Select(x => x.Balance).FirstOrDefault();
 
-                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = 12";
+                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = " + UserId;
                 var betMarketList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
                 for (int i = 0; i < betMarketList.Count; i++)
                 {
@@ -97,7 +97,7 @@ namespace RB444.Core.Services
                 //string query = string.Format(@"select sum(AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='back'", UserId);
                 //var exposureStackBack = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
 
-                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = 12";
+                query = "select distinct marketid,SportId from Bets where IsSettlement = 2 and UserId = " + UserId;
                 var betMarketList = (await _baseRepository.QueryAsync<Bets>(query)).ToList();
                 for (int i = 0; i < betMarketList.Count; i++)
                 {
