@@ -65,7 +65,7 @@ namespace RB444.Core.Services
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}. You have {Math.Abs(IsProperAmt.Item2)} rupees less.", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
 
-                if (getBalance.Data < model.AmountStake)
+                if (getBalance.Data < model.AmountStake && model.Type == "back")
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
