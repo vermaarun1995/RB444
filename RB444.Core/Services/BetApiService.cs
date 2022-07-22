@@ -60,15 +60,15 @@ namespace RB444.Core.Services
                 var commonModel = await GetBackAndLayAmountAsync(model.UserId, model.MarketId, model.SportId);
                 string backandlayAmount = Convert.ToString(commonModel.Data);
                 var IsProperAmt = CheckBalanceForPlaceBet(model, backandlayAmount, getBalance.Data);
-                if(IsProperAmt.Item1 == false)
+                if (IsProperAmt.Item1 == false)
                 {
                     return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}. You have {Math.Abs(IsProperAmt.Item2)} rupees less.", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
 
-                if (getBalance.Data < model.AmountStake && model.Type == "back")
-                {
-                    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
-                }
+                //if (getBalance.Data < model.AmountStake && model.Type == "back")
+                //{
+                //    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}", IsSuccess = false, Status = ResponseStatusCode.OK };
+                //}
                 int betDelayTime = sportList.Where(x => x.Id == model.SportId).Select(y => y.BetDelayTime).FirstOrDefault() * 1000;
                 string betId = model.UserId.ToString() + DateTime.Now.ToString();
                 betId = cEncryption.MD5Encryption(betId);
@@ -300,7 +300,7 @@ namespace RB444.Core.Services
                                 teamAmount.Add(new TeamAmount
                                 {
                                     selectionId = Convert.ToInt64(z[q].Split(':')[0]),
-                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                    amount = Math.Truncate(100 * Convert.ToDouble(z[q].Split(':')[1])) / 100
                                 });
                             }
                             else
@@ -308,7 +308,7 @@ namespace RB444.Core.Services
                                 teamNameAmount.Add(new TeamNameAmount
                                 {
                                     selectionName = z[q].Split(':')[0],
-                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                    amount = Math.Truncate(100 * Convert.ToDouble(z[q].Split(':')[1])) / 100
                                 });
                             }
                         }
@@ -530,13 +530,13 @@ namespace RB444.Core.Services
                     {
                         teamAmt = Convert.ToDouble(teamSelAmtArr[1]) + betBeforeSaveAmount;
                     }
-                    if(teamAmt < 0)
+                    if (teamAmt < 0)
                     {
                         if (Math.Abs(teamAmt) > remainingBalance)
                         {
                             return new Tuple<bool, double>(false, remainingBalance - Math.Abs(teamAmt));
                         }
-                    }                    
+                    }
                 }
             }
 

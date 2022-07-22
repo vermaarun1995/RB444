@@ -72,10 +72,10 @@ namespace RB444.Core.Services
                 }
 
                 openingBalance = (double)(openingBalance + settleBetAmountList);
-
+                openingBalance = Math.Truncate(100 * openingBalance) / 100;
                 return new CommonReturnResponse
                 {
-                    Data = Math.Round(openingBalance, 2),
+                    Data = openingBalance,
                     Message = MessageStatus.Success,
                     IsSuccess = true,
                     Status = ResponseStatusCode.OK
@@ -106,6 +106,7 @@ namespace RB444.Core.Services
                 //query = string.Format(@"select sum((OddsRequest * AmountStake)-AmountStake) as AmountStake from Bets where IsSettlement <> 1 and UserId = {0} and Type='lay'", UserId);
                 //var exposureStackLay = (await _baseRepository.QueryAsync<Bets>(query)).Select(x => x.AmountStake).FirstOrDefault();
                 var exposureStack = Math.Abs(unsettleBetExposure);
+                exposureStack = Math.Truncate(100 * exposureStack) / 100;
                 return new CommonReturnResponse
                 {
                     Data = exposureStack,
@@ -817,7 +818,7 @@ namespace RB444.Core.Services
                                 teamAmount.Add(new TeamAmount
                                 {
                                     selectionId = Convert.ToInt64(z[q].Split(':')[0]),
-                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                    amount = Math.Truncate(100 * Convert.ToDouble(z[q].Split(':')[1])) / 100
                                 });
                             }
                             else
@@ -825,7 +826,7 @@ namespace RB444.Core.Services
                                 teamNameAmount.Add(new TeamNameAmount
                                 {
                                     selectionName = z[q].Split(':')[0],
-                                    amount = Convert.ToDouble(z[q].Split(':')[1])
+                                    amount = Math.Truncate(100 * Convert.ToDouble(z[q].Split(':')[1])) / 100
                                 });
                             }
                         }
@@ -838,10 +839,11 @@ namespace RB444.Core.Services
                     {
                         selectionId = teamSelectionIds[kk].selectionId,
                         amount = teamAmount.Where(x => x.selectionId == teamSelectionIds[kk].selectionId).Sum(y => y.amount)
-                    });                    
+                    });
                 }
 
-                responseStr = responseStr.Substring(0, responseStr.Length - 1);
+                if(responseStr.Length > 0)
+                    responseStr = responseStr.Substring(0, responseStr.Length - 1);
                 //if (UserId > 0)
                 //{
                 //    teamAmountStr = JsonConvert.SerializeObject(teamAmountFinal);
@@ -865,7 +867,7 @@ namespace RB444.Core.Services
                             amount = teamAmountFinal[iii].amount;
                         else
                             returnAmt = teamAmountFinal[iii].amount;
-                            amount = returnAmt;
+                        amount = returnAmt;
                     }
                 }
 
