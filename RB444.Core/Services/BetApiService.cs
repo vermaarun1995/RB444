@@ -62,7 +62,7 @@ namespace RB444.Core.Services
                 var IsProperAmt = CheckBalanceForPlaceBet(model, backandlayAmount, getBalance.Data);
                 if (IsProperAmt.Item1 == false)
                 {
-                    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}. You have {Math.Abs(IsProperAmt.Item2)} rupees less.", IsSuccess = false, Status = ResponseStatusCode.OK };
+                    return new CommonReturnResponse { Data = null, Message = $"Available balance is : {getBalance.Data}. You have {Math.Truncate(100 * Math.Abs(IsProperAmt.Item2)) / 100} rupees less.", IsSuccess = false, Status = ResponseStatusCode.OK };
                 }
 
                 //if (getBalance.Data < model.AmountStake && model.Type == "back")
@@ -506,11 +506,11 @@ namespace RB444.Core.Services
                 {
                     if (teamSelAmtArr[0] == model.SelectionId.ToString())
                     {
-                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) + betBeforeSaveAmount;
+                        teamAmt = betBeforeSaveAmount;
                     }
                     else
                     {
-                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) - betBeforeSaveAmount;
+                        teamAmt = -betBeforeSaveAmount;
                     }
                     if (teamAmt < 0)
                     {
@@ -524,11 +524,11 @@ namespace RB444.Core.Services
                 {
                     if (teamSelAmtArr[0] == model.SelectionId.ToString())
                     {
-                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) - betBeforeSaveAmount;
+                        teamAmt = -betBeforeSaveAmount;
                     }
                     else
                     {
-                        teamAmt = Convert.ToDouble(teamSelAmtArr[1]) + betBeforeSaveAmount;
+                        teamAmt = betBeforeSaveAmount;
                     }
                     if (teamAmt < 0)
                     {
